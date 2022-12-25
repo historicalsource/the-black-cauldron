@@ -1,0 +1,162 @@
+[logics for room 107 -- lgc.startup
+
+%include "gamedefs"
+
+
+%message	1	"_"
+%message	2	"]"
+%message	3	"BC"
+
+
+set.cursor.char( 1);				[	cursor
+set.string( 0, 2);   				[	prompt
+set.game.id( 3);					[	id
+trace.info( lgc.trace, 1, 6);			[	sets: room, y top, lines tall
+set.text.attribute( text.color, bg.color);
+max.score = 230;
+configure.screen( 1, 23, 0);
+set( enable.menu);
+disable.item( c.dummy);
+set( sound.on);
+prevent.input();
+animation.interval = speed.normal;
+ego.step.size = 1;
+ego.step.time = 1;
+ego.cycle.time = 1;
+ego.x = 77;
+ego.y = 160;
+position.v( ego, ego.x, ego.y);
+
+if ((machine.type == PC		||
+	machine.type == JR		||
+	machine.type == TANDY	||
+	machine.type == APPLEII))
+	{
+	set( two.button.joystick);
+	set( enable.double.click);
+	double.click.delay = 5;
+	}
+else
+	{
+	set( mouse.machine);
+	}
+
+food.timer.2 = food.init;
+water.timer.2 = water.init;
+one = 1;
+two = 2;
+three = 3;
+four = 4;
+five = 5;
+
+
+if (restart.in.progress)
+	{
+	reset( demo);
+	status.line.on();
+	}
+else								[This sets up the title/credits room:
+	{
+	reset( enable.menu);
+	status.line.off();
+	}
+
+
+
+
+[	test.room = 58;
+[	if (test.room)
+[		{
+[		set( debugging);
+[		set( e.in.basement);
+[		set( pig.in.basement);
+[		set( force.a.test);
+[		reset( demo);
+[		status.line.on();
+[		set( enable.menu);
+[		disable.item( c.dummy);
+[		set( clock.on);
+[		set( xy.on);
+[		animation.interval = speed.fastest;
+[		accept.input();
+[	 	}
+
+
+if (restart.in.progress)				[	Function keys already set up.
+	{
+	return();
+	}
+
+
+[	Assign keys to controller functions.
+
+[	Assign Function Keys:
+set.key( 0, 59, c.help);				[F1
+set.key( 0, 60, c.sound.toggle);		[F2
+set.key( 0, 61, c.new.obj);			[F3
+set.key( 0, 62, c.useit);			[F4
+set.key( 0, 63, c.save);				[F5
+set.key( 0, 64, c.doit);				[F6
+set.key( 0, 65, c.restore);			[F7
+set.key( 0, 66, c.lookit);			[F8
+set.key( 0, 67, c.restart);			[F9
+set.key( 0, 68, c.speed);			[F10
+
+[	Assign Control & Alt Keys:
+if (machine.type == TANDY)
+	{
+	set.key( 43,  0, c.crescendo);	[+
+	set.key( 61,  0, c.crescendo);	[=
+	set.key( 45,  0, c.decrescendo);	[-
+	}
+set.key(  9,  0, c.status);			[TAB
+if (machine.type == AMIGA)
+	{
+	set.key( 27,  0, c.pause);		[ESC
+	}
+else
+	{
+	set.key( 27,  0, c.menu);		[ESC
+	}
+set.key(  3,  0, c.cancel.line);		[^C
+set.key(  5,  0, c.echo.line);		[^E
+set.key( 10,  0, c.init.joy);			[^J
+set.key( 18,  0, c.toggle.monitor);	[^R
+set.key( 19,  0, c.sound.toggle);		[^S
+set.key( 24,  0, c.cancel.line);		[^X
+
+set.key(  0, 32, c.debug);			[@D
+set.key(  0, 18, c.show.ego);			[@S
+set.key(  0, 23, c.obj.info);			[@I
+set.key(  0, 50, c.show.mem);			[@M
+set.key(  0, 25, c.show.priority);		[@P
+set.key(  0, 47, c.version);			[@V
+set.key(  0, 44, c.quit);			[@Z
+
+
+[	Assign PCjr Number Keys as substitute function keys.
+if (machine.type == JR)				
+	{
+	set.key( 49, 0, c.help);			[1
+	set.key( 50, 0, c.sound.toggle);	[2
+	set.key( 51, 0, c.new.obj); 		[3
+	set.key( 52, 0, c.useit);		[4
+	set.key( 53, 0, c.save);			[5
+	set.key( 54, 0, c.doit);			[6
+	set.key( 54, 0, c.restore);		[6
+	set.key( 56, 0, c.lookit);		[8
+	set.key( 57, 0, c.restart);		[9
+	set.key( 48, 0, c.speed);		[0
+	}
+
+
+[	Assign joystick controllers.
+set.key( joystick.low.byte, button0, c.menu);
+
+if (two.button.joystick)
+	{
+	set.key( joystick.low.byte, button1, c.doit);
+	set.key( joystick.low.byte, button0.double, c.lookit);
+	set.key( joystick.low.byte, button1.double, c.useit);
+	}
+

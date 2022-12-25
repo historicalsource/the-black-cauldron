@@ -1,0 +1,91 @@
+[messages for room 66 -- Gwystyl's way station interior
+
+
+
+%message	1
+"You are in a strange little underground house, hidden deep
+ in the forest. It appears to be inhabited, although there is
+ no one home at the moment."
+
+%message	2
+"You are inside a Fair Folk way station with Gwystyl, a great
+ hero of the Fair Folk. Dallben spoke of him many times,
+ and you know he can be trusted."
+
+%message	3
+"You are in Gwystyl's way station. He is not here."
+
+%message	4
+"The glow of the fire makes you think of the fires you used
+ to tend at Caer Dallben. You feel a twinge of homesickness."
+
+%message	5
+"Gwystyl is very small for such an old person."
+
+%message	6
+"The cupboard is closed."
+
+%message	7
+"You see some cookies."
+
+%message	8
+"The cupboard appears to be bare."
+
+%message	9
+"You carefully open the cupboard."
+
+%message	10
+"You have some cookies."
+
+%message	11
+"Since the cupboard is bare, you close it."
+
+%message	12
+"\"Good luck, Taran of Caer Dallben,\" says Gwystyl. \"Do not
+ worry about Hen Wen; the Horned King will never find her!"
+
+%message	14
+"Hen Wen recognizes Gwystyl as one of the Fair Folk, and a
+ long-ago visitor to Caer Dallben.
+ She is happy to see her old friend."
+
+%message	15
+""
+
+%message	16
+"\"Welcome, Taran,\" says the fairy.
+ \"I am Gwystyl, one of the Fair Folk, and a friend of Dallben.
+ He told us to expect you, and asked us to hide Hen Wen from the Horned King."
+
+%message	17
+"\"Congratulations! You have delivered Hen Wen to safety,
+ and successfully fulfilled Dallben's request."
+
+%message	18
+"\"But, since you left Caer Dallben,
+ the Horned King behaves even more fiendishly.
+ My king, Eiddileg, contacted Dallben, seeking his help.
+ Dallben now wants you to locate King Eiddileg,
+ and help him in whatever way you can."
+
+%message	19
+"\"Since the Fair Folk are continually moving,
+ I can't tell you where they are;
+ but, I can tell you their magic password -- bmmpxf.
+ Use it wisely."
+
+%message	20
+"\"Good luck, Taran of Caer Dallben.\""
+
+%message	21
+"You are too big to fit through this door."
+
+%message	22
+"Hen Wen smiles goodbye as Gwystyl takes her through his
+ secret passage."
+
+%message	23
+"\"Come, Hen Wen, I'll keep you safe from the Horned King!\""
+
+%message	24
+"Gwystyl flies to the little door."

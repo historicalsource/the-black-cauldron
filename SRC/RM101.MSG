@@ -1,0 +1,6 @@
+[room 101 -- swimming room
+
+
+%message  1
+"Oh, no! As the turbulent water pulls you under, your last
+ thoughts are of your beautiful home, Caer Dallben."

@@ -1,0 +1,118 @@
+[logics for room 3 -- Caer Dallben west
+
+%include "rm3.msg"
+%include "gamedefs"
+
+
+%define	pig.room.loaded		lf0
+%define	gurgiland.loaded		lf1
+%define	gwyth.room.loaded		lf2
+
+
+
+if (init.log)
+	{
+	set.horizon( 74);
+
+ 	if ((pig.in.castle || pig.safe))
+		{
+		random( 0, 255, work);
+		if (work < chance.gurgi.shows)
+			{
+			load.logics( gurgiland);	[	room 104
+			set( gurgiland.loaded);
+			}
+		}
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		set( can.lose.pig);
+
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (previous.room == 8 &&
+		ego.x > 127)
+		{
+		ego.x = 127;
+		}
+	position.v( ego, ego.x, ego.y);
+
+	draw( ego);
+
+	if (gurgiland.loaded)
+		{
+		call( gurgiland);
+		position( a.gurgi, 146, 141);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit && !gurgi.here)
+	{
+	if (posn( ego, 0, 95, 159, 167))
+		{
+		print( 1);
+		}
+	else
+		{
+		print( 2);
+		}
+	}
+
+ 
+[*****
+:do.it
+:use.it
+:no.input
+[*****
+
+
+[*****
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (gurgiland.loaded)
+	{
+	call( gurgiland);
+	}
+
+if (edge.ego.hit == top)			{new.room( 23);}
+if (edge.ego.hit == bottom)		{new.room( 8);}
+if (edge.ego.hit == left)		{new.room( 2);} 
+if (edge.ego.hit == right)		{new.room( 4);}

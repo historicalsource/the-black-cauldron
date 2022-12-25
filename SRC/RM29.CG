@@ -1,0 +1,223 @@
+[logics for room 29 -- HK castle long shot
+
+%include  "rm29.msg"
+%include "gamedefs"
+
+
+
+%define	lightning.timer.max		77	[	define local constants
+%define	lightning.timer.min		14
+%define	lightning.timer.init	34
+%define	horizon				157
+
+%define	highlight.done			lf0
+%define	s.lightning.done		lf1
+%define	s.thunder.done			lf2
+%define	s.wind.done			lf3
+%define	read.message			lf4
+%define	lightning.done			lf5
+
+%define 	lightning.timer		lv0		[	define locals
+
+%object	a.gwyth				giant1
+%object	a.lightning			medium1
+%object	a.highlight.1			medium2
+%object	a.highlight.2			large1
+%object	a.highlight.3			large2
+
+
+
+if (init.log)						[	initialize room
+	{
+	lightning.timer = lightning.timer.init;
+	set.horizon( horizon);
+	set( s.wind.done);
+
+	load.view( v.g.tiny);			[	load views of objects
+	load.view( v.lightning);
+	load.view( v.highlight.1);
+	load.view( v.highlight.2);
+	load.view( v.highlight.3);
+
+	load.sound( s.wind);
+	load.sound( s.lightning);
+	load.sound( s.thunder);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	animate.obj( a.gwyth);			[	animate objects
+	animate.obj( a.lightning);
+	animate.obj( a.highlight.1);
+	animate.obj( a.highlight.2);
+	animate.obj( a.highlight.3);
+
+	set.view( a.gwyth, v.g.tiny);		[	set views of all objects
+	set.view( a.lightning, v.lightning);
+	set.view( a.highlight.1, v.highlight.1);
+	set.view( a.highlight.2, v.highlight.2);
+	set.view( a.highlight.3, v.highlight.3);
+
+	position( a.gwyth, 49, 63);		[	position each object
+	position( a.lightning, 98, 74);
+	position( a.highlight.1, 80, 72);
+	position( a.highlight.2, 95, 107);
+	position( a.highlight.3, 74, 137);
+
+	ignore.objs( a.gwyth);			[	misc. cleanup
+	ignore.objs( a.lightning);
+	ignore.objs( a.highlight.1);
+	ignore.objs( a.highlight.2);
+	ignore.objs( a.highlight.3);
+
+	work = 3;
+	cycle.time( a.gwyth, work);
+	work = 2;
+	cycle.time( a.lightning, work);
+	cycle.time( a.highlight.1, work);
+	cycle.time( a.highlight.2, work);
+	cycle.time( a.highlight.3, work);
+
+	ignore.horizon( a.gwyth);	
+	ignore.horizon( a.lightning);
+	ignore.horizon( a.highlight.1);
+	ignore.horizon( a.highlight.2);
+	ignore.horizon( a.highlight.3);
+
+	if (previous.room == 30)
+		{
+		position( ego, 50, 158);
+		move.obj( ego, 50, 160, 0, done);
+		}
+	else
+		{
+		if (previous.room == 32)
+			{
+			position( ego, 133, 158);
+			move.obj( ego, 133, 160, 0, done);
+			}
+		else
+			{
+			ego.climbing = done.climbing;
+			set.view( ego, v.ego);	[	just in case of rm26/28 mistake
+			if (previous.room == 26)
+				{
+				position( ego, 50, 167);
+				move.obj( ego, 50, 165, 0, done);
+				}
+			else
+				{
+				position( ego, 133, 167);
+				move.obj( ego, 133, 165, 0, done);
+				}
+			}
+		}
+
+
+	draw( a.gwyth);					[	draw the objects
+
+	draw( ego);
+
+	show.pic();
+
+	if (previous.room < 29)
+		{
+		if (pig.in.castle)
+			{
+			print( 3);
+			}
+
+		if (pot.in.castle)			
+			{
+			print( 4);
+			}
+		}
+
+	return();
+
+	}							[	end init logs
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (highlight.done)
+	{
+	reset( highlight.done);
+	erase( a.highlight.1);
+	erase( a.highlight.2);
+	erase( a.highlight.3);
+	random( lightning.timer.min, lightning.timer.max, lightning.timer)
+	if (!read.message)
+		{
+		set( read.message);
+		print( 2);
+		}
+	}
+
+--lightning.timer;
+if (lightning.timer == 1)
+	{
+	reset( s.wind.done);
+	sound( s.lightning, s.lightning.done);
+	set.cel( a.lightning, 0);
+	draw( a.lightning);
+	end.of.loop( a.lightning, lightning.done);
+	}
+
+if (lightning.done)
+	{
+	reset( lightning.done);
+	set( highlight.done);			[	catch it on next pass
+
+	draw( a.highlight.1);
+	draw( a.highlight.2);
+	draw( a.highlight.3);
+
+	erase( a.lightning);
+	}
+
+if (s.lightning.done)
+	{
+	reset( s.lightning.done);
+	sound( s.thunder, s.thunder.done);
+	}
+
+if (s.thunder.done)
+	{
+	reset( s.thunder.done);
+	set( s.wind.done);
+	}
+
+if (s.wind.done)
+	{
+	reset( s.wind.done);
+	sound( s.wind, s.wind.done);		[	wind only blows if no other sound
+	}
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+get.posn( ego, ego.x, ego.y);
+if (edge.ego.hit == top)
+	{
+	if (ego.x < 80)			{new.room( 30);}
+	else						{new.room( 32);}
+	}
+
+if (edge.ego.hit == bottom)
+	{
+	if (ego.x < 80)			{new.room( 26);}
+	else						{new.room( 28);}
+	}
+

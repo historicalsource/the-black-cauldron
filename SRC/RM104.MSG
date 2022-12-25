@@ -1,0 +1,61 @@
+[messages for room 104 -- Gurgiland
+
+
+
+%message	1
+"What manner of creature is this wandering nearby?!"
+
+%message	2
+"\"Hi! I'm Gurgi.
+ Do you have any munchings and crunchings for me?\""
+
+%message	3
+"\"Thank you for tasty apple, kind Master.
+ Gurgi now Taran's friend for life.\""
+
+%message	4
+"\"Gurgi loves cookies. Gurgi now Taran's friend for life.\""
+
+%message	5
+"\"Gurgi eat bread, but not like it much.\""
+
+%message	6
+"\"Gurgi eat gruel, but it tastes like piggy food.\""
+
+%message	7
+"\"Gurgi eat corn, but not like it much. Too dry.\""
+
+%message	8
+"\"Gurgi too busy for presents right now.\""
+
+%message	9
+"\"Are you sure you don't have some munchings and crunchings
+ for Gurgi?\""
+
+%message	10
+"\"Hello, brave Master. Gurgi still Taran's friend for life!\""
+
+%message	11
+"Gurgi looks into the mirror and sees a happy and good-natured creature."
+
+%message	12
+"Gurgi is not too clean, and could use a bath,
+ but he is friendly and pleasant."
+
+%message	13
+"Gurgi isn't close enough to see it."
+
+%message	14
+"\"Hello, Gurgi. How's my old friend?\""
+
+%message	15
+"\"Gurgi has no use for silly sword.\""
+
+%message	16
+"\"Gurgi not understand funny word.\""
+
+%message	17
+"You're too dizzy to use it."
+
+%message	18
+"\"Oh, kind Master. Gurgi not need any more presents.\""

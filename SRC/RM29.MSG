@@ -1,0 +1,19 @@
+[messages for room 29 -- HK castle long shot
+
+
+
+%message	1
+"Far in the distance is the gloomy castle of the evil Horned
+ King. Giant gwythaints circle its turrets."
+
+%message	2
+"The lightning frightens you, and makes you wish you were back
+ in Caer Dallben."
+
+%message	3
+"You worry about Hen Wen, and wonder if she is a prisoner
+ in the Castle."
+
+%message	4
+"You wonder if you will find the Black Cauldron inside the
+ Horned King's castle."

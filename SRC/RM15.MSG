@@ -1,0 +1,30 @@
+[room15 messages
+
+
+
+%message	1
+"The swamp to the southwest seems impossible to cross.
+ The land is unstable and soggy.
+ The trees here are old, gnarled, and bewildering."
+
+%message	2
+"Trekking through this mud is difficult.
+ You might be able to jump to one of those rocks."
+
+%message	3
+"Oh, no!!
+ The log sank from your weight and you're stuck in the bog.
+ Your quest has ended."
+
+%message	4
+"Sure it's fun to jump up and down, but you must continue your quest."
+
+%message	5
+"Great. You made it!!"
+
+%message	6
+"There is no need for you to fly away in that direction."
+
+%message	7
+"You can not try to cross the swamp with Hen Wen.
+ She would surely be caught by an evil gwythaint."

@@ -1,0 +1,21 @@
+[messages for room 65 -- Coll's cottage exterior
+
+
+
+%message	1
+"The smoke rising from the chimney makes you think that
+ someone is home."
+
+%message	2
+"You emerge from the brambles into a clearing with a strange
+ underground house."
+
+%message	3
+"You open the door, peek inside, and carefully enter the
+ underground house."
+
+%message	4
+"You close the door."
+
+%message	5
+"The door doesn't appear to be locked."

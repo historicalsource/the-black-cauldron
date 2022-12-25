@@ -1,0 +1,145 @@
+[messages for room 64 -- frog room
+
+
+
+%message	1
+"This strange, dirty place is in the middle of Morva Marsh."
+
+%message	2
+"You glance at the chest and wonder if releasing the frogs was
+ worth all this."
+
+%message	3
+"The frogs gladly hop out the door to freedom."
+
+%message	4
+"The old chest is closed, but unlocked."
+
+%message	5
+"Those frogs' faces have a nearly-human look."
+
+%message	6
+"Listening to the chest, you hear a faint \"ribbit.\""
+
+%message	7
+"The chest is tightly closed, and securely locked."
+
+%message	8
+"The witches' beauty is not in the eye of THIS beholder!"
+
+%message	9
+"You close the chest."
+
+%message	10
+"You open the chest."
+
+%message	11
+"Try as you might, you can't open the chest."
+
+%message	12
+"Somehow the sword swerves, and swishes past the chest."
+
+%message	13
+"The keys won't fit in the chest's lock."
+
+%message	14
+"\"Ribbit! Ribbit!!\""
+
+%message	15
+"A shrieking voice pierces the air, \"What's going on here!
+ Who are you, releasing our \"guests\" like this?! Perhaps you
+ should join them!!\""
+
+%message	16
+"Orwen, Orddu, and Orgoch appear to be more than mildly upset
+ with your thoughtlessness. They prefer to keep their
+ (formerly) human guests in that chest."
+
+%message	17
+"\"I am Taran, Assistant Pig-Keeper
+ of Caer Dallben. Dallben, the Mystic, has sent me on a
+ quest to recover the evil Black Cauldron, which is missing
+ from his land."
+
+%message	18
+""
+
+%message	19
+"\"Dallben thought that you might have this cauldron. If so,
+ I only hope that you would be kind enough to give it to me,
+ in the name of the great Dallben.\""
+
+%message	20
+"\"Silly little Pigboy,\" Orwen responds with a cackle, \"you
+ know little of the ways of witches. We never give anything
+ away; we only bargain!"
+
+%message	21
+"\"The truth is:  we may have NO cauldrons, we may have A cauldron,
+ or we may have THE Cauldron. But, you needn't
+ worry, because you'll never know, since you'll be a frog.\""
+
+%message	22
+"\"May I offer you this most valuable mirror, in exchange for
+ my life, and the great Black Cauldron?\" you ask."
+
+%message	23
+"\"Ooooh, look girls,\" says Orwen, \"when I look in this mirror
+ I'm beautiful. Duckling, we promise we won't turn you into
+ a frog.\""
+
+%message	24
+"\"We won't make you a frog,\" cackles Orddu,
+ \"but we won't give up our Cauldron for a mere mirror, either;
+ not even a magic mirror.\""
+
+%message	25
+"\"Here,\" you say, \"I offer you my most prized possession:
+ a sword with magic so powerful,
+ it once belonged to the good king who built the great castle,
+ which the Horned King has taken over.\""
+
+%message	26
+"\"Thank you, Taran,\" says Orddu, \"this is exactly what we want.
+ Now step outside with us, and you may have your Black Cauldron.\""
+
+%message	27
+"\"What?!\" the witches shriek.
+ \"You dare to threaten us with a little Pigboy's sword?
+ Let us show you some cauldrons from our collection!!\""
+
+%message	28
+"\"This is boring,\" says Orwen.
+ \"Come on, girls, say goodbye to the little duckling.\""
+
+%message	29
+"\"Goodbye.\""
+
+%message	30
+"\"Goodbye, gosling.\""
+
+%message	31
+"\"Hee, hee!\" cackle the witches.
+ \"Got you!!
+ Perhaps you'll enjoy a stay in our chest!\""
+
+%message	32
+"\"Goodbye, Duckling,\" chimes in Orgoch.
+ \"Too bad you'll never get your Cauldron.\""
+
+%message	33
+"The chest is open, but empty."
+
+%message	34
+"\"Oooooh, girls,\" shouts Orddu, \"what a sword!
+ It makes pots vanish into thin air.
+ We could use another magic sword around here!\""
+
+%message	35
+"At least those ugly witches are gone."
+
+%message	36
+"It doesn't seem to work inside this house!"
+
+%message	37
+"Did they say \"...since you'll be a frog?!\""

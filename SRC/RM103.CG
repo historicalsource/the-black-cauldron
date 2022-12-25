@@ -1,0 +1,55 @@
+[logics for room 103 -- the dumb winner room
+
+%include "rm103.msg"
+%include "gamedefs"
+
+
+%define	a.good.score			dv0
+
+
+if (init.log)
+	{
+	a.good.score = max.score;
+	a.good.score -= 15;
+
+	water.timer.1 = 0;
+	water.timer.2 = 0;
+	food.timer.1 = 0;
+	food.timer.2 = 0;
+	flight.seconds = 0;
+	flight.minutes = 0;
+	pig.timer.1 = 0;
+	pig.timer.2 = 0;
+
+	stop.motion( ego);
+	stop.cycling( ego);
+	wait.1 = 40;
+
+	return();
+	}
+
+
+
+--wait.1;
+if (wait.1 == 1)
+	{
+	sound( m.dallben, done);
+	if (certain.winner == ego.jumped.into.the.pot)
+		{
+		print( 6);
+		}
+
+	print( 1);
+
+	if (score < a.good.score)		
+		{
+		print( 2);				[	"I'm sure you could do better
+		print( 3);				[	if you'd just exert yourself!"
+		}
+	else
+		{
+		print( 4);				[	"You're HOT!
+		}
+	}
+
+:exit

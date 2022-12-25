@@ -1,0 +1,120 @@
+[logics for room 39 -- top of spiral staircase
+
+%include "rm39.msg"
+%include "gamedefs"
+
+
+%define	already.told.him		lf0
+%define	castle.interior.loaded	lf1
+%define	pig.room.loaded		lf2
+
+%object	a.torch				small1
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		load.view( v.ego.falling.with.pig);
+		}
+
+	if (!pig.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	load.logics( castle.climbing.room);
+	room.bottom = fall.through;
+	load.view( v.ego.falling);
+	load.sound( s.ego.falling);
+
+	load.view( v.torch);
+	animate.obj( a.torch);
+	ignore.horizon( a.torch);
+	position( a.torch, 114, 32);
+	set.view( a.torch, v.torch);
+
+
+	if (previous.room == 42)
+		{
+		position( ego, 50, 122);
+		}
+
+	draw( a.torch); 
+
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 137, 155);
+		}
+
+	call( castle.climbing.room);
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (posn( ego, 107, 59, 119, 67))		[	head in torch
+		{
+		print( 2);					[	"your head feels warm
+		}
+	else
+		{
+		print( 1);
+		}
+	}
+
+
+[*****
+:do.it
+:use.it
+:no.input
+[*****
+
+if (hit.special)
+	{
+	get.priority( ego, work);
+	set.priority.f( ego, work);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (!ego.is.falling && 
+	posn( ego, 48, 126, 64, 127))		{new.room( 42);}
+if (edge.ego.hit == left)			{new.room( 38);}
+if (edge.ego.hit == right)			{new.room( 40);}
+if (edge.ego.hit == bottom)			{new.room( 42);}
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+call( castle.climbing.room);

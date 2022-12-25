@@ -1,0 +1,11 @@
+[messages for room 3 -- Caer Dallben west
+
+
+
+%message	1
+"You enjoy walking through the peaceful meadows of
+ Caer Dallben."
+
+%message	2
+"The large trees seem to welcome you. Many swinging
+ vines hang from the branches."

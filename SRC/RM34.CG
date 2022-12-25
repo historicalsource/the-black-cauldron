@@ -1,0 +1,286 @@
+[logics for room 34 -- alligator arcade
+
+%include	"rm34.msg"
+%include "gamedefs"
+
+
+
+%define	this.rooms.bottom		79	[	define local constants
+%define	horizon				37
+%define	left.side				24
+%define	right.side			120
+%define	moat.top				71
+%define	moat.bottom			137
+%define	moat.left				40
+%define	moat.right			100
+%define	eating.range			5
+							
+							
+%define	gotcha				lf0	[	define local variables
+%define	gators.chasing.ego		lf1
+%define	been.swimming			lf2
+							
+
+%object	a.gator.1			small1	[	define objects
+%object	a.gator.2			small2
+%object	a.gator.3			small3
+%object	a.gator.4			small4
+							
+
+
+if (init.log)						[	initialize room
+	{
+	set.horizon( horizon);
+
+	set( gators.chasing.ego);		[	set so logics make gators wander
+	set( impotable.water);
+	
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set( survivable.fall);
+	room.bottom = this.rooms.bottom;
+	load.logics( climbing.room);		[	load climbing gear
+	load.view( v.splash);
+	load.view( v.ego.falling);
+
+	load.sound( s.splash);
+	load.sound( s.ego.falling);
+
+	load.logics( swim.logics);		[	load dynamics & views
+	load.view( v.ego.swimming);
+
+	load.view( v.gator);			[	load views of objects
+
+	animate.obj( a.gator.1);			[	animate objects
+	animate.obj( a.gator.2);
+	animate.obj( a.gator.3);
+	animate.obj( a.gator.4);
+
+	set.view( a.gator.1, v.gator);	[	set views of all objects
+	set.view( a.gator.2, v.gator);
+	set.view( a.gator.3, v.gator);
+	set.view( a.gator.4, v.gator);
+
+	set.cel( a.gator.1, 0);			[	set starting cell
+	set.cel( a.gator.2, 1);
+	set.cel( a.gator.3, 2);
+	set.cel( a.gator.4, 3);
+
+	random( moat.left, moat.right, x);
+	random( moat.top, moat.bottom, y);
+	position.f( a.gator.1, x, y);
+
+	random( moat.left, moat.right, x);
+	random( moat.top, moat.bottom, y);
+	position.f( a.gator.2, x, y);
+
+	x = 0;
+	random( moat.top, moat.bottom, y);
+	position.f( a.gator.3, x, y);
+
+	x = 140;
+	random( moat.top, moat.bottom, y);
+	position.f( a.gator.4, x, y);		[	"All gators in position, SIR!"
+
+
+ 	if (previous.room == 35)			[	position ego
+ 		{
+		ego.y = horizon;
+		++ego.y;
+
+		if (ego.x < left.side)
+			{
+			ego.x = left.side;
+			}
+
+		if (ego.x > right.side)
+			{
+			ego.x = right.side;
+			}
+		}
+	else
+		{
+		if ((previous.room == 30 ||	[	room 33 is OK!
+			previous.room == 32))
+			{
+			ego.x = 80;
+			ego.y = 166;
+			}
+		}
+	position.f( ego, ego.x, ego.y);
+
+
+	draw( a.gator.1);				[	draw the objects
+	draw( a.gator.2);
+	draw( a.gator.3);
+	draw( a.gator.4);
+
+	if (ego.climbing != falling)		[	else, dynamic draws him falling
+		{
+		draw( ego);
+		}
+
+	object.on.water( a.gator.1);		[	misc. cleanup
+	object.on.water( a.gator.2);
+	object.on.water( a.gator.3);
+	object.on.water( a.gator.4);
+
+	ignore.blocks( ego);
+	ignore.blocks( a.gator.1);
+	ignore.blocks( a.gator.2);
+
+	ignore.objs( ego);
+
+	call( climbing.room);
+	call( swim.logics);
+
+	show.pic();
+	return();
+
+	}							[	end init.logs
+
+
+
+if (lookit)
+	{
+	print( 1);
+	set( have.match);
+	}
+
+
+if (ego.y > 50 && ego.y < 147)
+	{
+	set( on.water);
+	set( been.swimming);
+	}
+
+if (!doit && !useit)
+	{
+	goto no.input;
+	}
+
+
+if (useit)
+	{
+	goto use.it;
+	}
+
+[*****
+:do.it						[he pressed the "do something" button
+[*****
+
+if (on.water)
+	{
+	print( 3);
+	set( have.match);
+	}
+else
+	{
+	print( 4);
+	set( have.match);
+	}
+
+goto no.input;
+
+
+[*****
+:use.it						[he pressed the "use current obj" button
+[*****
+
+if (on.water)
+	{
+	print( 3);
+	set( have.match);
+	}
+
+[*****
+:no.input
+[*****
+
+if (ego.y > 41 && ego.y < 45)			[	handle falling off the ledge
+	{
+	x = 0;
+	y = 9;
+	reposition( ego, x, y);
+	}
+
+if (ego.y > 44 && ego.y < 51)			[	jump back onto the ledge
+	{
+	x = 0;
+	y = -9;
+	reposition( ego, x, y);
+	}
+
+if (on.water && !drown.swim)
+	{				
+	set( gators.chasing.ego);
+	ignore.blocks( ego);
+	follow.ego( a.gator.1, eating.range, gotcha);
+	follow.ego( a.gator.2, eating.range, gotcha);
+	follow.ego( a.gator.3, eating.range, gotcha);
+	follow.ego( a.gator.4, eating.range, gotcha);
+	}
+
+if (gotcha)						[	bye, bye
+	{
+	erase( ego);
+	print( 2);
+	set( have.match);
+	certain.death = 1;
+	}
+
+if (been.swimming && !on.water)		[	now leaving the pool.
+	{
+	reset( been.swimming);
+	distance( ego, a.gator.2, work);
+	if (work > 20)
+		{
+		distance( ego, a.gator.3, work);
+		if (work > 20)
+			{
+			distance( ego, a.gator.1, work);
+			if (work > 20)
+				{
+				distance( ego, a.gator.4, work);
+				}
+			}
+		}
+	if (work < 20)
+		{
+		print( 5);
+		}
+	}
+
+if (!on.water && gators.chasing.ego)
+	{
+	reset( gators.chasing.ego);
+	wander( a.gator.1);
+	wander( a.gator.2);
+	wander( a.gator.3);
+	wander( a.gator.4);
+	}
+
+if (posn( ego, 0, 0, 159, 153))
+	{
+	set( near.water);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+call( climbing.room);
+call( swim.logics);
+
+if (edge.ego.hit)					{ego.climbing = 0;}
+if (edge.ego.hit == left)			{new.room( 33);}
+if (edge.ego.hit == top)				{new.room( 35);}
+if (edge.ego.hit == bottom)
+	{
+	if (ego.x < 76)				{new.room( 30);}
+	else							{new.room( 32);}
+	}
+

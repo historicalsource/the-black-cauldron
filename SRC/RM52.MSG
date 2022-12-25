@@ -1,0 +1,105 @@
+[messages for room 52 -- inside taran's cell
+
+
+
+%message	1
+"You are in a cell in the Horned King's dungeon."
+
+%message	2
+"You are taken to a cell in the Horned King's dungeon."
+
+%message	3
+"You follow Eilonwy through the hole in the floor."
+
+%message	4
+"You escape through the hole in the floor."
+
+%message	5
+"You pick up the tin cup and carry it with you."
+
+%message	6
+"You rattle the tin cup against your cell door."
+
+%message	7
+"It's too late to swing your sword, now that you've been captured."
+
+%message	8
+"You push and push on the locked door, but it does
+ no good. You are locked in."
+
+%message	9
+"On top of everything else, they took all your belongings!"
+
+%message	10
+"You rattle the cup against the door, but nothing happens."
+
+%message	11
+""
+
+%message	12
+"You follow Eilonwy through the hole in the floor."
+
+%message	13
+"The floor stones close behind Eilonwy."
+
+%message	14
+"The rock at your feet feels loose, you had better get off it!"
+
+%message	15
+"Using your keys, you unlock the door and leave this gloomy
+ place."
+
+%message	16
+"As you enter, the door snaps shut behind you, locking you in."
+
+%message	17
+"\"You'll stay in this dungeon until you rot, Pig Boy!\""
+
+%message	18
+"While banging the cup against the door, you notice a
+ flagstone loose in the middle of the floor. You might
+ be able to move it!"
+
+%message	19
+""
+
+%message	20
+""
+
+%message	21
+"Suddenly, a flagstone slides back, and a hole appears in
+ the floor. A strange, glowing sphere pops into your cell."
+
+%message	22
+"A beautiful young girl appears, scolding \"What's all the
+ noise up here?! Oh, hello! You must be a prince or a
+ great warrior. I'm Princess Eilonwy, and this is my magic bauble.\""
+
+%message	23
+"\"I'm Taran, Assistant Pig-Keeper of Caer Dallben,\" you
+ respond."
+
+%message 	24
+"\"That's too bad. I was hoping for a great hero to get me
+ out of this dismal place. Oh, well.\""
+
+%message	25
+"\"What is down there? Could there be a way to escape?\""
+
+%message	26
+"\"No,\" Eilonwy replies, \"but there are many tunnels.
+ Perhaps we could find one together!\""
+
+%message	27
+""
+
+%message	28
+"You rattle the cup against the stones, but nothing happens."
+
+%message	29
+"There is a battered tin cup lying on the bench."
+
+%message	30
+"You notice a flagstone loose in the middle of the floor.
+ You might be able to move it!"
+

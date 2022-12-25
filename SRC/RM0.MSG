@@ -1,0 +1,245 @@
+[messages for room 0 -- everywhere
+
+
+
+[	These messages are currently null:
+[		][	40	48	49	92	93
+
+
+
+%message	1
+"That doesn't help now."
+
+%message	2
+"There's no reason to use it now."
+
+%message	3
+"There's nothing to do here."
+
+%message	4
+"You can't do anything here."
+
+%message	5
+"You've been captured. It's too late to swing your sword."
+
+%message	6
+"You swing and miss."
+
+%message	7
+"The henchman is stunned. Leave him alone."
+
+%message	8
+"The henchman falls to the ground momentarily stunned by your
+ sword. Run, Taran!"
+
+%message	9
+"You swing your magic sword."
+
+%message	10
+"Creeper is too nimble for even a magic sword."
+
+%message	11
+"The Horned King laughs. His evil is too powerful for
+ your magic sword."
+
+%message	12
+"You need to pick an object to use."
+
+%message	13
+"Your roomy knapsack can hold many things."
+
+%message	14
+"The dried corn is inedible... to you."
+
+%message	15
+"You eat some of the gruel... and find it disgusting!"
+
+%message	16
+"The magic food wallet produces enough food to satisfy you."
+
+%message	17
+"Dallben's bread tastes delicious."
+
+%message	18
+"You fill your water flask with water."
+
+%message	19
+"The water from your flask tastes delicious."
+
+%message	20
+"The apple is crisp and juicy!"
+
+%message	21
+"You promise to eat just one cookie... and quickly break
+ your promise!"
+
+%message	22
+"Fflewddur Fflam's harp probably sounded beautiful in his
+ hands... but not in yours!"
+
+%message	23
+"The lute sounds lovely."
+
+%message	24
+"The fairy dust rushes out between your fingers, as if
+ telling you not to use it here."
+
+%message	25
+"\"Bmmpxf,\" you say firmly..."
+
+%message	26
+"...but nothing happens."
+
+%message	27
+"Gazing into the magic mirror you see your true self, and
+ realize you are not a great hero... yet."
+
+%message	28
+"You can't get water from where you are standing."
+
+%message	29
+"The strong pull of the rapids rips the water flask from your
+ grasp. It quickly floats downstream, and out of sight."
+
+%message	30
+"But now, you're out of water!"
+
+%message	31
+"You eat a little more bread, and feel better."
+
+%message	32
+"You eat every last morsel of the bread."
+
+%message	33
+"Your water flask is already full."
+
+
+%message	34						[	Don't change these numbers!
+"Fastest%m38"						[		"
+								[		 "
+%message	35						[		  "
+"Fast%m38"						[		   "
+								[		    "
+%message	36						[			"
+"Normal%m38"						[			 "
+								[			  "
+%message	37						[			   "
+"Slow%m38"						[			    "
+								[				"
+%message	38						[				 "
+" speed."							[				  "
+
+%message	39
+"You ARE swinging the sword already!"
+
+%message	40
+""
+
+%message	41
+"You begin to feel a little hungry."
+
+%message	42
+"You're starving. You must eat something soon!"
+
+%message	43
+"Your throat is dry."
+
+%message	44
+"Your thirst is intense; you'd better get some water soon!"
+
+%message	45
+"You wonder how long Hen Wen can survive against the Horned King's cruelty."
+
+%message	46
+"Sorry. You can't see the Help screen here. Please try again elsewhere."
+
+%message	47
+"How can you do that?"
+
+%message	48
+""
+
+%message	49
+""
+
+%message	50
+"Since the game is over, you can't do that."
+
+%message	51
+"Sorry, Taran, you have failed in your quest. The Horned King
+ now has the Black Cauldron, and evil rules Prydain."
+
+%message	52				    		[	Don't change these numbers!
+"%m56\n\nYou've been playing for \n"		[		"
+								[		 "
+%message	53						[		  "
+"%v0|3"							[		   "
+								[		    "
+%message	54						[			"
+"%v117:%v116|2:%v115|2 "				[			 "
+								[			  "
+%message	55						[			   "
+"Active object is %o103."			[			    "
+								[				"
+%message	56						[				 "
+"\n
+    The Black Cauldron\n\n
+        by Al Lowe\n\n
+  Version 2.00   6/14/87  \n"			[					"
+								[					 "
+%message	57						[					  "
+"%m52%v118 days, %v117 hours, %v116 minutes and %v115 seconds.\n"  ["
+								[					    "
+%message	58						[						"
+"%m52%v117 hours, %v116 minutes and %v115 seconds.\n"				["
+								[						  "
+%message	59						[						   "
+"%m52%v116 minutes and %v115 seconds.\n"[						    "
+								[							"
+								[							 "
+								[							  "
+								[							  "
+%message	61		"Sierra "			[	MENU ENTRIES HERE:			  "
+%message	62	"About Black Cauldron"	[							  "
+%message	63	"Help            <F1>"	[	Don't use messages 60 - 100.	  "
+								[							  "
+%message	64		"File "			[							  "
+%message	65	"Save     <F5>"		[							  "
+%message	66	"Restore  <F7>"		[							  "
+%message	67	"-------------"
+%message	68	"Restart  <F9>"		[							  "
+[%message	67	"-------------"
+%message	69	"Quit  <Alt-Z>"		[							  "
+								[							  "
+%message	70		"Action "			[							  "
+%message	71	"Inventory  <TAB>"		[							  "
+%message	72	"See Object      "		[							  "
+%message	73	"----------------"
+%message	74	"New Object  <F3>"		[							  "
+%message	75	"Use Object  <F4>"		[							  "
+%message	76	"Do          <F6>"		[							  "
+%message	77	"Look        <F8>"		[							  "
+								[							  "
+%message	78		"Special "
+%message	79	"Sound On/Off      <F2>"	[	
+%message	80	"Graphics Mode <Ctrl-R>"	[	
+%message	81	"Joystick      <Ctrl-J>"	[	
+[%message	82	"Clock On/Off          "	[	
+%message	83	"Pause Game            "	[	
+
+%message	84		"Speed "
+%message	85	"Normal       "
+%message	86	"Slow         "
+%message	87	"Fast         "
+%message	88	"Fastest      "
+%message	89	"-------------"
+%message	90	"Change  <F10>"
+								[							  "
+[%message	91		"Debug"			[							  "
+[%message	92	"Ego Info  <Alt-E>"		[							  "
+[%message	93	"P-Screen  <Alt-P>"		[							  "
+[%message	94	"Memory    <Alt-M>"		[							  "
+[%message	95	"Obj Info  <Alt-I>"		[							  "
+[%message	96	"X/Y Display      "		[							  "
+[%message	97	"Inventory Numbers"		[							  "
+[%message	98	"Get All Inventory"		[							  "

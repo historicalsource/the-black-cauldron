@@ -1,0 +1,28 @@
+[messages for room 51 -- the entrance to Taran's cell
+
+
+
+%message	1
+"You are in the dungeon of the Horned King. There is a gargoyle on the wall."
+
+%message	2
+"You twist the gargoyle's head clockwise."
+
+%message	3
+"You twist the gargoyle's head counterclockwise."
+
+%message	4
+"You examine the gargoyle intently. There is a small space
+ between it and the wall."
+
+%message	5
+"You aren't standing near a keyhole!"
+
+%message	6
+"You use the ladder to descend to the floor below."
+
+%message	7
+"There appears to be a ladder leading into the darkness below."
+
+%message	8
+"You unlock the door and enter the cell."

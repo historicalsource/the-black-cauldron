@@ -1,0 +1,167 @@
+[logics for room 21 -- just east of Witchburg
+
+%include "rm21.msg"
+%include "gamedefs"
+
+
+%define	warned.him			lf0
+%define	pig.room.loaded		lf1
+%define	gwyth.room.loaded		lf2
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set.horizon( 55);
+
+	load.logics( morva.marsh);		[room 108
+	load.view( v.ego.sinking);
+	if (has( i.fairy.dust))
+		{
+		load.view( v.ego.fairy);
+		}
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);	[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+
+	if (previous.room == 1)
+		{
+		position( ego, 136, 157);
+		}
+
+	if (previous.room == 20 && !t.is.fairy)
+		{
+		position( ego, 1, 122);
+		}
+
+	if (t.is.fairy)
+		{
+		set.priority( ego, 15);
+		}
+
+	draw( ego);
+
+	call( morva.marsh);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	show.pic();
+
+	if (!previous.room == 20 && !t.is.fairy)
+		{
+		print( 1);
+		}
+
+	return();
+
+	}
+
+
+
+if (!edge.ego.hit)
+	{
+	reset( warned.him);
+	}
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+if (t.is.fairy)
+	{
+	goto exit;
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+
+[*****
+:do.it
+:use.it
+:no.input
+[*****
+
+if (!on.water)
+	{
+	if (posn( ego, 19, 81, 37, 138))
+		{
+		set( on.water);
+		set( no.on.water);
+		}
+	}
+
+
+[*****
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+call( morva.marsh);
+
+if (edge.ego.hit == top)			{new.room( 16);}
+if (edge.ego.hit == left)		{new.room( 20);}
+if (edge.ego.hit == bottom)
+	{
+	if (!t.is.fairy)
+		{
+		new.room( 1);
+		}
+	else
+		{
+		if (!warned.him)
+			{
+			set( warned.him);
+			print( 2);
+			}
+		}
+	}
+	
+if (edge.ego.hit == right)
+	{
+	if (!t.is.fairy)
+		{
+		new.room( 22);
+		}
+	else
+		{
+		if (!warned.him)
+			{
+			set( warned.him);
+			print( 2);
+			}
+		}
+	}
+

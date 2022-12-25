@@ -1,0 +1,17 @@
+[messages for room 1 -- Skull mountain
+
+
+%message	1
+"Chills run down your spine as you wonder what those
+ mountains hold. There's nothing like this around Caer
+ Dallben."
+
+%message	2
+"The river is far too treacherous to swim."
+
+%message	3
+"The trees seem to be alive. In their own evil way,
+ they seem to be watching you."
+
+%message	4
+"Ouch! Watch out for those low-hanging branches."

@@ -1,0 +1,72 @@
+[messages for room 53 -- burial chamber of the Horned King
+
+
+
+%message	1
+"You are in the secret burial chamber of the great king
+ who built this castle. He was very good and wise, with strong powers."
+
+%message	2
+"There is a metallic glint atop the coffin."
+
+%message	3
+"There is a small hole in the back wall. Unfortunately, you
+ are too big to fit through it."
+
+%message	4
+"Looking at the crypt, you see a magnificent sword in the
+ grasp of a carved stone king. Examining the sword, you see
+ the inscription \"Dyrnwyn.\"  Its magic electrifies the air around you."  
+
+%message	5
+"You struggle, but are finally able to free the sword
+ from the grasp of the carved stone king."
+
+%message	6
+"Eilonwy could fit through this hole, but you can not."
+
+%message	7
+"You are too big to fit through the tiny hole."
+
+%message	8
+"\"A burial chamber!\" exclaims Eilonwy. \"This must be the tomb
+ of the great king who built this castle long ago.\""
+
+%message	9
+"\"Look, Taran!!!\" exclaims Eilonwy. \"My bauble seems to
+ have found another hole in the wall. Maybe I can escape!\""
+
+%message	10
+"\"Taran! It's an old tunnel! I'm leaving this horrible place.\""
+
+%message	11
+"\"Good luck on your quest, Taran,\" says Eilonwy,
+ squeezing through the crack in the rear wall.\""
+
+%message	12
+"\"Come, Hen Wen. I will take you to a place safe from the
+ Horned King's evil!\"" 
+
+
+%message	13
+"Hen Wen has spotted a hole in the back wall."
+
+%message	14
+"She follows Eilonwy into the tunnel, to safety."
+
+%message	15
+"Hen Wen looks at you and smiles, as if to say \"Goodbye.\""
+
+%message	16
+"You see a carved stone king atop the crypt."
+
+%message	17
+"\"Don't wait for me, Princess Eilonwy,\" you say. \"I'll find
+ another way out of here!\""
+
+%message	18
+"\"Take good care of Hen Wen,\" you tell Eilonwy."
+
+%message	19
+"You can't bear to leave without discovering where she is going."
+

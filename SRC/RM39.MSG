@@ -1,0 +1,10 @@
+[messages for room 39 -- top of the stairs in the castle
+
+
+
+%message	1
+"Looking down, you see the staircase goes down at least two floors."
+
+%message	2
+"Your head feels warm!"
+

@@ -1,0 +1,134 @@
+[logics for room 46 -- the wine room
+
+%include	"rm46.msg"
+%include "gamedefs"
+
+
+%define	warned.him			lf0
+%define	castle.interior.loaded	lf1
+%define	pig.room.loaded		lf2
+
+
+if (init.log)
+	{
+	reset( warned.him);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		load.view( v.ego.falling.with.pig);
+		}
+	else
+		{
+		load.view( v.ego.falling);
+		}
+
+	if (!pig.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (previous.room == 43)
+		{
+		set.loop( ego, 2);
+		position( ego, 75, 107);
+		}
+	else
+		{
+		position( ego, 74, 166);
+		set.loop( ego, 3);
+		}
+
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 54, 159);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+if (hit.special)
+	{
+	if (posn( ego, 60, 95, 91, 106))
+		{
+		new.room( 43);
+		}
+	else
+		{
+		if (posn( ego, 116, 126, 130, 131))
+			{
+			if (!warned.him)
+				{
+				set( warned.him);
+				if (!discovered.dungeon)
+					{
+					set( discovered.dungeon);
+					score += 6;
+					}
+				print( 2);
+				}
+			}
+		else
+			{
+			if (posn( ego, 131, 126, 144, 131))
+				{
+				print( 3);
+				set( ego.is.falling);
+				if (t.with.pig)
+					{
+					set.view( ego, v.ego.falling.with.pig);
+					}
+				else
+					{
+					set.view( ego, v.ego.falling);
+					}
+				if (!eilonwy.escaped)
+					{
+					set( e.in.basement);
+					}
+				new.room( 69);
+				}
+			}
+		}
+	}
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == bottom)		{new.room( 47);}
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+

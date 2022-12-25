@@ -1,0 +1,341 @@
+[logics for room 47 -- the drawbridge interior
+
+%include "rm47.msg"
+%include "gamedefs"
+
+
+%define	raise.the.bridge		lf0
+%define	drawbridge.closed		lf1
+%define	drawbridge.opened		lf2
+%define	chain.slice.done		lf3
+%define	bridge.is.down			lf4
+%define	wagon.this.time		lf5
+%define	castle.interior.loaded	lf6
+%define	pig.room.loaded		lf7
+
+
+%object	a.torch1			tiny1
+%object	a.chain			small1
+%object	a.torch2			small2
+%object	a.drawbridge.top	large1
+%object	a.drawbridge.bottom	large2
+
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	if ((!pig.in.castle || t.on.wagon))
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	load.view( v.torch);
+	load.view( v.drawbridge.interior.top);
+	load.view( v.drawbridge.interior.bottom);
+
+	if (chain.sliced)
+		{
+		set( bridge.is.down);
+		}
+	else
+		{
+		load.view( v.chain.room47);
+		}
+
+	if ((has( i.magic.sword) || chain.sliced))
+		{
+		load.view( v.chain.room47.sliced);
+		}
+
+	if (t.on.wagon)
+		{
+		set( wagon.this.time);
+		set( bridge.is.down);
+		load.view( v.meatwagon);
+		}
+	else
+		{
+		load.pic( current.room);
+		draw.pic( current.room);
+		discard.pic( current.room);
+		}
+
+	animate.obj( a.torch1);
+	set.view( a.torch1, v.torch);
+	position( a.torch1, 62, 46);
+
+	animate.obj( a.torch2);
+	set.view( a.torch2, v.torch);
+	position( a.torch2, 112, 56);
+
+	animate.obj( a.chain);
+	position( a.chain, 17, 133);
+	work = 2;
+	cycle.time( a.chain, work);
+	set.priority( a.chain, 12);
+
+	if (chain.sliced)
+		{
+		set.view( a.chain, v.chain.room47.sliced);
+		last.cel( a.chain, work);
+		set.cel.f( a.chain, work);
+		}
+	else
+		{
+		set.view( a.chain, v.chain.room47);
+		set.cel( a.chain, 0);
+		}
+
+	animate.obj( a.drawbridge.top);
+	set.view( a.drawbridge.top, v.drawbridge.interior.top);
+	position( a.drawbridge.top, 36, 76);
+	set.priority( a.drawbridge.top, 4);
+	ignore.objs( a.drawbridge.top);
+	ignore.blocks( a.drawbridge.top);
+
+	animate.obj( a.drawbridge.bottom);
+	set.view( a.drawbridge.bottom, v.drawbridge.interior.bottom);
+	position( a.drawbridge.bottom, 36, 123);
+	set.priority( a.drawbridge.bottom, 4);
+	ignore.objs( a.drawbridge.bottom);
+	ignore.blocks( a.drawbridge.bottom);
+
+	if (bridge.is.down)
+		{
+		last.cel( a.drawbridge.top, work);
+		set.cel.f( a.drawbridge.top, work);
+
+		last.cel( a.drawbridge.bottom, work);
+		set.cel.f( a.drawbridge.bottom, work);
+		}
+	else
+		{
+		set.cel( a.drawbridge.top, 0);
+		set.cel( a.drawbridge.bottom, 0);
+
+		work = 2;
+		cycle.time( a.drawbridge.bottom, work);
+		cycle.time( a.drawbridge.top, work);
+		}
+
+	draw( a.torch1);
+	draw( a.torch2);
+	draw( a.drawbridge.top);
+	draw( a.drawbridge.bottom);
+	draw( a.chain);
+
+	if (wagon.this.time)
+		{
+		add.to.picture( v.meatwagon, 0, 0, 54, 132, 12, 0);
+
+		hench.x = 92;
+		hench.y = 128;
+		set( hench.program.control);
+		set( make.henchman.come);
+
+		last.cel( a.drawbridge.top, work);
+		set.cel.f( a.drawbridge.top, work);
+		reverse.loop( a.drawbridge.top, done);
+
+		last.cel( a.drawbridge.bottom, work);
+		set.cel.f( a.drawbridge.bottom, work);
+		reverse.loop( a.drawbridge.bottom, drawbridge.closed);
+		}
+	else
+		{
+		stop.update( a.drawbridge.top);
+		stop.update( a.drawbridge.bottom);
+		stop.update( a.chain);
+
+		if (previous.room == 33)
+			{
+			position( ego, 46, 120);
+			set.loop( ego, 0);
+			}
+		else
+			{
+			position( ego, 80, 95);
+			set.loop( ego, 2);
+			}
+		draw( ego);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 92, 167);
+		}
+
+	show.pic();
+	return();
+
+	}							[	end init.logs
+
+
+if (t.on.wagon)
+	{
+	set( ego.hidden);
+	}
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (t.on.wagon)
+	{
+	reset( t.on.wagon);
+	set( have.match);
+	set.loop( ego, 2);
+	position( ego, 49, 129);
+	print( 3);
+	draw( ego);
+	goto no.input;
+	}
+else
+	{
+	if (wagon.this.time && 
+		posn( ego, 46, 120, 70, 138))	[	near the cart
+		{
+		set( have.match);
+		set( t.on.wagon);
+		print( 2);
+		erase( ego);
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (object.used == u.magic.sword && !chain.sliced)
+	{
+	distance( ego, a.chain, work);
+	if (work < 30)
+		{
+		set( chain.sliced);
+		set( prevent.sword.message);
+		print( 5);
+
+		start.update( a.drawbridge.top);
+		end.of.loop( a.drawbridge.top, done);
+
+		start.update( a.drawbridge.bottom);
+		end.of.loop( a.drawbridge.bottom, drawbridge.opened);
+
+		start.update( a.chain);
+		end.of.loop( a.chain, chain.slice.done);
+		set.view( a.chain, v.chain.room47.sliced);
+		}
+	}
+else
+	{
+	reset( prevent.sword.message);
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (drawbridge.closed)
+	{
+	reset( drawbridge.closed);
+	reset( bridge.is.down);
+	stop.update( a.drawbridge.top);
+	stop.update( a.drawbridge.bottom);
+	stop.update( a.chain);
+	}
+
+if (drawbridge.opened)
+	{
+	reset( drawbridge.opened);
+	set( bridge.is.down);
+	stop.update( a.drawbridge.top);
+	stop.update( a.drawbridge.bottom);
+	}
+
+if (chain.slice.done)
+	{
+	reset( chain.slice.done);
+	stop.update( a.chain);
+	}
+
+if (!posn( a.hench, 114, 103, 156, 163))	[	If hench not behind the wall, 
+	{
+	if (posn( ego, 114, 103, 144, 139))	[	but ego is, then he's hiding.
+		{
+		set( ego.hidden);
+		}
+	}
+
+if  (bridge.is.down && 
+	posn( ego, 27, 112, 52, 130))		[	on the drawbridge, outside wall
+	{
+	ignore.blocks( ego);
+	}
+else
+	{
+	observe.blocks( ego);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (posn( ego, 80, 83, 91, 84))		{new.room( 46);}
+if (hit.special)
+	{
+	if (!left.castle.with.sword &&
+		has( i.magic.sword))
+		{
+		set( left.castle.with.sword);
+		score += 13;
+		}
+
+	if (t.with.pig)
+		{
+		print( 6);
+		}
+
+	new.room( 33);
+	}
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+

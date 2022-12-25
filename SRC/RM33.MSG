@@ -1,0 +1,47 @@
+[messages for room 33 -- outside the drawbridge
+
+
+
+%message	1
+"You are in front of the dreadful castle of the Horned King.
+ A slimy green moat filled with alligators surrounds it."
+
+%message	2
+"Gathering your courage, you leap into the rear of the wagon.
+ The henchman continues into the castle without noticing you."
+
+%message	3
+"You swing the magic sword..."
+
+%message	4
+"and miss the henchman!"
+
+%message	5
+"You quietly slip from the wagon, unnoticed by the henchman."
+
+%message	6
+"The alligators are merciless. Farewell, Assistant Pig-Keeper."
+
+%message	7
+"It's too late now!! You have been captured by the henchman!"
+
+%message	8
+"doesn't it sparkle!"
+
+%message	9
+"You have courageously stunned the henchman. There is no
+ need to harm him further."
+
+%message	10
+"and strike!! The henchman slumps to the floor, stunned."
+
+%message	11
+"You've failed to react quickly enough. Now the henchman
+ has your magic sword."
+
+%message	12
+"The henchman grabs you, and leads you off to the dungeon!"
+
+%message	13
+"Hen Wen scurries across the drawbridge to safety! You're
+ sure she'll make it to the Fair Folk somehow."

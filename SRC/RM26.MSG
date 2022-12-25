@@ -1,0 +1,43 @@
+[messages for room 26 -- Canyon Climber
+
+
+
+%message	1
+"You grab the rope, and begin your descent."
+
+%message	2
+"You can't reach that rock! You slip, and fall to the rocks
+ below."
+
+%message	3
+"You scrape your dagger on the rocks and dull the blade."  
+
+%message	4
+"You are on a narrow ledge, with a sheer drop beside you."
+
+%message	5
+"You are hanging on the rope."
+
+%message	6
+"Your fingers and toes are dug into the tiny crevices in the
+ sheer rock face. Hang on, Taran!"
+
+%message	7
+"Whew! Made it."
+
+%message	8
+"Your fingertips clutch the tiny crevices in the rock face."
+
+%message	9
+"Gratefully, you drop to the ledge."
+
+%message	10
+" oops "
+
+%message	11
+"      "
+
+%message	12
+"Since you have debugging set, when you get tired of falling, do a
+ \"Set Flag\" 144, and you'll get a \"oops\" message instead.  (This
+ offer only valid on non-Hercules monitors.) (Your mileage may vary.)"

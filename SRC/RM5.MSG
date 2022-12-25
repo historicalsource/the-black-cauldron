@@ -1,0 +1,17 @@
+[messages for room 5 -- rock pile
+
+
+
+%message	1
+"You are at the base of the Eagle Mountains. Climbing
+ them looks like quite a challenge."
+
+%message	2
+"You made it up the rocks, but without Hen Wen. She's sure
+ to be caught by the gwythaints now!"
+
+%message	3
+"Hen Wen may be an oracular pig, but she can't climb rocks like these!"
+
+%message	4
+"You made it!"

@@ -1,0 +1,210 @@
+[logics for room 13
+
+%include "rm13.msg"
+%include "gamedefs"
+
+
+%define	pig.room.loaded		lf0
+%define	gwyth.room.loaded		lf1
+
+%object	a.water.flask			small1
+
+
+if (init.log)
+	{
+	set.horizon( 48);
+
+	load.view( v.ego.swimming);
+	
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+	load.logics( swim.logics);		[	room 101	
+
+	if (water.flask.in.room13)
+		{
+		load.view( v.water.flask);
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+ 
+	if (water.flask.in.room13)
+		{
+		animate.obj( a.water.flask);
+		set.view( a.water.flask, v.water.flask);
+		stop.motion( a.water.flask);
+		position( a.water.flask, 66, 89);
+		draw( a.water.flask);
+		ignore.blocks( a.water.flask);
+		}
+
+	if (previous.room == 12)
+		{
+		if (ego.y > 68 && ego.y < 85)
+			{
+			ego.y = 85;
+			}
+		else
+			{
+			if (ego.y > 153 && ego.y < 159)
+				{
+				ego.y = 155;
+				set( on.water);
+				set.view( ego, v.ego.swimming);
+				}
+			}
+		}
+	else
+		{
+		if (previous.room == 14)
+			{
+			if (ego.y > 123 && ego.y < 141)
+				{
+				ego.y = 155;
+				set( on.water);
+				set.view( ego, v.ego.swimming);
+				}
+			else
+				{
+				if (ego.y > 140)
+					{
+					ego.y = 166;
+					}
+				}
+			}
+		}
+	position.f( ego, ego.x, ego.y);
+
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	call( swim.logics);
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (posn( ego, 53, 70, 90, 106) &&
+		water.flask.in.room13)
+		{
+		print( 3);
+		}
+	else
+		{
+		if ((posn( ego, 0, 67, 81, 167) ||
+			posn( ego, 82, 89, 159, 167)))
+			{
+			print( 1);
+			}
+		else
+			{
+			print( 2);
+			}
+		}
+	}
+
+
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+[*****
+:do.it
+[*****
+ 
+if (water.flask.in.room13 &&
+	posn( ego, 53, 70, 90, 106))
+	{
+	set( have.match);
+	get( i.water.flask);
+	erase( a.water.flask);
+	reset( water.flask.in.room13);
+	print( 4);
+	}
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (!on.water)
+	{
+	if ((posn( ego, 40, 145,  66, 152) ||
+		posn( ego, 80, 149, 110, 157) ||
+		posn( ego,  0, 127,  27, 152)))
+		{
+		set( on.water);
+		set( no.on.water);
+		}
+	}
+
+if (posn( ego, 121, 118, 159, 139))
+	{
+	set( no.on.land);
+	delta.x = 0;
+	delta.y = -5;
+	}
+else
+	{
+	reset( no.on.land);
+	}
+
+if ((posn( ego,   0,  68,  24,  85) ||
+	posn( ego, 120, 120, 159, 135) ||
+	posn( ego,   0, 150, 159, 167)))
+	{
+	set( near.water);
+	}
+
+
+[*****
+:exit
+[*****
+
+call( swim.logics);
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == top)			{new.room( 8);}
+if (edge.ego.hit == bottom)		{new.room( 18);}
+if (edge.ego.hit == right)		{new.room( 14);}
+if (edge.ego.hit == left)		{new.room( 12);}
+

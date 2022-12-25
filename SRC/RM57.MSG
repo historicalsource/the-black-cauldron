@@ -1,0 +1,7 @@
+[messages for room 57
+
+
+%message	1
+"You are roaming around in the hidden passageways beneath
+ the Horned King's dungeon."
+

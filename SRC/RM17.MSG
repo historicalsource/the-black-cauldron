@@ -1,0 +1,8 @@
+[room17 messages
+
+
+%message	1
+"There is a path leading deep into the forest, but it's
+ overgrown with briar bushes. It seems to be impassable,
+ but it might be worth exploring."
+

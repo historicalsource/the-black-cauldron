@@ -1,0 +1,47 @@
+[logics for room 63 -- witches' house pot room
+
+%include	"rm63.msg"
+%include "gamedefs"
+
+
+if (init.log)						[	initialize room
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	position( ego, 127, 125);
+	draw( ego);
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	print( 1);
+	set( have.match);
+	}
+
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (doit)
+	{
+	print( 2);
+	set( have.match);
+	}
+
+
+[*****
+:use.it							[	pressed "use current obj"
+:no.input
+:exit							[	test for leaving the room
+[*****
+
+if (posn( ego, 133, 107, 134, 128))	{new.room( 64);}
+

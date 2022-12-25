@@ -1,0 +1,153 @@
+[logics for room 38 -- upstairs hall left
+
+%include "rm38.msg"
+%include "gamedefs"
+
+
+%define	seen.warning			lf0
+%define	castle.interior.loaded	lf1
+%define	pig.room.loaded		lf2
+
+
+%object	a.torch			small1
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.view( v.torch);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	if (!pig.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	animate.obj( a.torch);
+	ignore.horizon( a.torch);
+	position( a.torch, 85, 26);
+	set.view( a.torch, v.torch);
+	draw( a.torch); 
+
+	if (previous.room == 37)
+		{
+		position( ego, 27, 92);
+		}
+	else
+		{
+		if (previous.room == 36)
+			{
+			set.view( ego, v.ego);
+			position( ego, 83, 150);
+			if (!entered.castle)
+				{
+				set( entered.castle);
+				score += 18;
+				}
+			}
+		}
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 146, 150);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (posn( ego, 79, 121, 115, 156) && vines.open)
+		{
+		print( 3);
+		}
+	else
+		{
+		print( 1);
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (posn( ego, 85, 121, 115, 156) && vines.open)
+	{
+	set( have.match);
+	if (!seen.warning && t.with.pig)
+		{
+		set( seen.warning);
+		print( 2);
+		}
+	else
+		{
+		if (!left.castle.with.sword)
+			{
+			if (has( i.magic.sword))
+				{
+				set( left.castle.with.sword);
+				score += 13;
+				}
+			}
+		new.room( 36);
+		}
+	}
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (!posn( a.hench, 119, 60, 139, 70) && [	If hench is not behind the
+	posn( ego, 119, 60, 139, 70))		[		curtain and ego is, then 
+	{
+	set( ego.hidden);				[		ego's hiding.
+	}
+
+
+[*****
+:exit
+[*****
+
+if (hit.special)				{new.room( 37);}
+if (edge.ego.hit == right)		{new.room( 39);}
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+

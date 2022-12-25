@@ -1,0 +1,31 @@
+[messages for room 108 -- morva marsh
+
+
+
+%message	1
+"Oh, no! You're sinking in the mud of the slimy marsh."
+
+%message	2
+"Flying is fun, although you feel slightly heavier now than
+ when you began."
+
+%message	3
+"Flying is becoming more and more difficult."
+
+%message	4
+"You begin walking again."
+
+%message	5
+"Sprinkling the fairy dust over your head makes you feel as
+ light as a feather. Looking down, you see you're
+ floating in mid-air, about a foot off the ground!"
+
+%message	6
+"Morva Marsh is more like sand than water. You can't fill
+ your water flask with it."
+
+%message	7
+"As the spell wears off, you head for solid ground."
+
+%message	8
+"You sprinkle the dust over your head."

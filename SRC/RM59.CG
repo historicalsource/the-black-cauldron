@@ -1,0 +1,256 @@
+[logics for room 59 -- entrance to secret chamber
+
+%include "rm59.msg"
+%include "gamedefs"
+
+
+%define	dialog.time.init		30
+%define	conversation.timer.init	60	[	time till eilonwy talks
+
+%define	door.open				lf0
+%define	ego.on.floor			lf1
+%define	pig.room.loaded		lf2
+%define	eilonwy.room.loaded		lf3
+
+%define	dialog.count			lv2
+%define	dialog.timer			lv3
+%define	conversation.timer		lv4
+
+%object	a.torch1				small1
+%object	a.torch2				small2
+
+
+if (init.log)
+	{
+	set.horizon( 99);
+	wait.1 = 0;
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (pig.in.basement)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	set( t.in.basement);
+	if (e.in.basement)
+		{
+		load.logics( eilonwy.room);
+		set( eilonwy.room.loaded);
+		}
+
+	if (previous.room == 52 && !know.eilonwy)
+		{
+		set( e.in.basement);
+		load.view( v.eilonwy);
+		load.view( v.bauble);
+		}
+	
+	load.sound( s.ego.falling);
+	load.sound( s.coocoo);
+
+	load.view( v.ego.falling);
+	load.view( v.ego.stunned);
+	load.view( v.torch);
+
+	animate.obj( a.torch1);
+	set.view( a.torch1, v.torch);
+	set.cel( a.torch1, 1);
+	position( a.torch1, 2, 79);
+	ignore.horizon( a.torch1);
+
+	animate.obj( a.torch2);
+	set.view( a.torch2, v.torch);
+	position( a.torch2, 128, 79);
+	ignore.horizon( a.torch2);
+
+	if (previous.room == 52)			[	falling from T's cell
+		{
+		position( ego, 112, 70);
+		ignore.horizon( ego);
+		set.priority( ego, 10);
+		set( eilonwy.patiently.waiting);
+		ignore.blocks( ego);
+		set.view( ego, v.ego.falling);
+		work = 3;
+		step.size( ego, work);
+		sound( s.ego.falling, done);
+		}
+	else
+		{
+		if (previous.room == 60)
+			{
+			position( ego, 130, 136);
+			if (pig.in.basement)
+				{
+				start.motion( a.pig);
+				start.cycling( a.pig);
+				}
+			}
+		else
+			{
+			if (previous.room == 56)
+				{
+				position( ego, 113, 100);
+				}
+			[else if (previous.room == 58), let interpreter position him.
+			}
+		}
+
+	draw( a.torch1);
+	draw( a.torch2);
+
+	draw( ego);
+
+	if (previous.room == 52)
+		{
+		move.obj( ego, 112, 120, 3, ego.on.floor);
+		if (!know.eilonwy)
+			{
+			conversation.timer = conversation.timer.init;
+			}
+		}
+
+	if (!entered.dungeon)
+		{
+		set( entered.dungeon);
+		score += 10;
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (eilonwy.room.loaded)
+		{
+		call( eilonwy.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (dialog.count == 1)
+	{
+	print( 3);
+	dialog.timer = dialog.time.init;
+	set( have.match);
+	++dialog.count;
+	goto no.input;
+	}
+
+if (dialog.count == 3)
+	{
+	print( 5);
+	dialog.timer = dialog.time.init;
+	set( have.match);
+	++dialog.count;
+	goto no.input;
+	}
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (ego.on.floor)
+	{
+	reset( ego.on.floor);
+	reset( eilonwy.patiently.waiting);
+	observe.blocks( ego);
+	set( make.eilonwy.follow);
+	observe.horizon( ego);
+	set.view( ego, v.ego.stunned);
+	stop.motion( ego);
+	set( keep.cycling);
+	release.priority( ego);
+	wait.1 = 50;
+	set( coocoo);
+	}
+
+--wait.1;
+if (wait.1 == 1)
+	{
+	set.view( ego, v.ego);
+	work = 1;
+	step.size( ego, work);
+	start.motion( ego);
+	reset( keep.cycling);
+	}
+
+if (coocoo && wait.1)
+	{
+	sound( s.coocoo, coocoo);
+	}
+
+--conversation.timer;
+if (conversation.timer == 1)
+	{
+	set( know.eilonwy);
+	print( 2);
+	dialog.count = 1;
+	}
+
+
+
+[	Eilonwy needs a few secs to respond, and she only responds on even 
+[	settings of the dialog flag.
+
+--dialog.timer;
+if (dialog.timer == 1)
+	{
+	if (dialog.count == 2)
+		{
+		print( 4);
+		}
+	if (dialog.count == 4)
+		{
+		print( 6);
+		}
+	++dialog.count;
+	}
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == top)				{new.room( 56);}
+if (edge.ego.hit == left)			{new.room( 58);}
+if (hit.special)					{new.room( 60);}
+
+if (eilonwy.room.loaded)
+	{
+	call( eilonwy.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+

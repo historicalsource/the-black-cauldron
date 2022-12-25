@@ -1,0 +1,39 @@
+[messages for room 50 -- the dungeon of the Horned King
+
+
+
+%message	1
+"You are in the dungeon of the Horned King. Be very careful!"
+
+%message	2
+"You take the key ring and its keys off the wall."
+
+%message	3
+"You stare at the hook where the key ring used to hang."
+
+%message	4
+"You examine the grate. It is merely resting against the wall."
+
+%message	5
+"You move the grate over. There is room enough to slide through."
+
+%message	6
+"OK. You have just locked the door."
+
+%message	7
+"You unlock the cell door with the key. But who's inside?"
+
+%message	9
+"You're not standing by a door!"
+
+%message	10
+"There's no door nearby."
+
+%message	11
+"There is a key ring full of keys hanging on the wall."
+
+%message	12
+"You carefully replace the keys on the hook."
+
+%message	13
+"Hen Wen is afraid of the dungeon and remains outside."

@@ -1,0 +1,30 @@
+[messages for room 118 - Eilonwys turf
+
+
+
+%message	1
+"\"I, too, am being held against my will,\" Eilonwy says."
+
+%message	2
+"\"Oh, I do hate this place,\" says Eilonwy. \"I hope there
+ aren't any rats in here. It's not that I really mind them,
+ but they do jump out at one so.\""
+
+%message	3
+"Eilonwy stomps her foot in anger, \"Oh, that wicked, wicked
+ King. You know that he kidnapped me. He seemed to think my bauble
+ could tell him where some silly old cauldron was. (My
+ bauble IS magic, you know.)\""
+
+%message	4
+"\"I know these tunnels pretty well. You'd better stay
+ close to me or you'll get lost,\" she says."
+
+%message	5
+"\"Perhaps if we search these tunnels long enough we'll
+ find a REAL hero who will help us escape,\" says
+ Eilonwy."
+
+%message	7
+"Eilonwy looks in the mirror and sees a crown on her head.
+ She really DOES have royal ancestry."

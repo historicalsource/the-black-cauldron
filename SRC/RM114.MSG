@@ -1,0 +1,16 @@
+[messages for room 114 - gwythaint
+
+
+
+%message	1
+"Oh no! It's one of the Horned King's evil gwythaints."
+
+%message	2
+"The gwythaint grabs you and Hen Wen and flies away!
+ Where is it taking you?"
+
+%message	3
+"Oh no! The gwythaint has captured Hen Wen."
+
+%message	4
+"Where is that vile creature taking your beloved Hen Wen?"

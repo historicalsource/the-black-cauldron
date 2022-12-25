@@ -1,0 +1,210 @@
+[logics for room 116 -- the pig room
+
+%include "rm116.msg"
+%include "gamedefs"
+
+
+%define	pig.leash				8
+%define	min.to.snap.pig.back	16
+%define	too.far.to.move		23
+%define	lost.pig.distance		26
+
+
+if (init.log)
+	{
+	if (!t.with.pig && !pig.in.basement)				{return();}
+	if (pig.in.basement && !t.in.basement)				{return();}
+	if (ego.is.falling && room.bottom == fall.through)	{return();}
+	if (pig.lost)									{return();}
+
+	reset( pig.no.swim);
+
+	animate.obj( a.pig);
+	load.view( v.pig);
+	set.view( a.pig, v.pig);
+	ignore.objs( a.pig);
+
+	if (current.room == 38)
+		{
+		ignore.blocks( a.pig);
+		}
+
+	if  (current.room != 39 &&
+		current.room != 42 &&
+		current.room != 49)
+		{
+		object.on.land( a.pig);
+		}
+	
+	if (current.room == 58 && previous.room == 51)
+		{
+		object.on.land( a.pig);
+		position( a.pig, 79, 136);
+		draw( a.pig);
+		}
+	else
+		{		
+		if  (current.room == 59 && previous.room == 52)
+			{
+			position( a.pig, 100, 140);
+			draw( a.pig);
+		 	follow.ego( a.pig, 5, pig.caught.ego);
+			}
+		else
+			{
+			if  (current.room == 56 &&
+				previous.room == 69 &&
+				pig.in.basement)
+				{
+				position( a.pig, 100, 140);
+				draw( a.pig);
+			 	follow.ego( a.pig, 5, pig.caught.ego);
+				}
+			else
+				{
+				if (!ego.is.falling && !ego.is.climbing)
+					{
+					get.posn( ego, x, y);
+					y -= 1;
+					position.f( a.pig, x, y);
+					draw( a.pig);
+					stop.cycling( a.pig);
+					stop.motion( a.pig);
+					}
+				}
+			}
+		}
+
+	return();
+	}							[	end init.logs
+
+
+
+if (pig.lost)
+	{
+	reset( pig.lost);
+	set( pig.in.castle);
+	print( 2);
+	reset( t.with.pig);
+	}
+
+if (!t.with.pig && !pig.in.basement)				{return();}
+if (pig.in.basement && !t.in.basement)				{return();}
+if ((ego.is.falling || pig.program.control))			{return();}
+
+[*****
+:no.input
+[*****
+
+if (pig.caught.ego)
+	{
+	stop.cycling( a.pig);
+	stop.motion( a.pig);
+	}
+
+distance( ego, a.pig, pig.distance.from.ego);
+if (pig.distance.from.ego > pig.leash)
+	{
+	start.cycling( a.pig);
+	start.motion( a.pig);
+	follow.ego( a.pig, 5, pig.caught.ego);
+	}
+else
+	{
+	get.posn( a.pig, x, y);
+	x = 0;
+	if (pig.caught.ego &&
+	    (ego.dir == ego.up ||
+		ego.dir == ego.up.right ||
+		ego.dir == ego.up.left))
+		{
+		if (!y > ego.y)			[	Kick the pig out of my way!
+			{
+			set.loop( a.pig, facing.back);
+			y = -1;
+			reposition( a.pig, x, y);
+			current.cel( a.pig, work);
+			++work;
+			last.cel( a.pig, x);
+			if (work > x)
+				{
+				work = 0;
+				}
+			set.cel.v( a.pig, work);
+			}
+		}
+	else
+		{
+		if (pig.caught.ego &&
+		    (ego.dir == ego.down ||
+			ego.dir == ego.down.left ||
+			ego.dir == ego.down.right))
+			{
+			if (!y < ego.y)
+				{
+				set.loop( a.pig, facing.front);
+				y = 1;
+				reposition( a.pig, x, y);
+				current.cel( a.pig, work);
+				++work;
+				last.cel( a.pig, x);
+				if (work > x)
+					{
+					work = 0;
+					}
+				set.cel.v( a.pig, work);
+				}
+			}
+		}
+	}
+
+if  (pig.distance.from.ego > min.to.snap.pig.back &&
+	pig.distance.from.ego < too.far.to.move &&
+    !on.water &&
+	current.room != 5)
+	{
+	get.posn( a.pig, x, y);
+	ego.x -= x;
+	work = ego.y;
+	work -= y;
+	if (y < ego.y)
+		{
+		work -=2;
+		}
+	else
+		{
+		work +=2;
+		}
+	reposition( a.pig, ego.x, work);
+	}
+
+if  (on.water			&&
+    !poisoned.water		&&
+    !pig.no.swim		&&
+	current.room != 8	&&
+	current.room != 39	&& 
+	current.room != 42	&& 
+	current.room != 58	&&
+	current.room != 49)				[	pretty fucking specific!!!
+	{
+	set( pig.no.swim);
+	if (current.room != 14)
+		{
+		print( 1);
+		}
+	}
+
+if (edge.ego.hit && can.lose.pig)
+	{
+	distance( a.pig, ego, work);
+	if (work > lost.pig.distance)
+		{
+		set( pig.lost);
+		}
+	}
+
+
+[*****
+:exit
+[*****
+

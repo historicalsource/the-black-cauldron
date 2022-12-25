@@ -1,0 +1,23 @@
+[messages for room 35 -- castle wall bottom
+
+
+
+%message	1
+"There are small crevices between the stones of the wall."
+
+%message	2
+"The castle guards are dropping stones! Watch out!!"
+
+%message	3
+"Ouch! The rock crashes into you! You push backwards off
+ the wall, attempting a swan dive into the moat."
+
+%message	4
+"You carefully place your fingertips and toes into the
+ crevices as you scale the castle wall."
+
+%message	5
+"Gladly, you drop from the wall."
+
+%message	6
+"You cannot hold onto the smooth stones!"

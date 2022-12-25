@@ -1,0 +1,109 @@
+[messages for room 102 - the last room processed
+
+
+
+%message	1
+"That doesn't help now."
+
+%message	2
+"There's no reason to use it now."
+
+%message	3
+"There's nothing to do here."
+
+%message	4
+"You can't do anything here."
+
+%message	5
+"You've been captured. It's too late to swing your sword."
+
+%message	6
+"You swing and miss."
+
+%message	7
+"The henchman is stunned. Leave him alone."
+
+%message	8
+"The henchman falls to the ground momentarily stunned by your
+ sword. Run, Taran!"
+
+%message	9
+"You swing your magic sword."
+
+%message	10
+"Creeper is too nimble for even a magic sword."
+
+%message	11
+"The Horned King laughs. His evil is too powerful for even
+ a magic sword."
+
+%message	12
+"You need to pick an object to use."
+
+%message	13
+"Your roomy knapsack can hold many things."
+
+%message	14
+"The dried corn is inedible -- to you."
+
+%message	15
+"You eat some of the gruel -- and find it disgusting!"
+
+%message	16
+"The magical food wallet produces enough food to satisfy you."
+
+%message	17
+"Dallben's bread tastes delicious."
+
+%message	18
+"You fill your water flask with water."
+
+%message	19
+"The water from your flask tastes delicious."
+
+%message	20
+"The apple is crisp and juicy!"
+
+%message	21
+"You promise to eat just one cookie -- and quickly break
+ your promise!"
+
+%message	22
+"Fflewddur Fflam's harp probably sounded beautiful in his
+ hands -- but not in yours!"
+
+%message	23
+"The lute sounds lovely."
+
+%message	24
+"The fairy dust rushes out between your fingers, as if it's
+ telling you not to use it here."
+
+%message	25
+"\"Bmmpxf,\" you say firmly."
+
+%message	26
+". . .but nothing happens."
+
+%message	27
+"Gazing into the magic mirror you see your true self, and
+ realize you are not a great hero... yet."
+
+%message	28
+"You can't get water from where you are standing."
+
+%message	29
+"The strong pull of the rapids rips the water flask from your
+ grasp. It quickly floats downstream, and out of sight."
+
+%message	30
+"But now, you're out of water!"
+
+%message	31
+"You eat a little more bread, and feel better."
+
+%message	32
+"You eat every last morsel of the bread."
+
+%message	33
+"Your water flask is already full."

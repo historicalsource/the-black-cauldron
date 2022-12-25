@@ -1,0 +1,180 @@
+[logics for room 42 -- bottom of spiral staircase
+
+%include "rm42.msg"
+%include "gamedefs"
+
+
+%define	pig.room.loaded		lf0
+%define	castle.interior.loaded	lf1
+%define	was.on.water			lf2
+
+%object	a.torch		small1
+
+
+if (init.log)
+	{
+	set( phony.water);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		load.view( v.ego.falling.with.pig);
+		}
+
+	if (!pig.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	load.logics( castle.climbing.room);
+	room.bottom = fall.through;
+	load.view( v.ego.falling);
+	load.view( v.ego.stunned);
+	load.sound( s.ego.falling);
+	if (!has( i.magic.sword))
+		{
+		load.sound( s.coocoo);
+		}
+
+	load.view( v.torch);
+	animate.obj( a.torch);
+	ignore.horizon( a.torch);
+	position( a.torch, 103, 39);
+	set.view( a.torch, v.torch);
+
+	if (previous.room == 39)
+		{
+		if (ego.is.falling)
+			{
+			set.priority( ego, 4);
+			position( ego, 60, 38);
+			}
+		else
+			{
+			position( ego, 40, 38);
+			}
+		}
+	else
+		{
+		if (previous.room == 49)
+			{
+			position( ego, 70, 106);
+			}
+		}
+
+	draw( a.torch); 
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 141, 150);
+		}
+
+	call( castle.climbing.room);
+
+	show.pic();
+	return();
+
+	}
+
+if (posn( ego, 81, 114, 85, 120))
+	{
+	set( ignore.special);
+	}
+else
+	{
+	reset( ignore.special);
+	}
+
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (posn( ego, 0, 78, 36, 167))
+	{
+	room.bottom = screen.bottom;
+	}
+else
+	{
+	room.bottom = fall.through;
+	if (!ego.is.falling && hit.special)
+		{
+[			%message	 98 "DID hit special"
+[				print( 98);
+
+		if  (was.on.water &&		[	during the previous frame.
+			posn( ego, 62, 104, 81, 116) && [	top of stairs
+		    (ego.dir == ego.down ||
+			ego.dir == ego.down.right ||
+			ego.dir == ego.down.left))
+			{
+			new.room( 49);		   	[	just walk on down.
+			}
+
+		if (posn( ego, 69, 104, 87, 128))	
+			{
+[				%message 99 "repo'd to 68, 120"
+[					print( 99);
+			ego.x = 68;
+			ego.y = 120;
+			reposition.to.f( ego, ego.x, ego.y); [ Stick him in the hole...
+			set( hit.special);
+			}
+
+		set.priority( ego, 4);		[	and make him disappear down well.
+		}
+	}
+
+
+
+[*****
+:exit
+[*****
+
+call( castle.climbing.room);
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == bottom && 
+		ego.is.falling)			{new.room( 49);}
+if (edge.ego.hit == right)			{new.room( 43);}
+if (edge.ego.hit == top)				{new.room( 39);}
+
+if (on.water)
+	{
+	set( was.on.water);
+	}
+else
+	{
+	reset( was.on.water);
+	}
+

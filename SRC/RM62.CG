@@ -1,0 +1,443 @@
+[logics for room 62 -- fairy cave
+
+%include	"rm62.msg"
+%include "gamedefs"
+
+
+[		REMARKS:
+[	T falls in.  T stunned.  T walks around for a while.  King flys in.
+[King says #2.  If T doit, T says #3.  King waits a little, then says #4.
+[T then has a while to give the lute/harp.  
+[
+[	If time runs out, print#5, King makes T fly out top, while King 
+[stays in place.  Flight ends in Rm23 or 24.
+[
+[	If T gives right gift, print#6-13.  T gets 4 servings of fairy dust.
+
+
+%define	this.rooms.horizon		37
+%define	this.rooms.bottom		128		[	define constants
+%define	time.before.king		88
+%define	time.before.gift		150
+%define	king.response.time		27
+%define	acceptance.pause.time	33
+
+
+%define	ego.flew.out			lf0	[	define local variables
+%define	king.at.ego			lf1
+%define	ok.to.talk			lf2		
+%define	king.here				lf4
+%define	king.at.ego.again		lf5
+%define	king.following.ego		lf6
+%define	ego.off.ground			lf7
+%define	ego.airborne			lf8
+%define	prevent.exit.message	lf9
+%define	ready.to.swap			lf11
+
+
+%define	king.entrance.timer		lv1
+%define	king.response.timer		lv2
+%define	gift.timer			lv3
+%define	acceptance.pause.timer	lv10
+
+
+%object	a.fairy.1			small1	[	define objects
+%object	a.fairy.2			small2
+%object	a.fairy.3			small3
+%object	a.fairy.4			small4
+%object	a.fairy.5			tiny1
+%object	a.fairy.6			medium1
+%object	a.king			medium2
+
+
+
+if (init.log)						[	initialize room
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set.horizon( this.rooms.horizon);
+	program.control( );				[	asleep until stunned.time over
+
+	load.view( v.fairy);				[	load views of objects
+	load.view( v.eiddileg);
+	load.view( v.ego.falling);
+	load.view( v.ego.stunned);
+	load.view( v.ego.fairy);
+
+	load.logics( climbing.room);		[	load climbing gear
+	load.sound( s.ego.falling);
+	load.sound( s.coocoo);
+	set( survivable.fall);
+	ego.climbing = falling;
+	room.bottom = this.rooms.bottom;
+
+
+	animate.obj( a.fairy.1);
+	animate.obj( a.fairy.2);
+	animate.obj( a.fairy.3);
+	animate.obj( a.fairy.4);
+	animate.obj( a.fairy.5);
+	animate.obj( a.fairy.6);
+	animate.obj( a.king);
+
+	ignore.objects( a.fairy.1);
+	ignore.objects( a.fairy.2);
+	ignore.objects( a.fairy.3);
+	ignore.objects( a.fairy.4);
+	ignore.objects( a.fairy.5);
+	ignore.objects( a.fairy.6);
+	ignore.objects( a.king);
+
+	set.view( a.fairy.1, v.fairy);
+	set.view( a.fairy.2, v.fairy);
+	set.view( a.fairy.3, v.fairy);
+	set.view( a.fairy.4, v.fairy);
+	set.view( a.fairy.5, v.fairy);
+	set.view( a.fairy.6, v.fairy);
+	set.view( a.king, v.eiddileg);
+
+	set.cel( a.fairy.1, 1);			[	to prevent Rockettes
+	set.cel( a.fairy.3, 1);
+	set.cel( a.fairy.5, 1);
+
+	set.loop( a.fairy.1, 0);			[	make them face ego
+	set.loop( a.fairy.2, 1);
+	set.loop( a.fairy.3, 1);
+	set.loop( a.fairy.4, 1);
+	set.loop( a.fairy.5, 1);
+	set.loop( a.fairy.6, 1);
+
+	work = 2;
+	 step.size( a.fairy.1, work);
+	cycle.time( a.fairy.1, work);
+	 step.size( a.fairy.2, work);
+	cycle.time( a.fairy.2, work);
+	 step.size( a.fairy.3, work);
+	cycle.time( a.fairy.3, work);
+	 step.size( a.fairy.4, work);
+	cycle.time( a.fairy.4, work);
+	 step.size( a.fairy.5, work);
+	cycle.time( a.fairy.5, work);
+	 step.size( a.fairy.6, work);
+	cycle.time( a.fairy.6, work);
+	 step.size( a.king, work);
+	cycle.time( a.king, work);
+
+	position( a.fairy.1, 11, 117);
+	position( a.fairy.2, 109, 65);
+	position( a.fairy.3, 116, 76);
+	position( a.fairy.4, 144, 74);
+	position( a.fairy.5, 127, 125);
+	position( a.fairy.6, 148, 117);
+	position( a.king, 135, 90);
+
+	set.priority( a.fairy.1, 4);
+	set.priority( a.fairy.2, 4);
+	set.priority( a.fairy.3, 4);
+	set.priority( a.fairy.4, 12);
+	set.priority( a.fairy.5, 12);
+	set.priority( a.fairy.6, 12);
+
+	draw( a.fairy.1);
+	draw( a.fairy.2);
+	draw( a.fairy.3);
+	draw( a.fairy.4);
+	draw( a.fairy.5);
+	draw( a.fairy.6);
+
+	[draw king later, after timer elapses
+	[let climbing.logic draw( ego) & ignore.stuff
+
+	if (!first.time.in.fair.folk.cave)
+		{
+		set( first.time.in.fair.folk.cave);
+		score += 13;
+		}
+
+	if (!king.gifted)
+		{
+		king.entrance.timer = time.before.king;
+		}
+
+
+	ego.x = 75;
+	ego.y = 34;
+	position.v( ego, ego.x, ego.y);
+
+	call( climbing.room);
+
+	show.pic();
+
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	if (king.here)
+		{
+		print( 17);
+		}
+	else
+		{
+		print( 1);
+		}
+	}
+
+
+if ((t.is.fairy ||
+	ego.climbing == stunned ||
+	ego.falling))
+	{
+	set( have.match);
+	goto no.input;					[	you can't do shit, buddy!
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (!king.gifted && ok.to.talk)
+	{
+	reset( ok.to.talk);
+	set( have.match);
+	print( 3);
+	king.response.timer = king.response.time;
+	goto exit;
+	}
+
+if (king.gifted && king.here && has( i.fairy.dust))
+	{
+	set( have.match);
+	print( 16);
+	}
+
+goto no.input;
+
+
+[*****
+:use.it							[	pressed "use current obj"
+[*****
+
+if (object.used == u.fairy.dust)
+	{
+	set( have.match);
+	object.used = 0;
+	active.object = 0;
+
+	if (visited.eiddileg)
+		{
+		print( 26);
+		}
+	else
+		{
+		print( 21);
+		}
+
+	set.priority( ego, 14);
+	stop.motion( ego);
+	set.view( ego, v.ego.fairy);
+	set.cel( ego, 0);
+	work = 4;
+	step.size( ego, work);
+	cycle.time( ego, work);
+	observe.horizon( ego);
+	ignore.blocks( ego);
+	ignore.objs( ego);
+	set( keep.cycling);
+	end.of.loop( ego, ego.airborne);
+	goto no.input;
+	}
+
+if (!king.gifted &&
+	king.here &&
+	ready.to.swap)
+	{
+	if (object.used == u.lute)
+		{
+		set( have.match);
+		drop( i.lute);
+		print( 24);
+		}
+
+	if (object.used == u.harp)
+		{
+		set( have.match);
+		drop( i.harp);
+		print( 25);
+		}
+
+	if (have.match)
+		{
+		king.response.timer = 0;
+		score += 10;
+		object.used = 0;
+		active.object = 0;
+		acceptance.pause.timer = acceptance.pause.time;
+		}
+	else
+		{
+		if (object.used)
+			{
+			set( have.match);
+			gift.timer = 2;		[	guarantees King pissed
+			}
+		}
+	}
+else
+	{
+	if (king.gifted && king.here && !have.match)
+		{
+		set( have.match);
+		print( 14);
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+
+--king.entrance.timer;
+if (king.entrance.timer == 24)		[	remainder of time used for. . .
+	{
+	draw( a.king);
+	ignore.blocks( a.king);
+	set( king.here);
+	move.obj( a.king, 92, 109, 0, king.at.ego);
+	}
+
+if (king.entrance.timer == 1)			[	. . .print statement down here
+	{
+	if (previous.room == 23)
+		{
+		print( 2);
+		}
+	else
+		{
+		print( 20);
+		}
+	}
+
+if (king.at.ego)					[	king center stage, start talking
+	{
+	reset( king.at.ego);
+	observe.blocks( a.king);
+	wander( a.king);
+	set( ok.to.talk);
+	}
+
+--king.response.timer;
+if (king.response.timer == 1)			[	T knows story; will he respond?
+	{
+	gift.timer = time.before.gift;
+	set( ready.to.swap);
+	print( 4);
+	}
+
+--acceptance.pause.timer;
+if (acceptance.pause.timer == 1)
+	{
+	set( king.gifted);
+	king.entrance.timer = 0;
+	reset( king.at.ego);
+	king.response.timer = 0;
+	gift.timer = 0;
+
+	get( i.fairy.dust);
+	get( i.magic.mirror);
+	flight.count = number.of.flights;
+
+	print( 6);
+	work = pig.safe;				[	%define	by.parapet		1
+	work += 27;					[	%define	by.gwystyl		2
+	print.v( work);				[	%define	by.eilonwy		3
+	print( 10);					[	%define	by.burial.chamber	4
+	print( 11);					[	%define	by.drawbridge		5
+	print( 12);
+	reset( doit);
+	reset( useit);
+
+	normal.motion( ego);			[	to fix E throwing T out
+	start.motion( ego);
+	}
+
+if (ego.airborne)
+	{
+	reset( ego.airborne);
+	set( t.is.fairy);
+	reset( keep.cycling);
+	start.motion( ego);
+	print( 19);
+	}
+
+--gift.timer;
+if (gift.timer == 1)				[	if no present, E throws T out.
+	{
+	reset( ready.to.swap);
+	program.control( );
+	set.priority( ego, 15);
+	stop.motion( ego);
+	set.view( ego, v.ego.fairy);
+	set.cel( ego, 0);
+	work = 4;
+	cycle.time( ego, work);
+	step.size( ego, work);
+	ignore.horizon( ego);
+	ignore.blocks( ego);
+	ignore.objs( ego);
+	set( keep.cycling);
+	end.of.loop( ego, ego.off.ground);
+	print( 5);
+	}
+
+if (ego.off.ground)
+	{
+	reset( ego.off.ground);
+	set( t.is.fairy);
+	reset( keep.cycling);
+	start.motion( ego);
+	move.obj( ego, 78, 38, 4, ego.flew.out);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (ego.flew.out)					[	E has thrown T out ceiling
+	{
+	edge.ego.hit = top;
+	set( prevent.exit.message);
+	player.control( );
+	}
+
+if (edge.ego.hit == top)		
+	{
+	ego.climbing = 0;
+	get.posn( ego, x, y);
+	if (x > 70 && x < 85)
+		{
+		if (king.here && !prevent.exit.message && !visited.eiddileg)
+			{
+			print( 15);
+			set( visited.eiddileg);
+			}
+		reset( t.is.fairy);
+		set.view( ego, v.ego);
+		work = 1;
+		step.size( ego, work);
+		start.motion( ego);
+		new.room.f( previous.room);
+		}
+	}
+call( climbing.room);
+

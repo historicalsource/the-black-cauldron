@@ -1,0 +1,11 @@
+[messages for room 7 -- a room with a river
+
+
+
+%message	1
+"Here, all seems relatively peaceful. The
+ forest to the west, however, is dark and frightening."
+
+%message	2
+"The river rapids roar. There is a strong
+ undercurrent. It would be difficult to keep your head above the water."

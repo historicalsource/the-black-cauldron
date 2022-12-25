@@ -1,0 +1,249 @@
+[logics for room99 -- lgc.debug 
+
+%include "gamedefs"
+
+
+
+%message	1	"New room:"
+%message	2	"X coordinate:"
+%message	3	"Y coordinate:"
+%message	4	"Object number:"
+%message	5	"Flag number:"
+%message	6	"New value:"
+%message	7	"Current room = %v0"
+%message	8	"Variable number:"
+%message	9	"Variable %v45 = %v46"
+%message	10	"Flag %v45 set"
+%message	11	"Flag %v45 not set"
+%message	12	"New priority:"
+%message	13	"Object %v46 is in room %v45."
+%message	14	"%v45|3/%v46|3"
+%message	15	"Room %v0|3"
+%message	16	"%v45|2 %o45"
+%message	17	"You gottum, Taran."
+%message	18	""
+%message	19	""
+[	%message	20	"Unknown wor  \""
+[	%message	21	"%m20%w1\""
+[	%message	22	"%m20%w2\""
+[	%message	23	"%m20%w3\""
+[	%message	24	"%m20%w4\""
+[	%message	25	"%m20%w5\""
+[	%message	26	"%m20%w6\""
+[	%message	27	"%m20%w7\""
+[	%message	28	"%m20%w8\""
+%message	29	"H"
+%message	30	" "
+%message	31	"Done."
+
+
+
+if (init.log && xy.on && monitor.type != mono)
+	{
+	set.text.attribute( 6, 0);
+	display( 24, 26, 15);
+	set.text.attribute( text.color, bg.color);
+	}
+
+
+if (controller( c.obj.info))
+	{
+	get.num( 4, debug.0);
+	if (debug.0 > 15)
+		{
+		debug.0 = 15;
+		}
+	obj.status.v( debug.0);
+	}
+
+
+if (controller( c.inv.numbers))
+	{
+	set.text.attribute( bg.color, text.color);
+	text.screen( );
+	x = 1;
+	y = 4;
+	message = 16;
+	debug.0 = 1;
+
+	:mr.looper;
+	display.v( y, x, message);
+	++debug.0;
+	++y;
+	if (debug.0 == 13)
+		{
+		x = 19;
+		y = 4;
+		}
+	if (!debug.0 > SIZE_OF_INVENTORY)
+		{
+		goto mr.looper;
+		}
+
+	:check.kb1
+	if (!have.key( ))
+		{
+		goto	check.kb1;
+		}
+	set.text.attribute( text.color, bg.color);
+	graphics( );
+	}
+
+
+[	if (unknown.word)
+[		{
+[		if (unknown.word == 1)			{log( 21);}
+[		if (unknown.word == 2)			{log( 22);}
+[		if (unknown.word == 3)			{log( 23);}
+[		if (unknown.word == 4)			{log( 24);}
+[		if (unknown.word == 5)			{log( 25);}
+[		if (unknown.word == 6)			{log( 26);}
+[		if (unknown.word == 7)			{log( 27);}
+[		if (unknown.word  > 7)			{log( 28);}
+[		}
+
+
+if (said( object, room))
+	{
+	get.num( 4, debug.1);
+	get.room.f( debug.1, debug.0);
+	print( 13);
+	}
+
+if (controller( c.show.mem))
+	{
+	show.mem();
+	}
+
+if ((controller( c.show.priority) ||
+	said( show, priority)))
+	{
+	show.pri.screen();
+	}
+
+if (said( set, priority))
+	{
+	get.num( 12, debug.1);
+	set.priority.f( ego, debug.1);
+	}
+
+if (said( release, priority))
+	{
+	release.priority( ego);
+	}
+
+if (said(position))
+	{
+	get.num( 2, debug.0);
+	get.num( 3, debug.1);
+	erase( ego);
+	position.f( ego, debug.0, debug.1);
+	draw( ego);
+	}
+
+if ((said( show, position) || 
+	said( sp) ||
+	said( room) ||
+	controller( c.xy) ||
+	said( xy)))
+	{
+	toggle( xy.on);
+	if  (monitor.type != mono)
+		{
+		clear.lines( 24, 24, 0);
+		}
+	}
+
+if (controller( c.show.ego))
+	{
+	debug.0 = 0;
+	obj.status.f( debug.0);
+	}
+
+if (said( show, object))
+	{
+	get.num( 4, debug.0);
+	obj.status.f( debug.0);
+	}
+
+if (said( get, object))
+	{
+	get.num( 4, debug.0);
+	get.f( debug.0);
+	}
+
+if (said( show, flag))
+	{
+	get.num( 5, debug.0);
+	if (isset.v( debug.0))
+		{
+		print( 10);
+		}
+	else {
+		print( 11);
+		}
+	}
+
+if (said( set, flag))
+	{
+	get.num( 5, debug.0);
+	set.v( debug.0);
+	}
+
+if (said( reset, flag))
+	{
+	get.num( 5, debug.0);
+	reset.v( debug.0);
+	}
+
+if (said( show, var))
+     {
+     get.num( 8, debug.0);
+	debug.1 =@ debug.0;
+	print( 9);
+     }
+
+if (said( set, var))
+     {
+     get.num( 8, debug.0);
+     get.num( 6, debug.1);
+     debug.0 @= debug.1;
+     }
+
+if (xy.on && monitor.type != mono)
+	{
+	debug.0 = ego.x;
+	debug.1 = ego.y;
+	set.text.attribute( 6, 0);
+	display( 24, 16, 14);
+	set.text.attribute( text.color, bg.color);
+	}
+
+
+if ((said( gimme, gimme) ||
+	controller( c.gimme)))
+	{
+	display( 0, 0, 17);
+	debug.0 = 0;
+	debug.1 = INVENTORY;
+	
+	:mrLooper3;
+	++debug.0;
+	if (!debug.0 > SIZE_OF_INVENTORY)
+		{
+		put.v( debug.0, debug.1);
+		goto mrLooper3;
+		}
+	}
+
+
+[*****
+:exit
+[*****
+
+if (said(tp))
+	{
+	get.num( 1, debug.0);
+	new.room.f( debug.0);
+	}
+

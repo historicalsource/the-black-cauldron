@@ -1,0 +1,355 @@
+[logics for room 53 -- the burial chamber
+
+%include "rm53.msg"
+%include "gamedefs"
+
+
+
+%define	bauble.exit.time		27
+%define	pig.exit.time			27
+
+
+%define	bauble.out.hole		lf1
+%define	pig.at.1				lf2
+%define	pig.at.2				lf3
+%define	pig.at.3				lf4
+%define	pig.at.4				lf5
+%define	e.at.1				lf6
+%define	e.at.2				lf7
+%define	e.at.3				lf8
+%define	e.at.4				lf9
+%define	seen.message			lf10
+%define	ego.warned			lf11
+%define	show.time				lf12
+%define	e.was.in.basement		lf14
+%define	pig.was.in.basement		lf15
+
+
+%define	bauble.exit.timer		lv12
+%define	pig.exit.timer			lv13
+
+
+%object	a.sword				medium1
+%object	a.eilonwy				small1
+%object	a.bauble				small3
+
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	animate.obj( a.sword);
+	load.view( v.magic.sword);
+	set.view( a.sword, v.magic.sword);
+	position( a.sword, 65, 119);
+	set.priority( a.sword, 12);
+	ignore.blocks( a.sword);
+	ignore.objs( a.sword);
+	stop.cycling( a.sword);
+	if (sword.taken)
+		{
+		set.cel( a.sword, c.sword.taken);
+		}
+	else
+		{
+		load.view( v.ego.swinging.sword);
+		load.sound( s.sword);
+		set.cel( a.sword, c.sword.here);
+		}
+
+	if (pig.in.basement)
+		{
+		set( pig.was.in.basement);
+
+		animate.obj( a.pig);
+		load.view( v.pig);
+		set.view( a.pig, v.pig);
+		position( a.pig, 70, 166);
+		ignore.blocks( a.pig);
+		ignore.objs( a.pig);
+		stop.cycling( a.pig);
+		}
+
+	set( t.in.basement);
+	if (e.in.basement)
+		{
+		set( e.was.in.basement);
+
+		animate.obj( a.eilonwy);
+		load.view( v.eilonwy);
+		position( a.eilonwy, 76, 165);
+		ignore.blocks( a.eilonwy);
+		set.view( a.eilonwy, v.eilonwy);
+		set.loop( a.eilonwy, 3);
+
+		animate.obj( a.bauble);
+		load.view( v.bauble);
+		work = 2;
+		cycle.time( a.bauble, work);
+		step.size( a.bauble, work);
+		set.view( a.bauble, v.bauble);
+		position( a.bauble, 78, 164);
+		set.priority( a.bauble, 15);
+		ignore.objs( a.bauble);
+		wander( a.bauble);
+		}
+
+	position( ego, 85, 167);
+	draw( ego);
+
+	draw( a.sword);
+
+	if (e.in.basement)
+		{
+		set( show.time);
+
+		draw( a.eilonwy);
+		stop.cycling( a.eilonwy);
+
+		draw( a.bauble);
+		bauble.exit.timer = bauble.exit.time;
+		}
+
+	if (pig.in.basement)
+		{
+		set( show.time);
+
+		set.loop( a.pig, 3);
+		draw( a.pig);
+		if (!e.in.basement)
+			{
+			pig.exit.timer = pig.exit.time;
+			}
+		}
+
+	show.pic();
+
+	if (e.in.basement)
+		{
+		print( 8);
+		}
+	else
+		{
+		print( 1);
+		}
+
+	if (!sword.taken)
+		{
+		print( 2);
+		}
+
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (posn( ego, 52, 114, 116, 152))	[	near the dead guy
+		{
+		if (!sword.taken)
+			{
+			print( 4);			[	"it's a sword
+			}
+		else
+			{
+			print( 16);			[	"it looks like a carved king
+			}
+		}
+	else
+		{
+		if (posn( ego, 52, 106, 76, 113))	[	near the hole
+			{
+			print( 3); 			[	"You see a hole
+			}
+		else
+			{
+			if (!sword.taken)
+				{
+				print( 2);		[	"there's a glint on the king
+				}
+			else
+				{
+				print( 1);
+				}
+			}
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (!sword.taken &&
+	posn( ego, 52, 114, 116, 152))
+	{
+	set( have.match);
+	get( i.magic.sword);
+	score += 8;
+	set.cel( a.sword, c.sword.taken);
+	force.update( a.sword);
+	set( sword.taken);
+	print( 5);
+	}
+
+if (posn( ego, 52, 106, 76, 113))		[	near the hole in the wall
+	{
+	set( have.match);
+	if (e.was.in.basement)
+		{
+		print( 6);
+		}
+	else
+		{
+		print( 7);
+		}
+	}
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+--bauble.exit.timer;
+if (bauble.exit.timer == 1)
+	{
+	move.obj( a.bauble, 60, 104, 0, bauble.out.hole);
+	}
+
+if (bauble.out.hole)
+	{
+	reset( bauble.out.hole);
+	set( eilonwy.escaped);			[	the blond bitch is history
+	reset( e.in.basement);
+	erase( a.bauble);				[	the bau - bitch is history
+	start.cycling( a.eilonwy);
+	ignore.objs( a.eilonwy);
+	move.obj( a.eilonwy, 54, 140, 0, e.at.1);
+	print( 9);
+	}
+
+if (e.at.1)
+	{
+	reset( e.at.1);
+	move.obj( a.eilonwy, 54, 130, 0, e.at.2);
+	}
+
+if (e.at.2)
+	{
+	reset( e.at.2);
+	move.obj( a.eilonwy, 65, 108, 0, e.at.3);
+	}
+
+if (e.at.3)
+	{
+	reset( e.at.3);
+	move.obj( a.eilonwy, 57, 106, 0, e.at.4);
+	set.priority( a.eilonwy, 4);
+	print( 10);
+	if (pig.was.in.basement)
+		{
+		pig.exit.timer = 2;			[ the pink bitch will be history soon.
+		print( 12);
+		}
+	}
+
+if (e.at.4)
+	{
+	reset( e.at.4);
+	erase( a.eilonwy);
+	print( 11);
+	print( 17);
+	if (pig.was.in.basement)
+		{
+		print( 18);
+		}
+	else
+		{
+		reset( show.time);
+		}
+	}
+
+
+--pig.exit.timer;
+if (pig.exit.timer == 1)
+	{
+	reset( pig.in.basement);			[	the pink bitch is now history
+	score += 20;
+	start.cycling( a.pig);
+	move.obj( a.pig, 55, 155, 0, pig.at.1);
+	if (e.was.in.basement)
+		{
+		pig.safe = by.eilonwy;
+		}
+	else
+		{
+		pig.safe = by.burial.chamber;
+		print( 13);
+		}
+	}
+
+if (pig.at.1)
+	{
+	reset( pig.at.1);
+	move.obj( a.pig, 55, 130, 0, pig.at.2);
+	}
+
+if (pig.at.2)
+	{
+	reset( pig.at.2);
+	move.obj( a.pig, 65, 108, 0, pig.at.3);
+	}
+
+if (pig.at.3)
+	{
+	reset( pig.at.3);
+	set.priority( a.pig, 4);
+	move.obj( a.pig, 57, 106, 0, pig.at.4);
+	print( 15);
+	}
+
+if (pig.at.4)
+	{
+	reset( pig.at.4);
+	erase( a.pig);
+	reset( show.time);
+	if (e.was.in.basement)
+		{
+		print( 14);
+		}
+	}
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == bottom)
+	{
+	if (show.time)
+		{
+		if (!seen.message)
+			{
+			set( seen.message);
+			print( 19);
+			}
+		}
+	else
+		{
+		new.room( 54);
+		}
+	}
+

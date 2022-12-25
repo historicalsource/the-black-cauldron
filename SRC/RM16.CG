@@ -1,0 +1,158 @@
+[logics for room 16 
+
+%include "rm16.msg"
+%include "gamedefs"
+
+
+%define	warned.him			lf0
+%define	gwyth.room.loaded		lf1
+%define	pig.room.loaded		lf2
+
+
+if (init.log)
+	{
+	set.horizon( 50);
+
+	load.logics( morva.marsh);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);	[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+	if (previous.room == 21)
+		{
+		position( ego, 145, 165);
+		}
+
+	if (previous.room == 17)
+		{
+		get.posn( ego, x, y);
+		if (y < 142)
+			{
+			position( ego, 140, 150);
+			}
+		else
+			{
+			position( ego, 145, 165);
+			}
+		}
+	
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	if (t.is.fairy)
+		{
+		set.priority( ego, 15);
+		}
+
+	draw( ego);
+
+	call( morva.marsh);
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+
+	if (!t.is.fairy)
+		{
+		print( 1);
+		}
+
+	return();
+
+	}
+
+
+
+if (!edge.ego.hit)
+	{
+	reset( warned.him);
+	}
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+if (t.is.fairy)
+	{
+	goto exit;
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+
+[*****
+:do.it
+:use.it
+:no.input
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+call( morva.marsh);
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == left)		{new.room( 15);}
+if (edge.ego.hit == bottom)		{new.room( 21);}
+if (edge.ego.hit == top)
+	{
+	if (!t.is.fairy)
+		{
+		new.room( 11);
+		}
+	else
+		{
+		if (!warned.him)
+			{
+			set( warned.him);
+			print( 2);
+			}
+		}
+	}
+
+if (edge.ego.hit == right)
+	{
+	if (!t.is.fairy)
+		{
+		new.room( 17);
+		}
+	else
+		{
+		if (!warned.him)
+			{
+			set( warned.him);
+			print( 2);
+			}
+		}
+	}

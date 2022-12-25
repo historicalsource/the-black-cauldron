@@ -1,0 +1,316 @@
+[logics for room 66 -- Gwystyl's way station interior
+
+%include	"rm66.msg"
+%include "gamedefs"
+
+
+%define	maximum.gwystyl.message.distance	50
+%define	wait.before.exit			55
+
+
+%define	pig.at.door			lf0	[	define local variables
+%define	pig.out.door			lf1
+%define	cup.opening.done		lf2
+%define	cup.closing.done		lf3
+%define	cupboard.open			lf4
+%define	gwystyl.home			lf5
+%define	read.message			lf7
+%define	gwystyl.at.door		lf8
+%define	gwystyl.out.door		lf9
+
+
+%define	cyclesBeforeShow		lv0
+
+
+%object	a.fire			small1
+%object	a.cookies			small2
+%object	a.gwystyl			small3
+%object	a.cupboard		small4
+
+
+
+if (init.log)						[	initialize room
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.view( v.cupboard.gwystyl);
+	load.view( v.cookies);
+	load.view( v.fire);
+	load.view( v.gwystyl);
+
+	animate.obj( a.cupboard);
+	set.view( a.cupboard, v.cupboard.gwystyl);
+	cycle.time( a.cupboard, three);
+	position( a.cupboard, 80, 108);
+	set.cel( a.cupboard, 0);			[	shut your cupboard, Gwystyl
+	set.priority( a.cupboard, 7);
+	ignore.blocks( a.cupboard);
+	draw( a.cupboard);
+	stop.update( a.cupboard);
+
+	animate.obj( a.cookies);
+	set.view( a.cookies, v.cookies);
+	position( a.cookies, 87, 103);
+	set.priority( a.cookies, 8);
+	ignore.blocks( a.cookies);
+	ignore.objs( a.cookies);
+
+	animate.obj( a.fire);
+	set.view( a.fire, v.fire);
+	position( a.fire, 34, 132);
+	set.priority( a.fire, 13);
+	ignore.blocks( a.fire);
+	draw( a.fire);
+
+	position( ego, 81, 165);			[	position ego just inside door
+	draw( ego);
+	observe.blocks( ego);
+
+	if (t.with.pig)
+		{
+		set( gwystyl.home);			[	if T&pig, G's always home!
+		cyclesBeforeShow = 99;
+
+		animate.obj( a.gwystyl);
+		set.view( a.gwystyl, v.gwystyl);
+		step.size( a.gwystyl, two);
+		position( a.gwystyl, 77, 55);
+		set.priority( a.gwystyl, 14);
+		ignore.blocks( a.gwystyl);
+	  	draw( a.gwystyl);
+		wander( a.gwystyl);
+
+		animate.obj( a.pig);
+		load.view( v.pig);
+		set.view( a.pig, v.pig);
+		position( a.pig, 66, 166);
+		draw( a.pig);
+		stop.cycling( a.pig);
+		}
+
+	show.pic();
+
+	if (gwystyl.home)
+		{
+		print( 14);				[	"Hen Wen's happy to see Gwystyl
+		}
+
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	set( have.match);
+	if (posn( ego, 70, 118, 99, 125))	[	near cupboard
+		{
+		if (!cupboard.open)
+			{
+			print( 6);			[	"This is Gwystyl's cupboard
+			}
+		else
+			{
+			if (!cookies.taken)
+				{
+ 				print( 7);		[	"You see some cookies				}
+				}
+			else
+				{
+				print( 8);		[	"The cupboard is bare
+				}
+			}
+		}
+	else
+		{
+		if (posn( ego, 40, 119, 60, 150))	[	near fireplace
+			{
+			print( 4);			[	"Nice fire, Gwystyl
+			}
+		else
+			{
+			if (gwystyl.home)
+				{
+				distance( ego, a.gwystyl, work);
+
+				if (work < maximum.gwystyl.message.distance) [ near Gwystyl
+					{	
+					print( 5);[	"G looks nice
+					}
+				else
+					{
+					print( 2);[	"You're nice guy Gwystyl
+					}
+				}
+			else
+				{
+				if (posn( ego, 56, 116, 70, 122))[near little door
+					{
+					print( 21);[	"you can't fit!
+					}
+				else
+					{
+					if (goal1)
+						{
+						print( 3);[	"G's no longer home
+						}
+					else
+						{
+						print( 1);[	"No one's here, yet
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+if (!doit && !useit)				{goto no.input;}
+if (useit)						{goto use.it;}
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (posn( ego, 70, 118, 99, 125))		[	near cupboard
+	{
+	set( have.match);
+	if (!cupboard.open)
+		{
+		print( 9);				[	"The cupboard is closed
+		start.update( a.cupboard);
+	 	end.of.loop( a.cupboard, cup.opening.done);
+		}
+	else
+		{
+		if (cookies.taken)
+			{
+			start.update( a.cupboard);
+			reverse.loop( a.cupboard, cup.closing.done);
+			goto no.input;
+			}
+		else
+			{
+			set( cookies.taken);
+			get( i.cookies);
+			start.update( a.cookies);
+			erase( a.cookies);
+			print( 10);			[	"You take the magic mirror
+			goto no.input;
+			}
+		}
+	}
+else
+	{
+	if (posn( ego, 25, 119, 60, 150))	[	near fireplace
+		{
+		set( have.match);
+		print( 4);				[	"Nice fire, Taran
+		}
+	else
+		{
+		if (gwystyl.home)
+			{
+			distance( ego, a.gwystyl, work);
+			if (!read.message &&	[	near Gwystyl
+				work < maximum.gwystyl.message.distance)
+				{	
+				set( have.match);
+				set( read.message);
+				print( 12);		[	"Goodbye to you Taran
+				}
+			}
+		}
+	}
+
+
+[*****
+:use.it							[	pressed "use current obj"
+:no.input
+[*****
+
+--cyclesBeforeShow;
+if (cyclesBeforeShow == 1)
+	{
+	reset( t.with.pig);
+	pig.safe = by.gwystyl;
+	score += 20;
+	set( goal1);
+
+	print( 16);		 			[	"OK, you finished goal 1, now
+	print( 17);					[		go & find goal 2!"
+	print( 18);
+	print( 19);
+	print( 20);
+
+	get( i.magic.word);
+	ignore.objs( a.gwystyl);
+	print( 24);
+	move.obj( a.gwystyl, 65, 117, 0, gwystyl.at.door);
+	}
+
+if (gwystyl.at.door)
+	{
+	reset( gwystyl.at.door);
+	set.priority( a.gwystyl, 5);
+	print( 23);
+	move.obj( a.gwystyl, 75, 110, 0, gwystyl.out.door);[move gwystyl out 
+
+	start.cycling( a.pig);
+	ignore.blocks( a.pig);
+	ignore.objs( a.pig);
+	move.obj( a.pig, 65, 117, 0, pig.at.door);[	move pig to little door
+	}
+
+if (gwystyl.out.door)
+	{
+	reset( gwystyl.out.door);
+	reset( gwystyl.home);
+	erase( a.gwystyl);
+	}
+
+if (pig.at.door)
+	{
+	reset( pig.at.door);
+	set.priority( a.pig, 5);
+	set.loop( a.pig, facing.right);
+	force.update( a.pig);
+	print( 22);
+	move.obj( a.pig, 75, 110, 0, pig.out.door);	[	move pig out little door
+	}
+
+if (pig.out.door)
+	{
+	reset( pig.out.door);
+	erase( a.pig);
+	}
+
+if (cup.opening.done)
+	{
+	reset( cup.opening.done);
+	stop.update( a.cupboard);
+	set( cupboard.open);
+	if (!cookies.taken)
+		{
+		draw( a.cookies);
+		stop.update( a.cookies);
+		}
+	}
+
+if (cup.closing.done)
+	{
+	reset( cup.closing.done);
+	reset( cupboard.open);
+	stop.update( a.cupboard);
+	print( 11);					[	"The cupboard is bare!
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (posn( ego, 51, 166, 88, 167))		{new.room( 65);}

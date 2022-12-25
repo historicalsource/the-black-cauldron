@@ -1,0 +1,276 @@
+[logics for room 118 -- eilonwy's room
+
+%include "rm118.msg"
+%include "gamedefs"
+
+
+%define	time.bauble.in.hole 	30
+%define	time.bauble.wanders 	99
+
+%define	caught.ego			df9
+%define	prevent.messages		df10
+%define	bauble.at.hole			df11
+
+%define	bauble.in.hole.timer	dv10
+%define	bauble.wander.timer		dv12
+%define	old.bitch.x			dv21
+%define	old.bitch.y			dv22
+
+%object	a.bauble				tiny1
+%object	a.eilonwy				small4
+
+
+if (init.log)
+	{
+	load.view( v.eilonwy);
+	load.view( v.bauble);
+
+	animate.obj( a.eilonwy);
+	animate.obj( a.bauble);
+
+	object.on.land( a.eilonwy);
+
+	set.view( a.eilonwy, v.eilonwy);
+	set.view( a.bauble, v.bauble);
+	work = 2;
+	step.size( a.bauble, work);
+	cycle.time( a.bauble, work);
+
+	get.posn( ego, x, y);
+
+	if (current.room == 59 && previous.room == 52)
+		{
+		position( a.eilonwy, 107, 155);
+		position( a.bauble, 107, 155);
+		}
+	else
+		{
+		if (current.room == 56 && previous.room == 69)
+			{
+			position( a.eilonwy, 30, 150);
+			position( a.bauble, 30, 150);
+			set( eilonwy.patiently.waiting);
+			}
+		else
+			{
+			if (current.room == 58 && previous.room == 51)
+				{
+				position( a.eilonwy, 79, 134);
+				position( a.bauble, 79, 134);
+				set( eilonwy.patiently.waiting);
+				}
+			else
+				{
+				y += 1;
+				position.f( a.eilonwy, x, y);
+				position.f( a.bauble, x, y);
+				}
+			}
+		}
+
+	if (!eilonwy.patiently.waiting)
+		{
+		set( make.eilonwy.follow);
+		}
+
+	wander( a.bauble);
+	set.priority( a.bauble, 14);
+
+	if (current.room == 54)			[	make her bauble hit the hole!
+		{
+		move.obj( a.bauble, 53, 83, 0, bauble.at.hole);
+		}
+
+	ignore.objs( a.bauble);
+	ignore.objs( a.eilonwy);
+	ignore.blocks( a.bauble);
+
+	draw( a.eilonwy);
+	draw( a.bauble);
+	start.cycling( a.eilonwy);
+
+	if (current.room == 59 && previous.room == 52)
+		{
+		set( prevent.messages);
+		}
+
+	if (current.room == 56 && previous.room == 69)
+		{
+		set( prevent.messages);
+		}
+
+	return();
+	}
+
+
+if (!e.in.basement)
+	{
+	goto exit;
+	}
+
+
+[*****
+:use.it
+[*****
+
+if (object.used == u.magic.mirror && !have.match)
+	{
+	object.used = 0;
+	set( have.match);
+	print( 7);
+	}
+
+
+[*****
+:no.input
+[*****
+
+get.posn( a.eilonwy, x, y);
+if (!ego.is.falling)
+	{
+	distance( ego, a.eilonwy, work)
+	if (work < 7)
+		{
+		x = 0;
+		if ((ego.dir == ego.up ||
+			ego.dir == ego.up.right ||
+			ego.dir == ego.up.left))
+			{
+			if (!y > ego.y)		[	is she in my way??
+				{
+				y = -1;
+				reposition( a.eilonwy, x, y);
+				}
+			}
+		else
+			{
+			if ((ego.dir == ego.down ||
+				ego.dir == ego.down.left ||
+				ego.dir == ego.down.right))
+				{
+				if (!y < ego.y)
+					{
+					y = 1;
+					reposition( a.eilonwy, x, y);
+					}
+				}
+			}
+		}
+	}
+
+if (ego.dir && !eilonwy.patiently.waiting)
+	{
+	if  (old.ego.x == ego.x &&
+		old.ego.y == ego.y &&
+		x == old.bitch.x &&
+		y == old.bitch.y)
+		{
+		stop.cycling( a.eilonwy);
+		}
+	else
+		{
+		start.cycling( a.eilonwy);
+		set( make.eilonwy.follow);
+		}
+	}
+else
+	{
+	if (caught.ego)
+		{
+		stop.cycling( a.eilonwy);
+		stop.motion( a.eilonwy);
+		reset( caught.ego);
+		}
+
+	if  (x == old.bitch.x &&
+		y == old.bitch.y)
+		{
+		stop.cycling( a.eilonwy);
+		}
+	}
+
+if ((ego.is.falling ||
+	ego.is.climbing ||
+	eilonwy.patiently.waiting))
+	{
+	stop.cycling( a.eilonwy);
+	stop.motion( a.eilonwy);
+	}
+else
+	{
+	distance( ego, a.eilonwy, work);
+	if (work > 20)					[	She's hung up again!
+		{
+		y = ego.y;
+		if (old.bitch.y < ego.y)
+			{
+			--y;
+			}
+		else
+			{
+			++y;
+			}
+		reposition.to.v( a.eilonwy, ego.x, y);
+		}
+	}
+
+if (current.room == 54)
+	{
+	--bauble.wander.timer;
+	if (bauble.wander.timer == 1)
+		{
+		ignore.objs( a.bauble);
+		move.obj( a.bauble, 53, 83, 0, bauble.at.hole);
+		}
+	
+	if (bauble.at.hole)
+		{
+		reset( bauble.at.hole);
+		set( bauble.warned.ego);
+		erase( a.bauble);
+		bauble.in.hole.timer = time.bauble.in.hole;
+		}
+	
+	--bauble.in.hole.timer;
+	if (bauble.in.hole.timer == 1)
+		{
+		draw( a.bauble);
+		wander( a.bauble);
+		set.priority( a.bauble, 14);
+		observe.objs( a.bauble);
+		bauble.wander.timer = time.bauble.wanders;
+		}
+	}
+
+
+if (make.eilonwy.follow)
+	{
+	reset( make.eilonwy.follow);
+	follow.ego( a.eilonwy, 8, caught.ego);
+	}
+
+
+if (!prevent.messages && know.eilonwy)
+	{
+	random( 0, 100, work);
+	if (work == 1)				[	average one message every 500 cycles.
+		{
+		random( 1, 5, work);
+		if (work == 1)
+			{
+			++eilonwy.message.count;
+			if (eilonwy.message.count < 6)
+				{
+				print.v( eilonwy.message.count);
+				}
+			}
+		}
+	}
+
+
+[*****
+:exit
+[*****
+
+get.posn( a.eilonwy, old.bitch.x, old.bitch.y);
+

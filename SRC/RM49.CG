@@ -1,0 +1,144 @@
+[logics for room 49 -- bottom of spiral staircase
+
+%include "rm49.msg"
+%include "gamedefs"
+
+
+%define	door.open				lf0
+%define	castle.interior.loaded	lf1
+%define	pig.room.loaded		lf2
+
+%object	a.torch				small1
+
+
+if (init.log)
+	{
+	set( phony.water);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		load.view( v.ego.falling.with.pig);
+		}
+
+	if (!pig.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	load.logics( castle.climbing.room);
+	load.view( v.ego.falling);
+	load.view( v.ego.stunned);
+	room.bottom = 155;
+	load.sound( s.ego.falling);
+	if (!has( i.magic.sword))
+		{
+		load.sound( s.coocoo);
+		}
+
+	load.view( v.torch);
+	animate.obj( a.torch);
+	ignore.horizon( a.torch);
+	position( a.torch, 111, 61);
+	set.view( a.torch, v.torch);
+	draw( a.torch); 
+
+	if (previous.room == 42)
+		{
+		if (ego.is.falling)
+			{
+			set.priority( ego, 4);
+			position( ego, 64, 38);
+			}
+		else
+			{
+			position( ego, 40, 38);
+			}
+		}
+	else
+		{
+		position( ego, 132, 126);
+		}
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 11, 165);
+		}
+
+	call( castle.climbing.room);
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+[*****
+:do.it
+:use.it
+:no.input
+[*****
+
+if (ego.x > 39)
+	{
+	set( override.fall.loc);
+	override.fall.x = 66;
+	override.fall.y = 100;
+	}
+else
+	{
+	reset( override.fall.loc);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (hit.special)					[	must check before call( climbing)
+	{
+	if (posn( ego, 126, 108, 150, 144))
+		{
+		reset( hit.special);
+		new.room( 50);
+		}
+	}
+
+if (edge.ego.hit == top)
+	{
+	reset( override.fall.loc);
+	new.room( 42);
+	}
+
+call( castle.climbing.room);
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+

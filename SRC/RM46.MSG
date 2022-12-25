@@ -1,0 +1,14 @@
+[messages for room 46 -- the wine cellar
+
+
+
+%message	1
+"You are in the Horned King's wine cellar."
+
+%message	2
+"There is an opening in the floor here. You can't tell where it goes."
+
+%message	3
+"Oooooh, you fell into the opening. It smells like it must be
+ a garbage chute!"
+

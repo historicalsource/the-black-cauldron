@@ -1,0 +1,466 @@
+[logics for room 20 -- morva marsh
+
+%include	"rm20.msg"
+%include	"gamedefs"
+
+
+
+%define	witches.talk.length 	40	[	define local constants
+%define	jump.into.pot.time		55
+
+
+%define	this.is.it			lf0	[	define local variables
+%define	witches.here			lf1
+%define	warned.him			lf2
+%define	witches.talking		lf3
+%define	pot.here				lf4
+%define	heard.witches			lf5
+%define	morva.marsh.loaded		lf6
+%define	gwyth.at.left			lf7
+%define	gwyth.at.pot			lf8
+%define	gwyth.flown.away		lf9
+%define	gwyth.gone			lf10
+%define	s.gwythaint.done		lf11
+%define	door.opening.done		lf12
+%define	door.closing.done		lf13
+%define	ego.at.pot			lf15
+%define	ego.in.pot			lf16
+%define	ego.jumped.in.pot		lf18
+%define	gwyth.carrying.pot		lf19
+							
+							
+%define	witches.talk.timer		lv6
+%define	pot.timer				lv14
+
+
+%object	a.pot			medium2	[	define objects
+%object	a.door			medium1
+%object	a.gwyth			large1
+%object	a.witches			giant1
+
+
+
+if (init.log)						[	initialize room
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (force.a.test)
+		{
+		set( ready.to.give.pot);
+		}
+
+	if (ready.to.give.pot)
+		{
+		reset( ready.to.give.pot);	[	You get exactly ONE shot, buddy!
+		set( this.is.it);
+		start.motion( ego);
+		}
+
+	load.view( v.door.witches.house);
+
+	animate.obj( a.door);
+	set.view( a.door, v.door.witches.house);
+	set.priority( a.door, 10);
+	position( a.door, 40, 115);
+	cycle.time( a.door, two);
+
+	load.logics( morva.marsh);
+	load.view( v.ego.sinking);
+	if (has( i.fairy.dust))
+		{
+		load.view( v.ego.fairy);
+		}
+
+
+	if (this.is.it)
+		{
+		set( out.of.memory);
+		set( witches.here);
+		set( pot.here);
+
+		load.view( v.ego.jumping.into.pot);
+		load.view( v.witches.talking);
+		load.view( v.bc);
+		load.view( v.g.right.only);
+		load.view( v.g.and.bc);
+
+		load.sound( s.gwythaint);
+
+		animate.obj( a.pot);
+		set.view( a.pot, v.bc);
+		stop.motion( a.pot);
+		position( a.pot, 120, 120);
+		draw( a.pot);
+		stop.update( a.pot);
+
+		block( 60, 114, 101, 120);	[	No egos behind the broads.
+
+		animate.obj( a.witches);
+		set.view( a.witches, v.witches.talking);
+		set.cel( a.witches, 0);
+		ignore.blocks( a.witches);
+		position( a.witches, 64, 120);
+		draw( a.witches);
+		stop.update( a.witches);
+		cycle.time( a.witches, three);
+		stop.motion( a.witches);
+
+		animate.obj( a.gwyth);
+		ignore.objs( a.gwyth);
+		ignore.blocks( a.gwyth);
+		ignore.horizon( a.gwyth);
+		set.view( a.gwyth, v.g.right.only);
+		set.priority( a.gwyth, 14);
+		position( a.gwyth, 0, 42);
+		cycle.time( a.gwyth, two);
+		step.size( a.gwyth, two);
+		}
+
+	if (previous.room == 64)			[	fix the door
+		{
+		last.cel( a.door, work);
+		set.cel.f( a.door, work);
+		draw( a.door);
+		reverse.loop( a.door, door.closing.done);
+		}
+	else
+		{
+		set.cel( a.door, 0);
+		draw( a.door);
+		stop.update( a.door);		[	misc. cleanup
+		}
+
+
+	if (previous.room == 64)
+		{
+		position( ego, 45, 122);		[	outside witches' door
+		set.loop( ego, 0);			[	look at the pot
+		}
+	else
+		{
+		if (t.is.fairy)
+			{
+			position( ego, 148, 71);
+			}
+		else
+			{
+			position( ego, 133, 99);
+			}
+		}
+	draw( ego);
+
+	if (!beenIn20)
+		{
+		score += 15;
+		set( beenIn20);
+		}
+
+	call( morva.marsh);
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if  (pot.here &&
+		posn( ego, 112, 103, 148, 127)) [	ego near pot
+		{
+		if (pot.timer)
+			{
+			print( 15);			[	"You consider the witches warning
+			}
+		else
+			{
+			print( 9);			[	"the pot is ugly
+			}
+		}
+	else
+		{
+		if  (posn( ego, 40, 111, 55, 128) && 
+		    !this.is.it)			[	near door
+			{
+			print( 2);
+			}
+		else
+			{
+			if (gwyth.carrying.pot)
+				{
+				print( 20);		[	"the gwyth is taking the pot
+				}
+			else
+				{
+				if (gwyth.gone)
+					{
+					print( 14);	[	"the pot is gone.
+					}
+				else
+					{
+					if (gwyth.here)
+						{
+						print( 13); [	"the gwyths are after the pot
+						}
+					else
+						{
+						if (posn( ego, 78, 85, 90, 90)) 					[	behind the tree
+							{									%message	17	"\"Al loves Marg\""
+							print( 17);
+							}
+						else
+							{
+							if  (posn( ego, 54, 110, 94, 130) &&
+								witches.here)	[	near witches
+								{
+								print( 18);
+								}
+							else
+								{
+								print( 1);	[	generic message.
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (posn( ego, 38, 110, 50, 120))			[	near the door
+	{
+	if (!t.is.fairy)
+		{
+		set( have.match);
+		print( 3);						[	"you open the door
+		start.update( a.door);
+		end.of.loop( a.door, door.opening.done);
+		goto exit;
+		}
+	else
+		{
+		print( 19);				[ "can't open door when flying
+		set( have.match);
+		}
+	}
+
+
+if (this.is.it && !heard.witches)
+	{
+	set( heard.witches);
+	set( have.match);
+	print( 4);						[	w says:
+	print( 6);
+	print( 7);
+	pot.timer = jump.into.pot.time;
+	witches.talk.timer = witches.talk.length;
+	start.cycling( a.witches);
+	goto no.input;
+	}
+
+if (pot.here &&
+	posn( ego, 112, 103, 148, 127)) 	[	near the pot
+	{
+	set( have.match);
+	if (!ego.jumped.in.pot)
+		{
+		if (pot.timer)				[	that asshole jumped in!!!
+			{
+			set( ego.jumped.in.pot);
+			program.control( );
+			if (ego.y < 120)
+				{
+				move.obj( ego, 130, 118, 1, ego.at.pot);[	to pot x, y
+				}
+			else
+				{
+				move.obj( ego, 130, 121, 1, ego.at.pot);[	to pot x, y
+				}
+			}
+		else
+			{
+			print( 8);			[	"you beat on the pot
+			}
+		}
+	}
+
+
+[*****
+:use.it							[	pressed "use current obj"
+[*****
+
+[*****
+:no.input
+[*****
+
+if (door.opening.done)
+	{
+	if (witches.gave.pot)
+		{
+		set( pot.in.castle);
+		}
+	new.room( 64);
+	}
+
+if (door.closing.done)
+	{
+	reset( door.closing.done);
+	stop.update( a.door);
+	}
+
+if (ego.at.pot)
+	{
+	reset( ego.at.pot);
+	print( 11);					[	"you jump in the pot
+	stop.motion( ego);
+	program.control();
+	set.view( ego, v.ego.jumping.into.pot);
+	if (ego.y > 120)
+		{
+		set.loop( ego, 0);
+		set.priority( ego, 15);
+		}
+	else
+		{
+		set.loop( ego, 1);
+		}
+
+	set.cel( ego, 0);
+	cycle.time( ego, three);
+	end.of.loop( ego, ego.in.pot);
+	set( keep.cycling);
+	}
+
+if (ego.in.pot)
+	{
+	reset( ego.in.pot);
+	erase( ego);
+	shake.screen( 4);
+	print( 12);					[	"the bards sing of your greatness
+	certain.winner = 1;
+	goto exit;
+	}
+
+--pot.timer;
+if (!ego.jumped.in.pot && pot.timer == 1)		[	gwyth appears; w vanish
+	{
+	set( gwyth.here);
+	set( pot.in.castle);
+	draw( a.gwyth);
+	print( 16);					[	W say "bye, T; here's the G
+	start.cycling( a.witches);
+	move.obj( a.gwyth, 109, 93, 2, gwyth.at.pot);
+	erase( a.witches);
+	unblock();
+	set( s.gwythaint.done);
+	}
+
+if (gwyth.at.pot)					[	they've got your pot, taran
+	{
+	reset( gwyth.at.pot);
+	reset( pot.here);
+	set( gwyth.carrying.pot);
+	start.update( a.pot);
+	erase( a.pot);
+	set.view( a.gwyth, v.g.and.bc);
+	move.obj( a.gwyth, 6, 55, 2, gwyth.flown.away);
+	}
+
+if (gwyth.flown.away)				[	bye, bye, birdie
+	{
+	reset( gwyth.flown.away);
+	reset( gwyth.here);
+	reset( gwyth.carrying.pot);
+	set( gwyth.gone);
+	erase( a.gwyth);
+	stop.sound( );
+	reset( s.gwythaint.done);			[	(just to make sure)
+	}
+
+if (gwyth.here && s.gwythaint.done)
+	{
+	reset( s.gwythaint.done);
+	sound( s.gwythaint, s.gwythaint.done);
+	}
+
+--witches.talk.timer;
+if (witches.talk.timer == 1)
+	{
+	stop.update( a.witches);
+	set.cel( a.witches, 0);			[	shut their mouth
+	force.update( a.witches);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+call( morva.marsh);
+
+if (!edge.ego.hit)				{reset( warned.him);}
+
+if (edge.ego.hit == right)
+	{
+	if (witches.gave.pot)
+		{
+		set( pot.in.castle);
+		}
+	new.room( 21);
+	}
+
+if (t.is.fairy)
+	{
+	if (edge.ego.hit == top)
+		{
+		if (witches.gave.pot)
+			{
+			set( pot.in.castle);
+			}
+		new.room( 15);
+		}
+	}
+else
+	{
+	if (posn( ego, 129, 94, 145, 97))
+		{
+		if (witches.gave.pot)
+			{
+			set( pot.in.castle);
+			}
+		new.room( 15);
+		}
+	}
+
+if (edge.ego.hit == left)		
+	{
+	if (t.is.fairy && !warned.him)
+		{
+		set( warned.him);
+		print( 21);
+		}
+	}
+
+if (edge.ego.hit == bottom)
+	{
+	if (t.is.fairy)
+		{
+		if (!warned.him)
+			{
+			set( warned.him);
+			print( 21);
+			}
+		}
+	}
+

@@ -1,0 +1,369 @@
+[logics for room 35 -- castle wall bottom
+
+%include	"rm35.msg"
+%include "gamedefs"
+
+
+%define	rock.time.min			20	[	define local constants
+%define	rock.time.max			100	[	cycles between rocks
+%define	rocky				20	[	the y where rocks come from
+%define	rock.bottom			166	[	the y where rocks get erased
+%define	no.more.rocks			66	[	the y above which ego is safe
+%define	rock.step.size			4	[	how far a rock moves each frame
+%define	left.side				20	[	where climbable wall starts
+%define	right.side			128
+%define	bottom.of.wall			146	[	erase climbing ego from wall here
+%define	top.of.walk			150	[	draw walking ego here
+
+
+%define	rock.1.hit.bottom		lf0	[	define local variables
+%define	rock.2.hit.bottom		lf1
+%define	remove.rock.1			lf2
+%define	remove.rock.2			lf3
+%define	rock.1.falling			lf6
+%define	rock.2.falling			lf7
+%define	read.message			lf8
+%define	begin.climb			lf17
+%define	end.climb				lf18
+
+%define	rock.1.timer			lv0
+%define	rock.2.timer			lv1
+%define	rock.x				lv2
+%define	rock.y				lv3
+%define	rock.left				lv4
+%define	rock.right			lv5
+%define	rock.1.bottom			lv9
+%define	rock.1.top			lv10
+%define	danger.rock.1.left.x 	lv11
+%define	danger.rock.1.right.x	lv12
+%define	danger.rock.2.left.x	lv13
+%define	danger.rock.2.right.x	lv14
+%define	rock.2.bottom			lv15
+%define	rock.2.top			lv16
+
+
+%object	a.rock.1				small1[	define objects
+%object	a.rock.2				small2
+
+
+
+if (init.log)						[	initialize room
+	{
+	rock.1.timer = 60;
+	rock.2.timer = 35;
+
+	[			
+	[	Blank space
+	[	in this room makes
+	[	this code line up
+	[	with rm36.cg's
+	[	code.
+	[	
+
+	room.bottom = fall.through;		[	fall clear out of this room
+	load.logics( climbing.room);		[	load climbing gear
+	load.sound( s.ego.falling);
+	load.view( v.ego.climbing.wall);
+	load.view( v.ego.falling);
+
+	load.view( v.falling.rock);		[	load views of objects
+
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	animate.obj( a.rock.1);			[	animate objects
+	ignore.horizon( a.rock.1);		[	misc. cleanup
+	ignore.blocks( a.rock.1);
+	ignore.objs( a.rock.1);
+	set.priority( a.rock.1, 15);
+	set.view( a.rock.1, v.falling.rock);
+	position( a.rock.1, 30, 30);		[	phony positions to prevent 
+	work = rock.step.size;
+	step.size( a.rock.1, work);
+
+	animate.obj( a.rock.2);
+	ignore.horizon( a.rock.2);
+	ignore.blocks( a.rock.2);
+	ignore.objs( a.rock.2);
+	set.priority( a.rock.2, 15);
+	set.view( a.rock.2, v.falling.rock);
+	position( a.rock.2, 50, 30);		[	premature gotchas!
+	work = rock.step.size;
+	step.size( a.rock.2, work);
+
+
+	[	
+	[	
+	[	To align
+	[	with rm36.cg
+	[	
+	[	
+	[	
+	[	
+	[	
+
+
+	if (ego.x < left.side)
+		{
+		ego.x = left.side;
+		}
+	else
+		{
+		if (ego.x > right.side)
+			{
+			ego.x = right.side;
+			}
+		}
+
+	if (previous.room == 34)			[	position ego
+		{
+		ego.y = 157;
+		start.climbing = walking;	[	let dynamic draw ego
+		}
+	else
+		{
+		start.climbing = on.wall;
+		}
+
+
+	position.v( ego, ego.x, ego.y);
+
+	call( climbing.room);
+
+	show.pic();
+
+
+
+
+
+
+	return();
+
+	}							[	end init.log
+
+
+
+if (ego.falling)
+	{
+	ignore.blocks( ego);
+	goto have.rocks.hit.bottom;
+	}
+else
+	{
+	observe.blocks( ego);
+	}
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it							[	he pressed "do something" button
+[*****
+
+if (ego.climbing == walking)			[	begin climbing
+	{
+	set( have.match);
+	ego.x -= 3;
+	if (ego.x < left.side)
+		{
+		ego.x = left.side;
+		}
+	if (ego.x > right.side)
+		{
+		ego.x = right.side;
+		}
+	ego.y = bottom.of.wall;
+	print( 4);
+	erase( ego);
+	position.f( ego, ego.x, ego.y);
+	start.climbing = on.wall;		[	dynamic redraws ego
+	}
+	
+if (ego.climbing == on.wall && 
+	ego.y > 125)	 				[	stop climbing
+	{
+	set( have.match);
+	ego.x += 3;
+	if (ego.x < left.side)
+		{
+		ego.x = left.side;
+		}
+	if (ego.x > right.side)
+		{
+		ego.x = right.side;
+		}
+	ego.y = top.of.walk;
+	print( 5);
+	erase( ego);
+	position.f( ego, ego.x, ego.y);
+	start.climbing = walking;		[	dynamic redraws ego
+	}
+	
+
+
+[*****
+:use.it							[	he pressed the "use obj" button
+:no.input
+[*****
+
+if  (ego.climbing == on.wall &&
+	hit.special &&
+	!ego.falling)
+	{
+	print( 6);
+	}
+
+
+[*****
+:make.a.rock
+[*****
+
+if (ego.y > no.more.rocks)			[	no rocks if ego 2High2BeFair
+	{
+	--rock.1.timer;
+	if (rock.1.timer == 1)
+		{
+		random( left.side, right.side, x)
+		y = rocky;
+		position.f( a.rock.1, x, y);
+		draw( a.rock.1);
+		y = rock.bottom;
+		step = rock.step.size;
+		move.obj.f( a.rock.1, x, y, step, rock.1.hit.bottom);
+		set( rock.1.falling);
+		danger.rock.1.left.x = x;
+		danger.rock.1.left.x -= ego.width;
+		danger.rock.1.right.x = x;
+		danger.rock.1.right.x += rock.width;
+		rock.1.top = rocky;
+		rock.1.bottom = rocky;
+		rock.1.bottom += ego.height;
+		}
+
+	--rock.2.timer;
+	if (rock.2.timer == 1)
+		{
+		random( left.side, right.side, x)
+		y = rocky;
+		position.f( a.rock.2, x, y);
+		draw( a.rock.2);
+		y = rock.bottom;
+		step = rock.step.size;
+		move.obj.f( a.rock.2, x, y, step, rock.2.hit.bottom);
+		set( rock.2.falling);
+		danger.rock.2.left.x = x;
+		danger.rock.2.left.x -= ego.width;
+		danger.rock.2.right.x = x;
+		danger.rock.2.right.x += rock.width;
+		rock.2.top = rocky;
+		rock.2.bottom = rocky;
+		rock.2.bottom += ego.height;
+		if (!read.message)
+			{
+			set( read.message);
+			print( 2);
+			}
+		}
+	}
+
+
+[*****
+:collision.detection
+[*****
+
+if (rock.1.falling)
+	{
+	if  (ego.x > danger.rock.1.left.x &&
+		ego.x < danger.rock.1.right.x)
+		{
+		if  (rock.1.bottom > ego.y &&
+			rock.1.top < ego.y)
+			{
+			set( remove.rock.1);
+			set( remove.rock.2);
+			print( 3);				[	then, IT'S A HIT!!
+			start.climbing = falling;
+			}
+		}
+	rock.1.bottom += rock.step.size;
+	rock.1.top += rock.step.size;
+	}
+
+if (rock.2.falling)
+	{
+	if  (ego.x > danger.rock.2.left.x &&
+		ego.x < danger.rock.2.right.x)
+		{
+		if  (rock.2.bottom > ego.y &&
+			rock.2.top < ego.y)
+			{
+			set( remove.rock.1);
+			set( remove.rock.2);
+			print( 3);			[	then, IT'S A HIT!!
+			start.climbing = falling;
+			}
+		}
+	rock.2.bottom += rock.step.size;
+	rock.2.top += rock.step.size;
+	}
+
+
+[*****
+:have.rocks.hit.bottom
+[*****
+
+if (rock.1.hit.bottom)
+	{
+	reset( rock.1.hit.bottom);
+	set( remove.rock.1);
+	random( rock.time.min, rock.time.max, rock.1.timer)
+	}
+
+if (rock.2.hit.bottom)
+	{
+	reset( rock.2.hit.bottom);
+	set( remove.rock.2);
+	random( rock.time.min, rock.time.max, rock.1.timer)
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (remove.rock.1)
+	{
+	reset( remove.rock.1);
+	erase( a.rock.1);
+	reset( rock.1.hit.bottom);
+	reset( rock.1.falling);
+	rock.1.top = 0;
+	rock.1.bottom = 0;
+	}
+
+if (remove.rock.2)
+	{
+	reset( remove.rock.2);
+	erase( a.rock.2);
+	reset( rock.2.hit.bottom);
+	reset( rock.2.falling);
+	rock.2.top = 0;
+	rock.2.bottom = 0;
+	}
+
+call( climbing.room);
+
+if (ego.climbing == walking && 
+	ego.y > 157)				{new.room( 34);}
+if (edge.ego.hit == bottom)		{new.room( 34);}
+if (edge.ego.hit == top)			{new.room( 36);}

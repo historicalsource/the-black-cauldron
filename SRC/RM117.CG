@@ -1,0 +1,252 @@
+[logics for room 117 -- "climbing.room" logics
+
+%include  "rm117.msg"
+%include "gamedefs"
+
+
+[In the real room, do this:
+[	In Init.logs:
+[		set, or reset, survivable.fall to kill him on hitting bottom. 
+[		load.view of any climber views needed.
+[		make room.bottom = fall.through, or the Y where ego crashes.
+[		don't draw( ego); dynamic draws him.
+[	In Room.logics:
+[		To start a climb, erase( ego), set start.climbing = type of climb, 
+[		and reposition him.  Compare (ego.climbing == type) for conditions.
+[		To change types, erase, reposition, and set start.climbing.
+[		To stop climbing for good, set start.climbing = done.climbing.
+[
+[	Dynamic makes him fall if (ego.climbing && hit.special) or if 
+[	start.climbing = falling.  If start.climbing = jumping, he jumps.  
+[	Falling or jumping moves him to room.bottom.  At bottom of a jump, he's
+[	stunned, unless he hits special (and dies).  If he fell, he dies if 
+[	!survivable.fall.  If room.bottom = fall.through, he continues falling
+[	into the room below.  That room's init.logs then restarts his fall, and
+[	determines "survivability." 
+
+
+
+%define	done.splashing			df16
+%define	hit.bottom			df18
+%define	falling.sound.done		df19
+
+%define	stunned.time			dv17
+
+
+if (init.log)
+	{
+	reset( ego.falling);
+
+	load.sound( s.ego.falling);
+	load.sound( s.coocoo);			[	just in case
+
+	if (resume.fall.in.next.room)
+		{
+		reset( resume.fall.in.next.room);
+		ego.climbing = falling;
+		}
+
+	if (ego.climbing == falling)
+		{
+		ego.climbing = 0;
+		start.climbing = falling;
+		set( ego.falling);
+		}
+
+	[	DON'T return();
+	}
+
+
+if (!ignore.special &&
+	ego.climbing && 
+	ego.climbing != falling && 
+	ego.climbing != jumping &&
+	hit.special)					[	do "accident" detection
+	{
+	start.climbing = falling;
+	reset( hit.special);
+	print( 1);
+	}
+	
+
+if (start.climbing)					[	********** INIT IT **********
+	{
+	ego.climbing = start.climbing;	[	transfer type to ego.climbing
+	start.climbing = 0;				[	no starting over
+
+	if (ego.climbing == walking)
+		{
+		set.view( ego, v.ego);
+		release.priority( ego);
+		observe.blocks( ego);
+		observe.objs( ego);
+		}
+
+	if (ego.climbing == jumping)
+		{
+		release.priority( ego);
+		set.view( ego, v.ego.falling);
+		goto spaghetti.code;
+		}
+
+	if (ego.climbing == falling)
+		{
+		if (current.room != 42)
+			{
+			release.priority( ego);
+			}
+
+		if (t.with.pig)
+			{
+			erase( a.pig);
+			set.view( ego, v.ego.falling.with.pig);
+			}
+		else
+			{
+			set.view( ego, v.ego.falling);
+			}
+
+		:spaghetti.code
+		set( ego.falling);
+		sound( s.ego.falling, falling.sound.done);
+		set( keep.cycling);
+		set( ignore.water);
+		program.control();
+		ignore.blocks( ego);
+		ignore.horizon( ego);
+		ignore.objs( ego);
+		step = 4;
+		if (override.fall.loc)
+			{
+	   move.obj.f( ego, override.fall.x, override.fall.y, step, hit.bottom);
+			}
+		else
+			{
+			move.obj.f( ego, ego.x, room.bottom, step, hit.bottom);
+			if (room.bottom == fall.through)
+				{
+				set( resume.fall.in.next.room);
+				}
+			}
+		}
+
+	if (ego.climbing == on.rope.west)
+		{
+		set.view( ego, v.ego.climbing.rope.west);
+		start.motion( ego);
+		}
+
+	if (ego.climbing == on.rope.east)
+		{
+		set.view( ego, v.ego.climbing.rope.east);
+		start.motion( ego);
+		}
+
+	if ((ego.climbing == on.rock || ego.climbing == on.wall))
+		{
+		set.view( ego, v.ego.climbing.wall);
+		start.motion( ego);
+		}
+
+	if (ego.climbing == done.climbing)
+		{
+		ego.climbing = 0;			[	no more climbs in THIS room
+		set.view( ego, v.ego);
+		start.motion( ego);
+		release.priority( ego);
+		observe.blocks( ego);
+		observe.objs( ego);
+		reset( keep.cycling);
+		}
+
+	draw( ego);
+
+	}
+
+
+
+if (hit.bottom && !resume.fall.in.next.room)
+	{
+	reset( hit.bottom);
+	reset( ego.falling);
+	stop.motion( ego);
+
+	if (ego.climbing == falling && !survivable.fall)
+		{
+		erase( ego);
+		certain.death = 1;
+		}
+	else
+		{
+		if (hit.special)
+			{
+			erase( ego);
+			certain.death = 1;
+			}
+		else
+			{
+			ego.climbing = 0;
+			observe.blocks( ego);
+			observe.horizon( ego);
+			observe.objs( ego);
+			if (on.water)
+				{
+				load.sound( s.splash);	[	defensive code
+				sound( s.splash, done);
+				set.view( ego, v.splash);
+				set.cel( ego, 0);
+				end.of.loop( ego, done.splashing);
+				}
+			else
+				{
+				sound( s.coocoo, coocoo);
+				reset( ignore.water);
+				set.view( ego, v.ego.stunned);
+				force.update( ego);
+				ego.climbing = stunned;
+				print( 2);
+				stunned.time = ego.stunned.time;
+				if (t.with.pig)
+					{
+					get.posn( ego, x, y);
+					position.f( a.pig, x, y);
+					draw( a.pig);
+					}
+				}
+			}
+		}
+	}
+
+
+if (stunned.time && coocoo)
+	{
+	sound( s.coocoo, coocoo);
+	}
+
+if (done.splashing)
+	{
+	reset( done.splashing);
+	set.view( ego, v.ego.swimming);
+	reset( ignore.water);
+	player.control( );
+	start.motion( ego);
+	}
+
+--stunned.time;
+if (stunned.time == 1)
+	{
+	start.motion( ego);
+	release.priority( ego);
+	set.view( ego, v.ego);
+	reset( keep.cycling);
+	ego.climbing = walking;
+	if (current.room == 62)			[	prevent premature gifting
+		{
+		player.control( );
+		}
+	}
+
+[*****
+:exit 
+[*****
+

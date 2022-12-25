@@ -1,0 +1,7 @@
+[messages for room 40 -- top floor of castle -- right end of hallway
+
+
+%message	1
+"You are on the second floor of the Horned King's castle.
+ Your heart is racing."
+

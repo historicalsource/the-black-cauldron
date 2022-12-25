@@ -1,0 +1,16 @@
+[room13 messages -- lakefront, right
+
+
+
+%message	1
+"The lake is calm and peaceful."
+
+%message	2
+"The trees sway gently in the breeze."
+
+%message	3
+"Look! There's your missing water flask."
+
+%message	4
+"You reach over and pick up your water flask."
+

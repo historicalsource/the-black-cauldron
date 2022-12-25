@@ -1,0 +1,618 @@
+[logics for room 12 -- "Let's Make A Deal" (by the lake)
+
+%include "rm12.msg"
+%include "gamedefs"
+
+
+
+%define	witches.left.x			30
+%define	witches.right.x		100
+%define	witches.y				80
+%define	trade.wait.time		77
+%define	gurgi.resurrection.time	44
+%define	time.before.witches		33
+%define	end.room.time			54
+
+
+%define	ego.logged.off			lf1
+%define	witches.here			lf2
+%define	swim.logics.loaded		lf3
+%define	pig.room.loaded		lf4
+%define	made.trade			lf5
+%define	ego.at.sword			lf6
+%define	get.the.sword	 		lf8
+%define	winner				lf9
+%define	witches.poofed.in		lf10
+%define	witches.poofed.out		lf11
+%define	ego.in.place			lf12
+%define	witches.at.left		lf14
+%define	witches.at.right		lf15
+%define	witches.jamming		lf17
+%define	ego.at.gurgi			lf18
+%define	stop.update.ego		lf19
+%define	potInLake				lf20
+
+
+%define	trade.wait.timer		lv0
+%define	gurgi.resurrection.timer	lv1
+%define	end.room.timer			lv2
+%define	witches.entrance.timer	lv3
+%define	witches.print.delay		lv4
+%define	item.offered			lv5
+	%define	book			11		[value of item.offered if gurgi.dead
+	%define	pot.of.gold	12
+	%define	dead.gurgi	13
+	%define	hero.shield	21		[value of item.offered if gurgi lives
+	%define	suit.of.armor	22
+	%define	magic.sword	23
+
+
+%object	a.rapids			medium1
+%object	a.trade.stuff		medium2
+[%object	a.gurgi			medium2
+%object	a.bc				medium7
+%object	a.witches			giant2
+
+
+
+if (init.log)
+	{
+	set.horizon( 53);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.view( v.rapids.room.12);		[v.145
+	load.sound( s.rapids);
+
+	animate.obj( a.rapids);
+	set.view( a.rapids, v.rapids.room.12);
+	position( a.rapids, 6, 92);
+	set.priority( a.rapids, 8);
+	stop.motion( a.rapids);
+	set( s.waterfall.done);
+	draw( a.rapids);
+
+
+	if (previous.room == 13)			
+		{
+		if (ego.y < 82)			[	he used to be on land
+			{
+			ego.y = 64;			[	put him there
+			}
+		else
+			{
+			if (ego.y > 152)		[	this was land in rm13
+				{
+				ego.y = 160;		[	now he's on land again.
+				}
+			}
+		}
+	else
+		{
+		if (previous.room == 11 &&
+			ego.y < 111)			[	bottom half of rapids
+			{
+			ego.x = 0;
+			ego.y = 111;			[	safe on shore
+			}
+		else
+			{
+			if (previous.room == 17)
+				{
+				ego.y = 167;
+				}
+			}
+		}
+
+
+	if (!ego.on.log)
+		{
+		if (t.with.pig)
+			{
+			load.logics( pig.room);	[	no Gwythies in this room!
+			set( pig.room.loaded);
+			set( can.lose.pig);
+			}
+
+		load.logics( swim.logics);	[room 101	
+		set( swim.logics.loaded);
+
+		load.view( v.ego.drowning);	[v.2
+		load.view( v.ego.swimming);	[v.1
+		}
+	else
+		{
+		set( out.of.memory);
+		set( potInLake);
+
+		load.view( v.ego.logged);	[v.25
+		load.view( v.witches.poofing);[v.84
+		load.view( v.bc.floating);	[v.79
+		load.view( v.trade.stuff);
+
+		load.sound( s.poofing);
+
+		animate.obj( a.bc);
+		position( a.bc, 61, 118);
+		set.view( a.bc, v.bc.floating);
+		stop.motion( a.bc);
+		work = 4;
+		cycle.time( a.bc, work);
+		draw( a.bc);
+
+		animate.obj( a.witches);
+		position( a.witches, witches.left.x, witches.y);
+		set.view( a.witches, v.witches.poofing);
+		set.cel( a.witches, 0);
+		work = 2;
+		cycle.time( a.witches, work);
+		set.priority( a.witches, 15);
+
+		animate.obj( a.trade.stuff);
+		set.view( a.trade.stuff, v.trade.stuff);
+		stop.motion( a.trade.stuff);
+		stop.cycling( a.trade.stuff);
+		position( a.trade.stuff, 46, 160);
+		if (gurgi.dead)
+			{
+			load.view( v.ego.and.dead.gurgi);	[v.26
+			load.view( v.gurgi);
+			load.sound( m.gurgi);
+			}
+
+		ego.x = 6;
+		ego.y = 83;
+		set.view( ego, v.ego.logged);
+		ignore.objs( ego);
+		move.obj( ego, 74, 154, 0, ego.logged.off);
+		}	
+ 
+
+	position.v( ego, ego.x, ego.y);
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (swim.logics.loaded)
+		{
+		call( swim.logics);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (witches.entrance.timer == 31)
+	{
+	stop.update( ego);
+	}
+
+if (!ego.on.log)
+	{
+	if ((posn( ego, 0, 52, 29, 110) ||
+		posn( ego, 29, 76, 37, 92))) 	[	ego near the rapids
+		{
+		if (!poisoned.water)
+			{
+			ignore.objs( ego);
+			drown.swim = 0;
+			set( poisoned.water);
+			}
+		}
+	else
+		{
+		if (poisoned.water)
+			{
+			reset( poisoned.water);
+			}
+		}
+	}
+
+if (!on.water)						[	handle bushes & twigs near water
+	{
+	if ((posn( ego, 112, 135, 159, 158) ||
+		posn( ego, 23, 146, 44, 154) ||
+		posn( ego, 132, 71, 159, 86)))
+		{
+		set( on.water);
+		set( no.on.water);
+		}
+	}
+
+
+if (lookit)
+	{
+	if (!item.offered)
+		{
+		if (potInLake)
+			{
+			print( 28);
+			}
+		else
+			{
+			print( 1);
+			}
+		}
+	else
+		{
+		if (item.offered == book)
+			{
+			print( 21);
+			}
+		if (item.offered == pot.of.gold)
+			{
+			print( 22);
+			}
+		if (item.offered == dead.gurgi)
+			{
+			print( 23);
+			}
+		if (item.offered == hero.shield)
+			{
+			print( 24);
+			}
+		if (item.offered == suit.of.armor)
+			{
+			print( 25);
+			}
+		if (item.offered == magic.sword)
+			{
+			print( 26);
+			}
+		}
+	}
+
+
+if (!doit && !useit)		  	{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it							[	we must be doing something
+[*****
+
+if (gurgi.dead)
+	{
+	if (item.offered == book && trade.wait.timer)
+		{
+		print( 5);			 	[	"you take the book of knowledge
+		print( 2);				[	"you miss gurgi
+		get( i.book.of.knowledge);
+		set( winner);
+		set( made.trade);
+		}
+	
+	if (item.offered == pot.of.gold && trade.wait.timer)
+		{
+		print( 8);				[	"You take the pot of gold
+		print( 2);				[	"you miss gurgi
+		get( i.pot.of.gold);
+		set( winner);
+		set( made.trade);
+		}
+
+	}
+else
+	{
+	if (item.offered == hero.shield && trade.wait.timer)
+		{
+		print( 15);				[	"You take the shield
+		set( winner);
+		get( i.hero.shield);
+		set( made.trade);
+		end.room.timer = end.room.time;
+		}
+	
+	if (item.offered == suit.of.armor && trade.wait.timer)
+		{
+		print( 17);				[	"You take the armor
+		set( winner);
+		get( i.suit.of.armor);
+		set( made.trade);
+		end.room.timer = end.room.time;
+		}
+
+	if (item.offered == magic.sword)
+		{
+		set( get.the.sword);
+		goto no.input;
+		end.room.timer = end.room.time;
+		}
+	}
+
+if (made.trade)
+	{
+	reset( made.trade);
+	reset( witches.at.left);
+	reset( witches.at.right);
+	reset( potInLake);
+	set( have.match);
+	erase( a.trade.stuff);
+	erase( a.bc);
+	set( witches.jamming);
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (witches.jamming)
+	{
+	reset( witches.jamming);
+	sound( s.poofing, done);
+	start.cycling( a.witches);
+	reverse.loop( a.witches, witches.poofed.out);
+	}
+
+if (posn( ego, 133, 89, 142, 102))
+	{
+	set( on.water);
+	}
+
+if (ego.logged.off)
+	{
+	reset( ego.logged.off);
+	set.view( ego, v.ego);			[	freeze ego beside the lake
+	move.obj( ego, 76, 159, 0, ego.in.place);
+	}
+
+if (ego.in.place)
+	{
+	reset( ego.in.place);
+	set.loop( ego, 1);
+	stop.motion( ego);
+	stop.cycling( ego);
+	witches.entrance.timer = time.before.witches;
+	}
+
+--witches.entrance.timer;
+if (witches.entrance.timer == 1)
+	{
+	stop.sound( );
+	sound( s.poofing, done);
+	reset( s.waterfall.done);		[	no more rapids noise
+	draw( a.witches);
+	end.of.loop( a.witches, witches.poofed.in);
+	stop.update( ego);
+	}
+
+if (witches.poofed.in)
+	{
+	reset( witches.poofed.in);
+	set( witches.here);
+	stop.cycling( a.witches);
+	witches.print.delay = 22;
+	}
+
+--witches.print.delay;
+if (witches.print.delay == 1)
+	{
+	print( 3);					[	"Hi, T, how's it hanging?
+	move.obj( a.witches, witches.right.x, witches.y, 2, witches.at.right);
+	trade.wait.timer = 22;
+	}
+
+if (witches.poofed.out)
+	{
+	reset( witches.poofed.out);
+	reset( witches.here);
+	reset( witches.at.left);
+	reset( witches.at.right);
+	wander( a.witches);
+	stop.motion( a.witches);
+	erase( a.witches);
+	if (winner)
+		{
+		certain.winner = item.offered;
+		}
+	}
+
+--trade.wait.timer;
+if (witches.here && gurgi.dead)					
+	{
+	if (item.offered == 0 && trade.wait.timer == 1)
+		{
+		set.cel( a.trade.stuff, c.book.of.knowledge);
+		draw( a.trade.stuff);
+		print( 4);				[	"How about a book
+		trade.wait.timer = trade.wait.time;
+		item.offered = book;
+		}
+							   
+	if (item.offered == book && trade.wait.timer == 1)
+		{
+		print( 6);				[	"We won't wait all day
+		set.cel( a.trade.stuff, c.pot.of.gold);
+		force.update( a.trade.stuff);
+		print( 7);				[	"How about some gold?
+		trade.wait.timer = trade.wait.time;
+		item.offered = pot.of.gold;
+		}
+
+	if (item.offered == pot.of.gold && trade.wait.timer == 1)
+		{
+		set.cel( a.trade.stuff, c.dead.gurgi);
+		force.update( a.trade.stuff);
+		print( 9);				[	"No gold, you get gurgi for pot
+		erase( a.bc);
+		set( witches.jamming);
+		start.update( ego);
+		observe.objs( ego);
+		item.offered = dead.gurgi;
+		move.obj( ego, 58, 159, 0, ego.at.gurgi);
+		}
+	}
+
+if (stop.update.ego)
+	{
+	reset( stop.update.ego);
+	stop.update( ego);
+	}
+
+if (ego.at.gurgi)
+	{
+	reset( ego.at.gurgi);
+	erase( a.trade.stuff);
+	stop.motion( ego);
+	stop.cycling( ego);
+	reset( keep.cycling);
+	set.view( ego, v.ego.and.dead.gurgi);
+	gurgi.resurrection.timer = gurgi.resurrection.time;
+	}	
+
+if (witches.here && !gurgi.dead)					
+	{
+	if (item.offered == 0 && trade.wait.timer == 1)
+		{
+		set.cel( a.trade.stuff, c.hero.shield);
+		draw( a.trade.stuff);
+		print( 14);				[	"Take this shield and rub it
+		trade.wait.timer = trade.wait.time;
+		item.offered = hero.shield;
+		}
+
+	if (item.offered == hero.shield && trade.wait.timer == 1)
+		{
+		print( 6);				[	"We won't wait all day
+		set.cel( a.trade.stuff, c.suit.of.armor);
+		force.update( a.trade.stuff);
+		print( 16);				[	"How about some armor
+		trade.wait.timer = trade.wait.time;
+		item.offered = suit.of.armor;
+		}
+
+	if (item.offered == suit.of.armor && trade.wait.timer == 1)
+		{
+		set.cel( a.trade.stuff, c.magic.sword);
+		force.update( a.trade.stuff);
+		print( 18);				[	"We'll give you sword for pot
+		erase( a.bc);
+		set( witches.jamming);
+		item.offered = magic.sword;
+		start.update( ego);
+		move.obj( ego, 62, 159, 0, ego.at.sword);
+		}
+	}
+
+if (ego.at.sword)
+	{
+	reset( ego.at.sword);
+	set( get.the.sword);
+	stop.update( ego);
+	}
+
+if (get.the.sword)
+	{
+	reset( get.the.sword);
+	get( i.magic.sword);
+	erase( a.trade.stuff);
+	score += 15;
+	print( 19);
+	certain.winner = item.offered;
+	}
+					 
+--gurgi.resurrection.timer;
+work = gurgi.resurrection.time;
+work -= 2;
+if (work == gurgi.resurrection.timer)
+	{
+	score += 15;
+	print( 27);					[	"You grab a dead gurgi
+	}
+
+if (gurgi.resurrection.timer == 2)
+	{
+	print( 10);					[	"You long for the simpler days
+	print( 11);					[	"Wait!  what's this
+	start.update( ego);	
+	set.view( ego, v.ego);
+
+	set.view( a.gurgi, v.gurgi);
+	work = 2;
+	step.size( a.gurgi, work);
+	position( a.gurgi, 55, 160);
+	draw( a.gurgi);
+	release.priority( a.gurgi);
+	start.cycling( a.gurgi);
+	start.update( a.gurgi);
+	start.motion( a.gurgi);
+	object.on.land( a.gurgi);
+	wander( a.gurgi);
+	sound( m.gurgi, done);
+	}
+
+if (gurgi.resurrection.timer == 1)
+	{
+	print( 12);					[	"Bird lives!!"
+	print( 13);
+	stop.update( ego);
+	end.room.timer = end.room.time;
+	}
+
+--end.room.timer;
+if (end.room.timer == 1)
+	{
+	certain.winner = item.offered;
+	}
+
+if (s.waterfall.done && !gwyth.here && !witches.here)
+	{
+	sound( s.rapids, s.waterfall.done);
+	}
+
+if (witches.at.right)
+	{
+	reset( witches.at.right);
+	move.obj( a.witches, witches.left.x, witches.y, 2, witches.at.left);
+	}
+
+if (witches.at.left)
+	{
+	reset( witches.at.left);
+	move.obj( a.witches, witches.right.x, witches.y, 2, witches.at.right);
+	}
+
+
+if ((posn( ego,   0,  56,  21, 167) ||
+	posn( ego,  88,  78, 129,  87) ||
+	posn( ego, 122,  58, 159, 100) ||
+	posn( ego,   0, 147, 159, 167)))
+	{
+	set( near.water);
+	}
+
+
+[*****
+:exit							[	test for leaving room
+[*****
+
+if (swim.logics.loaded)
+	{
+	call( swim.logics);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == top)		 	{new.room( 7);}
+if (edge.ego.hit == bottom)		{new.room( 17);}
+if (edge.ego.hit == right)		{new.room( 13);}
+if (edge.ego.hit == left &&
+	ego.y > 80)				{new.room( 11);}

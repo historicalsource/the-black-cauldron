@@ -1,0 +1,37 @@
+[
+[	words.txt
+[
+[					WORD LIST FOR BLACK CAULDRON
+[
+[	Thursday, January 29, 1987 at 11:51 a.m.
+[
+[
+[.i = .ignore
+[.d = .define
+[.s = .synonym
+[
+[	"A" and "I" are now automatically ignored.
+[
+
+
+.d	rol					9999
+
+
+
+[.d	anyword		1	[	anyword must remain as word #1 && undefined.
+
+.d	show			 		2
+.d	tp					3
+.d	position				4
+.d	room					5
+.d	priority				6
+.d	sp					7
+.d	get					8
+.d	set					9
+.d	flag			 		10
+.d	var					11
+.d	object				12
+.d	release				13
+.d	reset				14
+.d	gimme				15
+.d	xy					16

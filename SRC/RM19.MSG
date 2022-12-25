@@ -1,0 +1,7 @@
+[room19 messages
+
+
+%message	1
+"Listening to the south, you are sure you hear
+ a roaring sound."
+

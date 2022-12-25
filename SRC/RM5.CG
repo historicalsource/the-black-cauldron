@@ -1,0 +1,132 @@
+[logics for room 5 -- rock pile
+
+%include	"rm5.msg"
+%include "gamedefs"
+
+
+%define	pig.room.loaded		lf18
+%define	warned.him			lf19
+
+
+if (init.log)
+	{
+	set.horizon( 40);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		set( can.lose.pig);
+		}
+
+	if (previous.room == 6 && ego.y < 157)
+		{
+		ego.y = 157;					[	less than this and he's trapped
+		}
+	else
+		{
+		if (previous.room == 25)
+			{
+			ego.x = 71;
+			}
+		else
+			{
+			if (previous.room == 10)
+				{
+				if (ego.x < 42)
+					{
+					ego.x = 42;
+					}
+				else
+					{
+					if (ego.x > 83)
+						{
+						ego.x = 83;
+						}
+					}
+				}
+			}
+		}
+	position.f( ego, ego.x, ego.y);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	draw( ego);
+	ignore.blocks( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+ 
+[***
+:do.it
+:use.it
+:no.input
+[***
+
+if (t.with.pig && !warned.him)
+	{
+	if (ego.y < 110)
+		{
+		set( warned.him);
+		print( 3);
+		}
+	}
+
+
+[***
+:exit
+[***
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == right)
+	{
+	if (ego.y > 160)
+		{
+		new.room( 6);
+		}
+	}
+
+if (edge.ego.hit == bottom)
+	{
+	new.room( 10);
+	}
+
+if (edge.ego.hit == top)
+	{
+	if (t.with.pig)
+		{
+		print( 2);
+		reset( t.with.pig);
+		reset( pig.lost);
+		set( pig.in.castle);
+		new.room( 25);
+		}
+	else
+		{
+		print( 4);
+		new.room( 25);
+		}
+	}
+

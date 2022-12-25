@@ -1,0 +1,7 @@
+[messages for room 106 -- Ken's falling room
+
+
+
+%message	1
+"Ooooh Noooooh!"
+

@@ -1,0 +1,178 @@
+[logics for room 14 -- Where did I put my wallet?
+
+%include "rm14.msg"
+%include "gamedefs"
+
+
+%define	wet.feet				lf0
+%define	seen.wallet			lf1
+%define	gwyth.room.loaded		lf2
+%define	pig.room.loaded		lf3
+%define	water.message			lf4
+
+
+if (init.log)
+	{
+	set.horizon( 60);
+	
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		set( can.lose.pig);
+
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);	[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+	if (previous.room == 13)
+		{
+		set.view( ego, v.ego);
+		reset( keep.cycling);
+		if (ego.y > 128 && ego.y < 164)
+			{
+			position( ego, 2, 133);
+			set( water.message);
+			}
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	show.pic();
+
+	if (water.message)
+		{
+		reset( water.message)
+		set( wet.feet);
+		print( 6);
+		}
+
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (!posn( ego, 53, 125, 68, 141))
+		{
+		print( 2);
+		}
+	else
+		{
+		if (!wallet.taken)
+			{
+			set( seen.wallet);
+			print( 4);
+			}
+		else
+			{
+			print( 7);
+			}
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+ 
+if (posn( ego, 53, 125, 68, 141) && !wallet.taken)
+	{
+	set( have.match);
+
+	if (seen.wallet)
+		{
+		set( wallet.taken);
+		get( i.food.wallet);
+		print( 5);
+		}
+	else
+		{
+		set( seen.wallet);
+		print( 4);
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (!bridge.crossed && posn( ego, 36, 119, 58, 124))
+	{
+	set( bridge.crossed);
+	print( 1);
+	}
+
+if (!wet.feet)
+	{
+	if ((posn( ego, 0, 123, 13, 141) || 
+		posn( ego, 66, 124, 112, 141) ||
+		posn( ego, 113, 122, 141, 139) ||
+		posn( ego, 124, 97, 144, 121) ||
+		posn( ego, 104, 83, 135, 96) ||
+		posn( ego, 78, 65, 122, 82)))
+		{
+		set( wet.feet);
+		print( 3);
+		}
+	}
+
+if ((posn( ego,   0, 113,  25, 129) ||
+	posn( ego,   0, 130, 112, 150) ||
+	posn( ego,  62, 125, 159, 154) ||
+	posn( ego,  75, 115, 116, 128) ||
+	posn( ego, 101,  95, 159, 124) ||
+	posn( ego,  65,   0, 159,  94)))
+	{
+	set( near.water);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == top)			{new.room( 9);}
+if (edge.ego.hit == bottom)		{new.room( 19);}
+if (edge.ego.hit == left)		{new.room( 13);}

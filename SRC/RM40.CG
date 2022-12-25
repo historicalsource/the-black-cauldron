@@ -1,0 +1,109 @@
+[logics for room 40 -- upstairs hall right
+
+%include "rm40.msg"
+%include "gamedefs"
+
+
+%define	pig.room.loaded		lf0
+%define	castle.interior.loaded	lf1
+
+
+%object	a.torch		small1
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	if (!pig.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	load.view( v.torch);
+	animate.obj( a.torch);
+	ignore.horizon( a.torch);
+	position( a.torch, 73, 25);
+	set.view( a.torch, v.torch);
+
+	if (previous.room == 45)
+		{
+		position( ego, 123, 95);
+		}
+
+	draw( ego);
+
+	draw( a.torch); 
+	
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 121, 151);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+[*****
+:do.it
+:use.it
+:no.input
+[*****
+
+if (posn( ego, 17, 59, 37, 71))			[	behind the tapestry
+	{
+	set( ego.hidden);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == left)			{new.room( 39);}
+if (posn( ego, 127, 71, 159, 131))
+	{
+	if (pigvision.has.occured && pig.in.castle)
+		{
+		certain.death = pig.told.all;
+		}
+	else
+		{
+		new.room( 45);
+		}
+	}
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}

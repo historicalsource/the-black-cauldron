@@ -1,0 +1,19 @@
+[messages for room 34 -- gator arcade
+
+
+
+%message	1
+"The vines covering the castle wall trail down to a ledge on
+ the far side of the moat. Alligators patrol the murky waters."
+
+%message	2
+"Chomp, chomp. Ummm, good."
+
+%message	3
+"You'd better just keep swimming!!"
+
+%message	4
+"That castle wall looks climable."
+
+%message	5
+"Whew!! That was too close for comfort!"

@@ -1,0 +1,358 @@
+[logics for room 43 -- entrance to great hall
+
+%include "rm43.msg"
+%include "gamedefs"
+
+
+%define	awake.time.min			 4
+%define	awake.time.max			22
+%define	sleep.time.min			11
+%define	sleep.time.max			33
+%define	get.away.time			22	[	5 cells X 3 cycles/cell + 6 spare
+
+%define	door.open				lf0
+%define	pig.room.loaded		lf1
+%define	door.closed			lf2
+%define	door.opened			lf3
+%define	castle.interior.loaded	lf4
+%define	g.grabbing			lf5
+%define	peck.done				lf6
+%define	gwyth.grabbed.ego		lf7
+%define	ready.to.get.stash		lf12
+
+%define	peck.delay			lv8
+%define	g.sleep.timer			lv9
+%define	g.awake.timer			lv10
+%define	grabbing.cel.count		lv11
+
+%object	a.torch			small1
+%object	a.door			medium1
+%object	a.gwyth			medium2
+
+
+if (init.log)
+	{
+	set.horizon( 113);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	if (!pig.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	load.view( v.torch);
+	load.view( v.door.room43);
+	load.view( v.g.looking);			[	view.52
+	load.view( v.g.pecking);			[	view.48
+	load.view( v.g.grabbing);		[	view.23
+
+
+	animate.obj( a.torch);
+	ignore.horizon( a.torch);
+	position( a.torch, 73, 86);
+	set.view( a.torch, v.torch);
+	draw( a.torch);
+
+	animate.obj( a.door);
+	ignore.blocks( a.door);
+	ignore.horizon( a.door);
+	set.view( a.door, v.door.room43);
+	set.cel( a.door, 0);
+	position( a.door, 21, 122);
+	draw( a.door);
+	stop.update( a.door);
+	
+	animate.obj( a.gwyth);
+	ignore.blocks( a.gwyth);
+	ignore.objs( a.gwyth);
+	ignore.horizon( a.gwyth);
+	set.view( a.gwyth, v.g.looking);
+	cycle.time( a.gwyth, three);
+	stop.motion( a.gwyth);
+	position( a.gwyth, 108, 113);
+	draw( a.gwyth);
+	
+	if (previous.room == 45)
+		{
+		position( ego, 132, 145);
+		set.loop( ego, 1);
+		}
+	else
+		{
+		if (previous.room == 46)
+			{
+			position( ego, 61, 165);
+			}
+		else
+			{
+			if (previous.room == 41)
+				{
+				position( ego, 50, 127);
+				}
+			else
+				{
+				if (previous.room == 42)
+					{
+					position( ego, 1, 140);
+					}
+				}
+			}
+		}
+
+	draw( ego);
+
+	badguy = f.hench;
+
+	g.sleep.timer = 2;				[	Hey, Gwythie! Wake up!!!
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 130, 164);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	if (posn( ego, 70, 100, 159, 150))	[	It's a gwyth.
+		{
+		print( 6);				[Gwythie looks hungry for Disnoid meat
+		}
+	else
+		{
+		distance( ego, a.door, work);
+		if (work < 30)
+			{
+			if (!door.open)
+		  		{
+				print( 9);		[	"It's a closed door.
+				}
+			else
+				{
+				if (!ready.to.get.stash)
+					{
+					print( 2);	[	"It's an open closet.
+					}
+				else
+					{
+					print( 3);	[	"It's your shit!
+					}
+				}
+			}
+		else
+			{
+			print( 1);				[	"It's a castle.
+			}
+		}
+	}
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (posn( ego, 15, 124, 31, 130))
+	{
+	set( have.match);
+	if (!door.open)
+  		{
+    		start.update( a.door);
+		print( 10);
+		end.of.loop( a.door, door.opened);
+		}
+	else
+		{
+		if (!ready.to.get.stash)
+			{
+			start.update( a.door);
+			reverse.loop( a.door, door.closed);
+			}
+		else
+			{
+			reset( ready.to.get.stash);
+			if (!object.used == u.magic.sword)	[	so you don't lose
+				{						[	use of sword
+				active.object = 0;
+				object.used = 0;
+				}
+			
+			work = INVENTORY;
+			object = SIZE_OF_INVENTORY;	[	Return everything that
+			:retrieve.inventory			[	was taken away in cell.
+			get.room.f( object, room);
+			if (room == current.room)
+				{
+				put.v( object, work);
+				}
+			--object;
+			if (object)
+				{
+				goto retrieve.inventory;
+				}
+			print( 8);			[	all your possessions are returned
+			reset( stuff.in.closet);
+			}
+		}
+	}
+
+
+[*****
+:use.it
+[*****
+
+			
+[*****
+:no.input
+[*****
+
+if (door.closed)
+	{
+	reset( door.closed);
+	reset( door.open);
+	stop.update( a.door);
+	}
+
+if (door.opened)
+	{
+	reset( door.opened);
+	set( door.open);
+	stop.update( a.door);
+	if (stuff.in.closet)
+		{
+		set( ready.to.get.stash);
+		}
+	}
+
+--g.sleep.timer;
+if (g.sleep.timer == 1)
+	{
+	start.cycling( a.gwyth);
+	random( awake.time.min, awake.time.max, g.awake.timer);
+	}
+
+--g.awake.timer;
+if (g.awake.timer == 1)
+	{
+	stop.cycling( a.gwyth);
+	random( sleep.time.min, sleep.time.max, g.awake.timer);
+	}
+
+--peck.delay;
+if (!peck.delay && !ego.already.caught)
+	{
+	start.cycling( a.gwyth);			[	whether asleep or not!
+	peck.delay = get.away.time;
+	if (posn( ego, 92, 126, 106, 138))	[	he's bird feed!
+		{
+		set( ego.already.caught);
+		g.sleep.timer = 0;
+		g.awake.timer = 0;
+		set.view( a.gwyth, v.g.grabbing);
+		set.cel( a.gwyth, 0);
+		x = -9;
+		y = 5;
+		reposition( a.gwyth, x, y);
+		grabbing.cel.count = 11;		[	3 cels X times 3
+		program.control( );
+		end.of.loop( a.gwyth, gwyth.grabbed.ego);
+		}		
+	else
+		{
+		if (posn( ego, 80, 120, 109, 140))	[	he's close, but no cigar
+			{
+			g.sleep.timer = 0;
+			g.awake.timer = 0;
+			x = -9;
+			y = 0;
+			reposition( a.gwyth, x, y);
+			set.view( a.gwyth, v.g.pecking);
+			set.cel( a.gwyth, 0);
+			end.of.loop( a.gwyth, peck.done);
+			}
+		}
+	}
+
+--grabbing.cel.count;
+if (grabbing.cel.count == 1)
+	{
+	erase( ego);
+	}
+
+if (gwyth.grabbed.ego)
+	{
+	reset( gwyth.grabbed.ego);
+	if (t.with.pig)
+		{
+		print( 7);		   		[	"HK wins, cause you & pig caught
+		certain.death = 1;
+		}
+	else
+		{
+		if (has( i.magic.sword))
+			{
+		 	print( 5);	   		[	"the HK got your sword.
+			drop( i.magic.sword);
+			certain.death = 1;
+			}
+		else
+			{
+			print( 4);
+			badguy = f.hench;		[	"go directly to jail!
+			new.room( 52);
+			}
+		}
+	}
+
+if (peck.done)
+	{
+	reset( peck.done);
+	set.view( a.gwyth, v.g.looking);
+	x = 9;
+	y = 0;
+	reposition( a.gwyth, x, y);
+	start.cycling( a.gwyth);
+	g.sleep.timer = 2;				[	catch you on the next frame
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (hit.special)					{new.room( 45);}
+if (edge.ego.hit == bottom)			{new.room( 46);}
+if (edge.ego.hit == top)				{new.room( 41);}
+if (edge.ego.hit == left)			{new.room( 42);}
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+

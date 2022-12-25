@@ -1,0 +1,178 @@
+[logics for room 2 -- lute in a tree? room
+
+%include "rm2.msg"
+%include "gamedefs"
+
+
+
+%define	seen.lute		 		lf0
+%define	pig.room.loaded		lf1
+%define	lute.tuning.done		lf2
+%define	lute.song.done			lf3
+%define	gwyth.room.loaded		lf4
+
+
+if (init.log)
+	{
+
+	set.horizon( 71);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);	[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+	load.sound( m.lute.song);
+	if (!tuned.lute)
+		{
+		load.sound( m.lute.tuning);
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	draw( ego);
+
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (posn( ego, 74, 149, 93, 162))		[	near the lute
+		{
+		if (lute.taken)
+			{
+			print( 6);
+			}
+		else
+			{
+			set( seen.lute);
+			print( 3);
+			}
+		}
+	else
+		{
+		if (posn( ego, 0, 0, 35, 167))
+			{
+			print( 1);
+			}
+		else
+			{
+			print( 2);
+			}
+		}
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+[*****
+:do.it
+[*****
+ 
+if (posn( ego, 74, 149, 93, 162))			[	near the "secret tree"
+	{	
+	set( have.match);
+	if (!seen.lute)
+		{
+		set( seen.lute);
+		print( 3);
+		}
+	else
+		{
+		if (!lute.taken)
+			{
+			set( lute.taken);
+			get( i.lute);
+			print( 4);
+			set( have.match);
+			}
+		else
+			{
+			print( 6);
+			set( have.match);
+			}
+		}
+	}
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (object.used == u.lute)
+	{
+	set( have.match);
+	if (!tuned.lute)
+		{
+		set( tuned.lute);
+		sound( m.lute.tuning, lute.tuning.done);
+		}
+	else
+		{
+		sound( m.lute.song, lute.song.done);
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (lute.tuning.done)
+	{
+	reset( lute.tuning.done);
+	print( 5);
+	}
+
+if (lute.song.done)
+	{
+	reset( lute.song.done);
+	print( 7);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == top)				{new.room( 22);}
+if (edge.ego.hit == right)			{new.room( 3);}
+if (edge.ego.hit == left)			{new.room( 1);} 
+if (edge.ego.hit == bottom)			{new.room( 7);}

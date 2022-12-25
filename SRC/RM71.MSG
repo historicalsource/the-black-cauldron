@@ -1,0 +1,22 @@
+[messages for room 71 -- into the sunset
+
+
+
+%message	1
+"We hope you've enjoyed your visit to Prydain, and
+ your success with \"The Black Cauldron.\""
+
+%message	2
+"You probably think you could have earned a higher score.
+ Of course, there's an easy way to find out:  play the game again."
+
+%message	3
+"Don't forget, if you make different decisions, the game will
+ be different. We hope you'll try again and again."
+
+%message	4
+"Congratulations!! You've played a tremendous game!!"
+
+%message	5
+"Since the game is over, you can only see the Status Screen."
+

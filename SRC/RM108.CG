@@ -1,0 +1,227 @@
+[logics for room 108 -- morva marsh
+
+%include	"rm108.msg"
+%include "gamedefs"
+
+
+
+%define	ego.airborne			df0
+%define	in.all.the.way			df1
+%define	ego.sinking			df2
+%define	ego.on.ground			df3
+%define	ready.to.land			df4
+%define	start.flying			df5
+
+
+
+if (init.log)
+	{
+	set( quicksand);				[	for getting a drink
+
+	load.view( v.ego.sinking);
+	if (has( i.fairy.dust))
+		{
+		load.view( v.ego.fairy);
+		}
+
+	if (t.is.fairy)
+		{
+		ignore.blocks( ego);
+		ignore.objs( ego);
+		set( ignore.water);
+
+		set.view( ego, v.ego.fairy);
+		step.size( ego, four);
+		last.cel( ego, work);
+		set.cel.f( ego, work);
+		stop.cycling( ego);
+		reset( keep.cycling);
+		set.priority( ego, 15);
+		}
+
+	return();
+	}
+
+
+
+if (certain.death)
+	{
+	return();
+	}
+
+if (t.is.fairy)
+	{
+	set.priority( ego, 15);
+	}
+
+
+if (useit)
+	{
+	if (object.used == u.fairy.dust)	[	using the white powdery substance
+		{
+		set( have.match);
+		if (t.is.fairy)
+			{
+			program.control( );
+			print( 8);
+			set( stop.flying);
+			}
+		else
+			{
+			set( start.flying);
+			}
+		}
+
+	if (object.used == u.water.flask)	[	"you can't drink this stuff!
+		{
+		set( have.match);
+		print( 6);
+		}
+	}
+
+
+[*****
+[Handle flying, takeoffs, and landings.
+[*****
+
+if (start.flying)
+	{
+	reset( start.flying);
+	reset( ego.sinking);
+	reset( in.all.the.way);
+
+	--flight.count;
+	if (!flight.count)
+		{
+		drop( i.fairy.dust);
+		}
+
+[		flight.seconds = flight.seconds.init;
+[		flight.minutes = flight.minutes.init;
+	flight.minutes = 0;
+	flight.seconds = 7;
+
+	ignore.blocks( ego);
+	ignore.objs( ego);
+	stop.motion( ego);
+	program.control( );
+	set( ignore.water);
+	set.priority( ego, 15);
+	set.view( ego, v.ego.fairy);
+	set.cel( ego, 0);
+	cycle.time( ego, four);
+	set( keep.cycling);
+	end.of.loop( ego, ego.airborne);
+	}
+
+
+if (ego.airborne)					[	fairy.ego is in the air
+	{
+	reset( ego.airborne);
+	reset( keep.cycling);
+	set( t.is.fairy);
+	step.size( ego, four);
+	start.motion( ego);
+	player.control( );
+	print( 5);					[	"I'm a bird
+	}
+
+
+if (aSecondPassed && t.is.fairy)
+	{
+	--flight.seconds;
+	if (flight.minutes && !flight.seconds)
+		{
+		--flight.minutes;
+		flight.seconds = 60;
+		}
+
+	if (!flight.minutes)
+		{
+		if (flight.seconds == flight.warning.1)		{print( 2);}
+		if (flight.seconds == flight.warning.2)		{print( 3);}
+		if (flight.seconds == 1)					{set( stop.flying);}
+		}
+	}
+
+
+if (stop.flying)
+	{
+	reset( stop.flying);
+	object.used = 0;
+	active.object = 0;
+	print( 7);
+	if (current.room == 15)	{move.obj( ego,  94,  59, 0, ready.to.land);}
+	if (current.room == 16)	{move.obj( ego,  88, 158, 0, ready.to.land);}
+	if (current.room == 20)	{move.obj( ego, 106, 143, 0, ready.to.land);}	
+	if (current.room == 21)	{move.obj( ego, 140, 111, 0, ready.to.land);}
+	}
+
+
+if (ready.to.land)
+	{
+	reset( ready.to.land);
+	flight.seconds = 0;
+	flight.minutes = 0;
+	stop.motion( ego);
+	program.control( );
+	start.cycling( ego);
+	last.cel( ego, work);
+	set.cel.f( ego, work);
+	set( keep.cycling);
+	reverse.loop( ego, ego.on.ground);
+	}
+
+
+if (ego.on.ground)
+	{
+	reset( ego.on.ground);
+	reset( t.is.fairy);
+	reset( ignore.water);
+	reset( keep.cycling);
+	release.priority( ego);
+	start.motion( ego);
+	player.control( );
+	observe.blocks( ego);
+	observe.objs( ego);
+	set.view( ego, v.ego);
+	cycle.time( ego, one);
+	step.size( ego, one);
+	print( 4);					[	"you begin walking again
+	}
+
+
+
+[*****
+[Handle sinking in the mud.
+[*****
+
+if (on.water &&
+    !ignore.water &&
+    !ego.sinking) 
+	{
+	set( ego.sinking);
+	program.control();
+	stop.motion( ego);
+	set( keep.cycling);
+	set.view( ego, v.ego.sinking);
+	cycle.time( ego, four);
+	set.cel( ego, 0);
+	set( keep.cycling);
+	end.of.loop( ego, in.all.the.way);
+	print( 1);
+	}
+
+
+if (in.all.the.way)
+	{
+	reset( in.all.the.way);
+	erase( ego);
+	certain.death = 1;
+	}
+
+
+[*****
+:exit
+[*****
+

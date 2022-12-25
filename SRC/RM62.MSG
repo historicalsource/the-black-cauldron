@@ -1,0 +1,134 @@
+[messages for room 62 -- fairy cave
+
+
+
+%message	1
+"You have descended into the hidden land of the Fair Folk."
+
+%message	2
+"\"And just who is this falling into my Kingdom!!\"
+ shouts King Eiddileg of the Fair Folk. \"That whirlpool was
+ supposed to keep people out, not bring them in!\""
+
+%message	3
+"\"My name is Taran, Assistant Pig-Keeper of Caer Dallben,\"
+ you reply. \"You requested help from Dallben the Mystic --
+ I am here to assist you.\""
+
+%message	4
+"\"You?\" the King shouts in disbelief. \"The great Dallben
+ sends me a Pig-Keeper -- and an Assistant Pig-Keeper, at
+ that! I can't believe it. If you truly represent Dallben,
+ you would offer me something to show your respect.\""
+
+%message	5
+"\"You have much to learn about the Fair Folk!\" says the King.
+ \"Be gone, you imposter!!\"  King Eiddileg sprinkles you with
+ a fine powder, and you float away, as light as a feather."
+
+%message	6
+"\"Thank you for your gift, Taran,\" says King Eiddileg, \"you
+ represent Dallben quite admirably. I'm so glad it's really
+ you. Your remarkable Hen Wen is also here, and quite safe."
+
+%message	7
+""
+
+%message	8
+""
+
+%message	9
+""
+
+%message	10
+"\"Since you last saw Dallben, the Horned King has dispatched
+ legions of warriors to find the Black Cauldron. If he
+ succeeds in finding it, he'll destroy our civilization!"
+
+%message	11
+"\"Taran, I beg you:  find the Black Cauldron and DESTROY
+ IT!"
+
+%message	12
+"\"I give you this magic mirror and enough Fair Folk flying
+ dust for five flights.\""
+
+%message	13
+" "
+
+%message	14
+"\"There's no need to use anything else, Taran,\" says King
+ Eiddileg. \"Just hurry! Find the Black Cauldron and
+ destroy it!\""
+
+%message	15
+"\"Goodbye, King Eiddileg,\" you say. \"I'll do my very best!\""
+
+%message	16
+"\"Why don't you try using your new flying dust, Taran?\" says
+ the King. \"Sprinkle it whenever you want to start or stop
+ flying.\""
+
+%message	17
+"King Eiddileg is very small, but looks friendly."
+
+%message	18
+""
+
+%message	19
+"A strange feeling comes over you. Looking down, you notice
+ you're floating in mid-air! You can fly!!"
+
+%message	20
+"\"And just who is this falling into my Kingdom!!\"
+ shouts King Eiddileg of the Fair Folk. \"That waterfall was
+ supposed to keep people out!\""
+
+%message	21
+"\"Just sprinkle the flying dust whenever you want to stop or
+ start flying. Good luck, Taran.\""
+
+%message	22
+""
+
+%message	23
+""
+
+%message	24
+"You offer the lute to King Eiddileg."
+
+%message	25
+"You offer the harp to King Eiddileg."
+
+%message	26
+"You sprinkle the flying dust over your head."
+
+
+
+
+[	Which paragraph we print depends on the value of "pig.safe" flag:
+[		%define	by.parapet		1
+[		%define	by.gwystyl		2
+[		%define	by.eilonwy		3
+[		%define	by.burial.chamber	4
+[		%define	by.drawbridge		5
+
+%message	27						[	IF ANYTHING ELSE, HE CHEATED
+"Error; pig not safe!"
+
+%message	28						[	if 1, OR
+"\"She found the same secret entrance that you used, up by the whirlpool."				
+
+%message	29						[	if 2, OR
+"\"Gwystyl brought her to us through our secret, underground tunnels."				
+
+%message	30						[	if 3, OR
+"\"Eilonwy brought her here after they escaped together from
+ the Horned King's castle."	
+
+%message	31						[	if 4, OR
+"\"She found us after escaping from the Horned King's castle burial chamber."			
+
+%message	32						[	if 5, OR
+"\"She found us after escaping with you across the drawbridge."				
+

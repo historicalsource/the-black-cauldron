@@ -1,0 +1,521 @@
+[logics for room 33 -- outside the drawbridge
+
+%include	"rm33.msg"
+%include "gamedefs"
+
+
+
+%define	chance.hench.comes	80		[	odds are 1 in 3 of hench attack
+%define	bridge.speed		15
+%define	loop.up			0
+%define	loop.middle		1
+%define	loop.down			2
+%define	wagon.hop.distance	20		[	define constants
+%define	not.even.close		50
+%define	etd				250 
+%define	this.rooms.bottom	128
+%define	off.top.of.bridge	87
+
+
+%define	lower.the.bridge	lf0		[	define locals
+%define	raise.the.bridge	lf1
+%define	lower.bridge.done	lf2
+%define	bridge.is.up		lf3
+%define	hench.in.castle	lf4
+%define	hench.grab.done	lf5
+%define	swing.done		lf6 
+%define	splashing			lf7
+%define	raise.bridge.done	lf9
+%define	hit.water			lf11
+%define	wagon.this.time	lf12
+%define	already.dying		lf14
+%define	he.sees.you		lf16
+
+
+%define	bridge.loop.count	lv8 
+%define	departure.time		lv10
+%define	bridge.brakes		lv13
+%define	countdown			lv15
+
+
+%object	a.wagon			medium1
+%object	a.bridge 			monster1
+
+
+
+if (init.log)						[	initialize room
+	{
+	reset( t.on.wagon);
+	ego.climbing = 0;
+	bridge.brakes = bridge.speed;
+
+	set.horizon( 78);
+
+	  set( impotable.water);
+	  set( prevent.sword.message);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	room.bottom = this.rooms.bottom;
+	load.view( v.ego.falling);
+	load.view( v.ego.drowning);
+	load.sound( s.splash);
+	load.sound( s.ego.falling);
+
+	load.view( v.drawbridge.exterior);
+
+	animate.obj( a.bridge);
+	set.view( a.bridge, v.drawbridge.exterior);
+	ignore.objs( a.bridge);
+	ignore.blocks( a.bridge);
+
+	if (chain.sliced)
+		{
+		reset( bridge.is.up);
+		bridge.loop.count = 3;
+		set.loop( a.bridge, loop.down);
+		set.priority( a.bridge, 8);
+		position( a.bridge, 65, 93);
+		}
+	else
+		{
+		set( bridge.is.up);
+		set.priority( a.bridge, 15);
+		position( a.bridge, 104, 94);
+		set.loop( a.bridge, loop.up);	[	bridge up; is there a hench?
+		bridge.loop.count = 0;
+		random( 0, 255, work);
+		if (!has( i.magic.sword) &&
+			work < chance.hench.comes && 
+			previous.room != 37 &&
+			!on.water)			[	odds are, no henchie
+			{
+			set( wagon.this.time);	[Yippee!  Here come da meatwagon!!
+			}
+		}
+
+	if (force.a.test)
+		{
+		set( wagon.this.time);
+		}
+
+	if (wagon.this.time)			[handle the henchman and the wagon
+		{
+		set( lower.the.bridge);		[if wagon, must lower the drawbridge
+
+[		load.view( v.hench);		[	January 16, 1987	is this ok?
+		load.view( v.h.grabbing);
+		load.view( v.hench.stunned);
+		load.view( v.h.pulling.meatwagon);
+		load.view( v.meatwagon);
+
+		load.sound( s.coocoo);
+		
+		animate.obj( a.hench);
+		set.view( a.hench, v.h.pulling.meatwagon);
+		work = 2;
+		cycle.time( a.hench, work);
+		position( a.hench, 26, 89);
+		ignore.blocks( a.hench);
+		draw( a.hench);				[	which includes the wagon
+		stop.update( a.hench);
+		
+		animate.obj( a.wagon);   		[	draw later, if needed
+		set.view( a.wagon, v.meatwagon);
+		ignore.objs( a.wagon);
+
+		departure.time = etd;
+		}
+
+	draw( a.bridge);
+
+	if (previous.room == 37)			[	from parapet
+		{
+		position( ego, 36, 80);
+		}
+	else
+		{
+		if (previous.room == 47)		[	from forecourt
+			{
+			position( ego, 110, 89);
+			move.obj( ego, 108, 89, 0, done);
+			}
+		else						[ 	from gator arcade.
+			{
+			if (!drown.swim)
+				{
+				position( ego, 149, 164);
+				}
+			else
+				{
+				position( ego, 140, 151);
+				set( on.water);
+				}
+			}
+		}
+
+	draw( ego);
+
+	if (!lower.the.bridge)
+		{
+		stop.update( a.bridge);
+		bridge.brakes = bridge.speed;
+		}
+
+	show.pic();
+
+	if (t.with.pig)
+		{
+		reset( t.with.pig);
+		pig.safe = by.drawbridge;
+		score += 20;
+		print( 13);
+		}
+
+	return();
+
+	}							[	end init.logs -- FINALLY!
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+if (!doit && !useit)  			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (wagon.this.time && !t.on.wagon && !ego.already.caught)
+	{
+	distance( ego, a.hench, work);
+	if (work < wagon.hop.distance)
+		{
+		set( t.on.wagon);
+		erase( ego);
+		print( 2);					[	"You leap into the wagon
+		set( have.match);
+		departure.time = 2;			[	"now leaving on track 1!!
+		}
+	}
+
+goto no.input;
+
+
+[******
+:use.it							[	pressed "use current obj"
+[******
+
+if (object.used == u.magic.sword && 
+	!ego.falling && 
+	!on.water)
+	{
+	print( 3);					[	"You swing the magic sword...
+	if (!wagon.this.time)
+		{
+		print( 8);				[	"doesn't it sparkle
+		}
+	else						[	we have a hench; is he close?
+		{
+		distance( ego, a.hench, work);
+		if (work > not.even.close)	[not even close
+			{			 
+			print( 8);			[	"see it sparkle!
+			}
+		else											   
+			{
+			if (work > striking.distance)	[in the ballpark
+				{
+				print( 4);			[	"and miss the henchman!
+				}
+			else
+				{
+				start.update( a.hench);
+				set.view( a.hench, v.hench.stunned);
+				work = 3;
+				cycle.time( a.hench, work);
+				stop.motion( a.hench);
+				get.posn( a.hench, x, y);
+				position.f( a.wagon, x, y);
+				stop.motion( a.wagon);
+				draw( a.wagon);
+				x += 20;
+				y += 1;
+				position.f( a.hench, x, y);
+				hench.stunned = hench.stunned.time;
+				sound( s.coocoo, coocoo);
+				ignore.objs( a.hench);
+				set.priority( a.hench, 4);
+				stop.motion( a.hench);
+				reset( wagon.this.time);
+				departure.time = 0;	[	no wagon rides!
+				print( 10);		[	"and nailed that s.o.b.
+				}
+			}
+		}
+	}
+
+
+[********
+:no.input							[	all this happens 9 times/second
+[********
+
+
+--departure.time;
+if (departure.time == 1)
+	{
+	start.update( a.hench);
+	move.obj( a.hench, 125, 89, 0, hench.in.castle);
+	}
+
+if (hench.in.castle)
+	{
+	reset( hench.in.castle);
+	if (t.on.wagon)
+		{
+		if (!entered.castle)
+			{
+			set( entered.castle);
+			score += 18;
+			}
+		new.room( 47);
+		}
+	else
+		{
+		erase( a.hench);
+		reset( wagon.this.time);
+		set( raise.the.bridge);
+		}
+	}
+
+if  (wagon.this.time && 
+	!hench.stunned &&
+	!ego.already.caught)
+	{								[	did ego pass near henchman?
+	get.posn( ego, ego.x, ego.y);
+	get.posn( a.hench, x, y);
+	x += 10;						[	if ego is 10 pixels right, of 
+	work = y;						[	hench's basepoint, & within 6 
+	y -= 6;						[	pixels Y, hench sees him!
+	work += 6;
+	if  (ego.x > x && 
+		ego.y > y && 
+		ego.y < work)
+		{
+		set( he.sees.you);
+		}
+	}
+
+if (!t.on.wagon && 
+	wagon.this.time &&
+	posn( ego, 73, 88, 82, 93))
+	{
+	set( he.sees.you);
+	}
+
+if (he.sees.you && !ego.already.caught)
+	{
+	set( ego.already.caught);
+	stop.motion( ego);
+	departure.time = 0;
+	program.control( );
+	get.posn( a.hench, x, y);
+	start.update( a.hench);
+	position.f( a.wagon, x, y)
+	position.f( a.hench, ego.x, ego.y);
+	set.view( a.hench, v.h.grabbing);
+	stop.motion( a.hench);
+	work = 2;
+	cycle.time( a.hench, work);
+	set.cel( a.hench, 0);
+	end.of.loop( a.hench, hench.grab.done);
+	countdown = 7;
+	draw( a.wagon);
+	}
+
+
+--countdown;
+if (countdown == 1)
+	{
+	erase( ego);
+	}
+
+if (hench.grab.done)
+	{
+	reset( hench.grab.done);
+	if (has( i.magic.sword))
+		{
+		drop( i.magic.sword);
+		certain.death = 1;
+		print( 11);				[	"You're too slow
+		}
+	else
+		{
+		print( 12);
+		set.view( ego, v.ego);
+		badguy = f.hench;
+		reset( ignore.special);
+		observe.objs( ego);
+		observe.blocks( ego);
+		reset( ignore.water);
+		new.room( 52);
+		}
+	}
+
+if (!bridge.is.up &&
+	posn( ego, 70, 88, 102, 92))		[	on the drawbridge
+	{
+	set( ignore.special);
+	ignore.objs( ego);
+	ignore.blocks( ego);
+	set( ignore.water);
+	}
+else
+	{
+	observe.objs( ego);
+	observe.blocks( ego);
+	reset( ignore.water);
+	reset( ignore.special);
+	}
+
+if (hit.special && !ignore.special && !ego.falling)
+	{
+	set( ego.falling);
+	set( ignore.water);
+	ignore.blocks( ego);
+	ignore.objs( ego);
+	set.view( ego, v.ego.falling);
+	set( keep.cycling);
+	get.posn( ego, x, y);
+	if (y == off.top.of.bridge)
+		{
+		set.priority( ego, 7);
+		}
+	else
+		{
+		set.priority( ego, 15);
+		}
+	y = room.bottom;
+	if (x < 55)
+		{
+		x = 55;
+		}
+	sound( s.ego.falling, done);
+	step = 3;
+	move.obj.f( ego, x, y, step, hit.water);
+	}
+
+if (hit.water)
+	{
+	reset( hit.water);
+	reset( ignore.water);
+	set( on.water);
+	}
+
+if (on.water && !ignore.water && !already.dying)
+	{
+	set( already.dying);
+	set.view( ego, v.ego.drowning);
+	stop.motion( ego);
+	force.update( ego);
+	set( keep.cycling);
+	program.control();
+	print( 6);					[	death here
+	timer.1 = drowning.time;
+	}
+
+--timer.1;
+if (timer.1 == 1)
+	{
+	erase( ego);
+	certain.death = 1;
+	}
+
+
+--bridge.brakes;
+if (lower.the.bridge)
+	{
+	if (bridge.loop.count == 0 && bridge.brakes == 1)
+		{
+		++bridge.loop.count;
+		start.update( a.bridge);
+		x = -27;
+		y = 1;
+		reposition( a.bridge, x, y);
+		set.loop( a.bridge, loop.middle);
+		bridge.brakes = bridge.speed;
+		}
+
+	if (bridge.loop.count == 1 && bridge.brakes == 1)
+		{
+		++bridge.loop.count;
+		x = -8;
+		y = -1;
+		reposition( a.bridge, x, y);
+		set.loop( a.bridge, loop.down);
+		bridge.brakes = 2;
+		}
+
+	if (bridge.loop.count == 2 && bridge.brakes == 1)
+		{
+		reset( lower.the.bridge);
+		reset( bridge.is.up);
+		set.priority( a.bridge, 8);
+		stop.update( a.bridge);
+		}
+	}
+
+
+if (raise.the.bridge)
+	{
+	if (bridge.loop.count == 2)
+		{
+		--bridge.loop.count;
+		start.update( a.bridge);
+		set( bridge.is.up);
+		x = 8;
+		y = 1;
+		reposition( a.bridge, x, y);
+		set.loop( a.bridge, loop.middle);
+		bridge.brakes = bridge.speed;
+		}
+
+	if (bridge.loop.count == 1 && bridge.brakes == 1)
+		{
+		--bridge.loop.count;
+		set.priority( a.bridge, 15);
+		x = 27;
+		y = -1;
+		reposition( a.bridge, x, y);
+		set.loop( a.bridge, loop.up);
+		bridge.brakes = 2;
+		}
+
+	if (bridge.loop.count == 0 && bridge.brakes == 1)
+		{
+		reset( raise.the.bridge);
+		stop.update( a.bridge);
+		}
+	}
+
+if ((posn( ego,  35, 115, 159, 167) ||
+	posn( ego,  62,  86, 159, 114)))
+	{
+	set( near.water);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (posn( ego, 120, 50, 130, 92))		{new.room( 47);}
+if (edge.ego.hit == right)			{new.room( 34);}
+if (edge.ego.hit == top)				{new.room( 37);}

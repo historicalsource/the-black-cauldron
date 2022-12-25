@@ -1,0 +1,15 @@
+[messages for room 38 -- left side of hall
+
+
+
+%message	1
+"You are inside the Horned King's castle. There is a
+ tapestry hanging on the far wall."
+
+%message	2
+"You can go through the old window, but you realize that
+ Hen Wen can't hold on to the vines."
+
+%message	3
+"You see the old window on the south wall where you entered."
+

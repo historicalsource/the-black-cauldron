@@ -1,0 +1,11 @@
+[messages for room 4 -- Caer Dallben east
+
+
+
+%message	1
+"Caer Dallben is certainly an enchanting place."
+
+%message	2
+"You are at the fence, but you can't go over, under or through it."
+
+

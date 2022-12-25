@@ -1,0 +1,106 @@
+[logics for room 41 -- the castle kitchen
+
+%include "rm41.msg"
+%include "gamedefs"
+
+
+%define	hench.comes.time		44
+
+%define	pig.room.loaded		lf0
+
+%define	hench.comes.timer		lv0
+
+%object	a.torch			small1
+%object	a.al				large1
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set( hench.program.control);
+	hench.x = 77;
+	hench.y = 160;
+	hench.comes.timer = hench.comes.time;
+
+	load.logics( castle.interior);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	load.view( v.torch);
+	animate.obj( a.torch);
+	set.view( a.torch, v.torch);
+	position( a.torch, 135, 64);
+
+	load.view( v.al);
+	animate.obj( a.al);
+	position( a.al, 70, 127);
+	set.view( a.al, v.al);
+
+
+	draw( a.torch);
+	draw( a.al);
+	wander( a.al);
+
+	position( ego, 75, 166);
+	set.loop( ego, 3);
+	draw( ego);
+
+	call( castle.interior);
+	position( a.hench, 77, 147);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (t.with.pig)
+		{
+		print( 1);
+		}
+	else
+		{
+		print( 2);
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+--hench.comes.timer;
+if (hench.comes.timer == 1)
+	{
+	set( make.henchman.come);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (edge.ego.hit == bottom)		{new.room( 43);}
+
+call( castle.interior);
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+

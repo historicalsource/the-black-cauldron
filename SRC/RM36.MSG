@@ -1,0 +1,49 @@
+[messages for room 36 -- castle wall top
+
+
+
+%message	1
+"You are hanging from the castle wall by your fingertips,
+ as henchmen throw rocks at you!"
+
+%message	2
+"There seems to be an old window here, but it's covered with
+ thick vines."
+
+%message	3
+"You can't get through the vines."
+
+%message	4
+"This dagger easily cuts through these vines."
+
+%message	5
+"You are at an ancient castle window."
+
+%message	6
+"Cleverly, you slip through the forgotten window into the
+ Horned King's castle."
+
+%message	7
+"Using the dagger, you easily prune the vines. You seem to
+ have a better grasp on the situation now."
+
+%message	8
+"You trim away a few more vines."
+
+%message	9
+"Ow! The rock crashes into you! You push backwards off the
+ wall, attempting a swan dive into the moat."
+
+%message	10
+"Ouch! You ram your head into the overhanging parapet."
+
+%message	11
+"You have slipped outside onto the castle wall. Hen Wen was
+ left behind and has surely been captured by the henchmen."
+
+%message	12
+"You cannot hold onto the smooth stones!"
+
+%message	13
+"Since you've removed the vines covering the window, you could climb in
+ the window."

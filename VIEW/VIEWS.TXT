@@ -1,0 +1,91 @@
+[
+[	VIEWS.TXT
+[
+[		THE BLACK CAULDRON
+[
+[	Thursday, April 2, 1987 at 9:47 a.m.
+[
+
+
+
+%viewtext	150
+"This roomy knapsack can hold a surprising amount."
+
+%viewtext	151
+"Hen Wen just loves dried corn like this."
+
+%viewtext	152
+"This pot of gruel makes a tasty dish... if you're a pig."
+
+%viewtext	153
+"This food wallet must be magic, since it never seems to run out of food."
+
+%viewtext	154
+"You have some bread, baked at Caer Dallben."
+
+%viewtext	155
+"This is your trusty water bag."
+
+%viewtext	156
+"The water is inside your water bag."
+
+%viewtext	157
+"Dallben Delicious apples are your favorite... crisp and tasty."
+
+%viewtext	158
+"These cookies look delicious!"
+
+%viewtext	159
+"This coil of rope is about 75 feet long."
+
+%viewtext	160
+"The dagger is quite sharp; its blade glistens in the light."
+
+%viewtext	161
+"Jewels glisten in the handle of your sword; you can feel the magic in your
+ hand."
+
+%viewtext	162
+"Fflewddur Fflam's harp can make beautiful music, in the hands of an artist."
+
+%viewtext	163
+"This lute makes soft, beautiful sounds when you strum its strings."
+
+%viewtext	164
+"The bag contains a marvelous powder that King Eiddileg said would make you
+ fly."
+
+%viewtext	165
+"These are the keys to the Horned King's dungeon."
+
+%viewtext	166
+"This tin cup is scratched and bent from many years in the dungeon."
+
+%viewtext	167
+"Gwystyl gave you this magic word, but couldn't tell you where to use it."
+
+%viewtext	168
+"This mirror shows a person's inner self, instead of his looks."
+
+%viewtext	169
+"You have a magic Book of Knowledge; now you know almost everything, but you
+ miss your friend, Gurgi."
+
+%viewtext	170
+"This Pot Of Gold has made you the wealthiest man in Prydain; but you miss
+ your friend, Gurgi."
+
+%viewtext	171
+"This Hero Shield has made you the greatest warrior in all Prydain; but, you
+ always wonder if you could have done more."
+
+%viewtext	172
+"This Suit of Armor has made you invincible in battle; but, could you have
+ accomplished more without it?"
+
+%viewtext	173
+"You have over half of the loaf of bread left."
+
+%viewtext	174
+"You have a little bread left."
+

@@ -1,0 +1,27 @@
+[messages for room 2 -- 
+
+
+
+%message	1
+"You are at the edge of the Dark Forest. Beware!"
+
+%message	2
+"The forest is a beautiful sight."
+
+%message	3
+"You discover a musical lute inside a hole in this tree.
+ (You could always take the lute and run.)"
+
+%message	4
+"You take the lute and realize that it is slightly out
+ of tune." 
+
+%message	5
+"After a brief tuning, the lute sounds better."  
+
+%message	6
+"This is the tree where you found the lute."
+
+%message	7
+"For an Assistant Pig-Keeper, you make beautiful music."	
+

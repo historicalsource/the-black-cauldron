@@ -1,0 +1,100 @@
+[logics for room 101 -- swimming room
+
+%include	"rm101.msg"
+%include "gamedefs"
+
+
+
+if (init.log)
+	{
+	load.view( v.ego.drowning);
+	load.view( v.ego.swimming);
+	}
+
+
+if (ignore.water)
+	{
+	goto exit;
+	}
+
+
+if (on.water) 
+	{
+	if (drown.swim == 0)	
+		{
+		set( keep.cycling);
+		drown.duration = 250;
+
+		if (!poisoned.water)
+			{
+			set.view( ego, v.ego.swimming);
+			drown.swim = swimming;
+			object.on.water( ego);
+			}
+		else 
+			{
+			kill.time = drowning.time;
+			drown.swim = drowning;
+			stop.motion( ego);
+
+			if (no.on.water) 
+				{
+				reposition( ego, delta.x, delta.y);
+				}
+			else 
+				{
+				object.on.water( ego);
+				}
+
+			if (ego.x > 139)
+				{
+				ego.x = 139;
+				}
+
+			reposition.to.v( ego, ego.x, ego.y);
+			set.view( ego, v.ego.drowning);
+			}
+		}
+	}
+
+
+--drown.duration;
+if (!on.water && drown.swim == swimming)
+	{
+	reset( keep.cycling);
+	drown.swim = 0;
+	set.view( ego, v.ego);
+
+	if (no.on.land)
+		{
+		reposition( ego, delta.x, delta.y);
+		}
+	else
+		{
+		object.on.land( ego);
+		}
+	}
+
+
+--kill.time;
+if (kill.time == 11)
+	{
+	print( 1);
+	}
+
+if (kill.time == 1)
+	{
+	erase( ego);
+	certain.death = 1;
+	}
+
+
+[*****
+:exit
+[*****
+
+reset( no.on.water);
+reset( no.on.land);
+delta.x = 0;
+delta.y = 0;
+

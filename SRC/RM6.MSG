@@ -1,0 +1,18 @@
+[messages for room 6 -- another rapids room
+
+
+
+%message	1
+"The forest here is dense. The river is difficult to
+ cross because it is filled with turbulent rapids."
+
+%message	6
+"Look out! The powerful rapids of the river pull
+ you down. Better not try to cross here, if you ever pass this way again."
+
+%message	7
+"The rapids are turbulent and treacherous. This is not
+ a good place to dive in."
+
+%message	8
+"There is nothing else here."

@@ -1,0 +1,126 @@
+[messages for room 12 -- the pot swapper
+
+
+
+%message	1
+"This lake makes a beautiful setting for a pleasant
+ afternoon. But, can you afford to spend an afternoon here?"
+
+%message	2
+"You always miss your friend, Gurgi, and wonder if
+ you could have done better in your quest."
+
+%message	3
+"\"Well, young Taran, things are not working out as you
+ expected, are they?\" cackle the witches. \"Being a Great
+ Hero is not all it's cracked up to be! Since you won't
+ be using it, we've decided we want our cauldron back.\""
+
+%message	4
+"\"Of course, we'll not steal it; we'll trade for it.
+ Taran, we offer you this wonderous book, containing all the
+ knowledge in the universe. Trade the cauldron
+ for this and you'll be the wisest man in all Prydain.\""
+
+%message	5
+"You take the book of knowledge, and become the wisest
+ man in all Prydain. For the rest of your life, you wonder
+ if you made the right choice."
+
+%message	6
+"\"It's your choice, Assistant Pig-Keeper. We won't
+ wait all day, though.\""
+
+
+%message	7
+"\"If you don't want that, how about this:
+ the pot of gold from the end of the rainbow.
+ If you take this treasure, you will be the richest person
+ in all Prydain!\""
+
+%message	8
+"You take the pot of gold, and become the richest man
+ in all Prydain. You live out the rest of your life in
+ luxury, but discover that money is not the ultimate
+ answer to happiness."
+
+%message	9
+"\"You drive a hard bargain, Pig Boy. Here is our final
+ offer. Give us the cauldron and we'll give you back your friend, Gurgi.\""
+
+%message	10
+"You hold Gurgi in your arms, and long for the simpler days
+ as an Assistant Pig-Keeper. You miss Gurgi, and as the
+ tears well up in your eyes..."
+
+%message	11
+"Wait! What's this?!"
+
+%message	12
+"\"Gurgi! You're alive!!\" you exclaim."
+
+%message	13
+"Gurgi says, \"Hello, Master. Surely you have some munchings
+ and crunchings for an old friend?\""
+
+%message	14
+"\"Of course, we'll not just take it -- we'll trade for it.
+ Taran, we offer you this magnificent warrior's shield.
+ With it you could be the most courageous fighter in all Prydain.\""
+
+%message	15
+"You take the warrior's shield, and become the bravest
+ warrior in all Prydain. But you wonder if you might
+ have done better with your life."
+
+%message	16
+"\"If you don't want that, how about this:
+ a magic suit of impenetrable armor. It will
+ protect you from all mortal weapons and you'll live
+ to a ripe old age!\""	
+
+%message	17
+"You take the magical suit of armor, and live to be an old,
+ old man. But you wonder if you might have accomplished
+ more with your empty life."
+
+%message	18
+"\"You drive a hard bargain, Pig Boy. Here is our final
+ offer. Give us the cauldron and you'll have your magic
+ sword back.\""
+
+%message	19
+"You once again hold your special sword in your hand.
+ Now immortal, you live to a ripe old age,
+ fight many battles, and, thanks to the sword, always
+ emerge victorious."
+
+%message	20
+"Bards sing of your victories, and your wisdom as a
+ ruler is known throughout the world. The people of
+ Prydain admire you and sing of your triumphs."
+
+%message	21
+"The book looks as if it could hold all the knowledge
+ in the world."
+
+%message	22
+"The pot of gold is tempting indeed."
+
+%message	23
+"Your dear friend is back."
+
+%message	24
+"The shield would protect you forever."
+
+%message	25
+"The suit of armor does look impenetrable."
+
+%message	26
+"Your old friend Dyrnwyn is back at last."
+
+%message	27
+"You lift the lifeless body of your friend into your arms."
+%message	28
+"The evil Black Cauldron is floating in the middle of the formerly
+ peaceful lake."

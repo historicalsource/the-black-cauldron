@@ -1,0 +1,39 @@
+[messages for room 100 -- the death room
+
+
+
+%message	1
+""
+
+%message	2
+"You're too weak to continue. If only you had eaten
+ something along the way..."
+
+%message	3
+"You can no longer continue, due to dehydration. Try
+ drinking water occasionally next time."
+
+%message	4
+"Your heart is broken. Hen Wen has revealed
+ all to the Horned King, and Prydain is filled with evil."
+
+%message	5
+"The green, slimy, moat water makes you choke and cough. You
+ die an ugly death."
+
+%message	6
+""
+
+%message	7
+"You have allowed too many skeletons to escape the Horned
+ King's castle."
+
+%message	8
+"Oh no, Taran. The Horned King puts you in the
+ Black Cauldron, and evil rules Prydain forever."
+
+%message	9
+"The fall was just too far to survive."
+
+%message	10
+"Ribbit. Ribbit."

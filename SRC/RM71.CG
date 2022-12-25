@@ -1,0 +1,287 @@
+[logics for room 71 -- into the sunset
+
+%include	"rm71.msg"
+%include "gamedefs"
+
+
+%define	at.first.crest			lf0
+%define	at.first.valley		lf1
+%define	at.second.crest		lf2
+%define	at.second.valley		lf3
+%define	at.third.crest			lf4
+%define	all.done				lf5
+%define	cloud1.done			lf6
+%define	cloud2.done			lf7
+%define	verse1.done			lf8
+%define	verse2.done			lf9
+%define	verse3.done			lf10
+%define	time.to.exit			lf11
+
+%define	a.good.score			lv11
+
+%object	a.eilonwy				small1
+%object	a.ff					medium1
+%object	a.dallben				large1
+%object	a.cloud1				large2
+%object	a.cloud2				giant1
+
+
+if (init.log)						[	initialize room
+	{
+	certain.winner = 0;
+	a.good.score = max.score;		[	adjust score
+	a.good.score -= 15;
+
+	water.timer.1  = 0;
+	water.timer.2  = 0;
+	food.timer.1   = 0;
+	food.timer.2   = 0;
+	flight.seconds = 0;
+	flight.minutes = 0;
+	pig.timer.1    = 0;
+	pig.timer.2    = 0;
+
+	program.control( );
+	set( out.of.memory);
+	set( game.over);
+
+	set.horizon( 1);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.sound( m.dallben);
+
+	load.view( v.ego.into.sunset);	[	v12
+	load.view( v.eilonwy.into.sunset);	[	v72
+	load.view( v.gurgi.into.sunset);	[	v35
+	load.view( v.ff.into.sunset);		[	v77
+	load.view( v.dallben.into.sunset);	[	v112
+	load.view( v.pig.into.sunset);	[	v134
+	load.view( v.cloud1);			[	v69
+	load.view( v.cloud2);			[	v177
+	load.view( v.heroes);			[	v13
+	load.view( v.tiny.heroes);		[	v17
+	load.view( v.the);				[	v82
+	load.view( v.end);				[	v83
+
+
+	animate.obj( a.pig);
+	set.view( a.pig, v.pig.into.sunset);
+	position( a.pig, 38, 146);
+	draw( a.pig);
+
+	animate.obj( a.dallben);
+	set.view( a.dallben, v.dallben.into.sunset);
+	position( a.dallben, 26, 143);
+	draw( a.dallben);
+
+	set.view( ego, v.ego.into.sunset);
+	position( ego, 69, 163);
+	set.priority( ego, 14);
+	draw( ego);
+
+	animate.obj( a.eilonwy);
+	set.view( a.eilonwy, v.eilonwy.into.sunset);
+	position( a.eilonwy, 81, 163);
+	set.priority( a.eilonwy, 14);
+	draw( a.eilonwy);
+
+	animate.obj( a.gurgi);
+	set.view( a.gurgi, v.gurgi.into.sunset);
+	position( a.gurgi, 103, 163);
+	set.priority( a.gurgi, 14);
+	draw( a.gurgi);
+
+	animate.obj( a.ff);
+	set.view( a.ff, v.ff.into.sunset);
+	position( a.ff, 93, 163);
+	set.priority( a.ff, 14);
+	draw( a.ff);
+
+	animate.obj( a.cloud1);
+	set.view( a.cloud1, v.cloud1);
+	position( a.cloud1, 30, 20);
+	work = 3;
+	step.frequency( a.cloud1, work);
+	draw( a.cloud1);
+
+	animate.obj( a.cloud2);
+	set.view( a.cloud2, v.cloud2);
+	position( a.cloud2, 0, 40);
+	work = 2;
+	step.size( a.cloud2, work);
+	work = 2;
+	step.frequency( a.cloud2, work);
+	draw( a.cloud2);
+
+
+	move.obj( a.cloud1, 130,  20, 0, cloud1.done);
+	move.obj( a.cloud2, 130,  40, 0, cloud2.done);
+
+	move.obj( ego,       69, 127, 0, at.first.crest);
+	move.obj( a.eilonwy, 81, 127, 0, done);
+	move.obj( a.ff,      93, 127, 0, done);
+	move.obj( a.gurgi,  105, 127, 0, done);
+
+	show.pic();
+
+	if  (monitor.type != mono)
+		{
+		clear.lines( 22, 24, bg.color);
+		}
+
+	sound( m.dallben, verse1.done);
+	
+	return();
+
+	}
+
+
+program.control();
+
+
+[*****
+[walk.off.into.the.sunset
+[*****
+
+if (at.first.crest)
+	{
+	reset( at.first.crest);
+	
+	set.priority( ego, 13);
+	set.priority( a.eilonwy, 13);
+	set.priority( a.ff, 13);
+	set.priority( a.gurgi, 13);
+	
+	move.obj( ego,       69, 166, 0, at.first.valley);
+	move.obj( a.eilonwy, 81, 166, 0, done);
+	move.obj( a.ff,      93, 166, 0, done);
+	move.obj( a.gurgi,  105, 166, 0, done);
+	}
+
+
+if (at.first.valley)
+	{
+	reset( at.first.valley);
+
+	erase( ego);
+	erase( a.eilonwy);
+	erase( a.ff);
+	erase( a.gurgi);
+	
+	set.view( ego, v.heroes);
+	work = 2;
+	step.frequency( ego, work);
+	position( ego, 77, 151);
+	draw( ego);
+	move.obj( ego, 77, 112, 0, at.second.crest);	
+	print( 1);
+	}
+
+if (at.second.crest)
+	{
+	reset( at.second.crest);
+
+	set.priority( ego, 12);
+	move.obj( ego, 77, 140, 0, at.second.valley);
+	}
+
+
+if (at.second.valley)
+	{
+	reset( at.second.valley);
+	
+	erase( ego);
+	set.view( ego, v.tiny.heroes);
+	work = 3;
+	step.frequency( ego, work);
+	position( ego, 83, 128);
+	draw( ego);
+	move.obj( ego, 83, 88, 0, at.third.crest);
+	
+	if (score < a.good.score)		
+		{
+		print( 2);				[	"I'm sure you could do better
+		print( 3);				[	if you'd just exert yourself!"
+		}
+	else
+		{
+		print( 4);				[	"You're HOT!
+		}
+	}
+
+
+if (at.third.crest)
+	{
+	reset( at.third.crest);
+
+	set.priority( ego, 11);
+	move.obj( ego, 83, 100, 0, all.done);
+	}
+
+
+if (all.done)
+	{
+	reset( all.done);
+	set( time.to.exit);
+	prevent.input();
+
+	erase( ego);
+	erase( a.pig);
+	erase( a.dallben);
+	
+	add.to.picture( v.the, 0, 0, 60, 45, 4, 15);
+	add.to.picture( v.end, 0, 0, 58, 80, 4, 15);
+	}
+
+
+if (cloud1.done)
+	{
+	reset( cloud1.done);
+	erase( a.cloud1);
+	}
+
+
+if (cloud2.done)
+	{
+	reset( cloud2.done);
+	erase( a.cloud2);
+	}
+
+
+if (verse1.done)
+	{
+	reset( verse1.done);
+	sound( m.dallben, verse2.done);
+	}
+
+
+if (verse2.done)
+	{
+	reset( verse2.done);
+	sound( m.dallben, done);
+	}
+
+
+
+[*****
+:exit
+[*****
+
+if (!have.match)
+	{
+	if ((said( anyword, anyword) ||
+		said( anyword) ||
+		said( anyword, anyword, anyword)))
+		{
+		print( 5);
+		}
+	}
+
+[	if (time.to.exit && have.key())
+[		{
+[		quit( 1);
+[		}
+[		

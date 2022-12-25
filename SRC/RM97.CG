@@ -1,0 +1,36 @@
+[logics for room 97 -- lgc.gimme/gimme
+
+%include	"d:gamedefs"
+
+
+%message	1	"You got 'em, Porky."
+
+
+display( 0, 0, 1);
+
+get( i.knapsack);
+get( i.corn);
+get( i.gruel);
+get( i.food.wallet);
+get( i.bread);
+get( i.water.flask);
+get( i.water);
+get( i.apple);
+get( i.cookies);
+get( i.rope);
+get( i.dagger);
+get( i.magic.sword);
+get( i.harp);
+get( i.lute);
+get( i.fairy.dust);
+get( i.keys);
+get( i.tin.cup);
+get( i.magic.word);
+get( i.magic.mirror);
+get( i.book.of.knowledge);
+get( i.pot.of.gold);
+get( i.hero.shield);
+get( i.suit.of.armor);
+get( i.bread.two.thirds);
+get( i.bread.one.third);
+

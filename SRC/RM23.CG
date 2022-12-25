@@ -1,0 +1,392 @@
+[logics for room 23 -- jumping the rocks arcade
+
+%include "rm23.msg"
+%include "gamedefs"
+
+
+
+%define	spin.time				66	[	length of whirlpool spin cycle
+
+
+%define	end.of.jump			lf0
+%define	pig.room.loaded		lf1
+%define	on.top.of.rock			lf2
+%define	rock.sinking.done		lf3
+%define	bigRockIsReady			lf4
+%define	ego.on.the.rocks		lf5
+%define	seen.rock.message		lf6
+%define	preventJump			lf7
+%define	doJump				lf8
+
+
+%define	directionToJump		lv0
+%define	spin.timer			lv1
+
+
+%object	a.pigs.feet			small1
+%object	a.whirlpool			large1
+
+
+
+if (init.log)
+	{
+	set.horizon( 56);
+
+	reset( t.jumping);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.view( v.ego.swimming);
+	load.view( v.ego.jumping.stones);
+
+	load.logics( swim.logics);
+
+	if (pig.safe && !has( i.magic.word))
+		{
+		set( bigRockIsReady);
+
+		load.view( v.pigs.feet);
+		load.view( v.ego.whirlpool);
+		load.view( v.ego.draining);
+		}
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[room 116
+		set( pig.room.loaded);
+		set( can.lose.pig);
+		}
+
+	if (bigRockIsReady)
+		{
+		animate.obj( a.whirlpool);
+		ignore.block( a.whirlpool);
+		set.view( a.whirlpool, v.ego.whirlpool);
+		position( a.whirlpool, 123, 103);
+		set.cel( a.whirlpool, 0);
+		stop.motion( a.whirlpool);
+		work = 3;
+		cycle.time( a.whirlpool, work);
+
+		animate.obj( a.pigs.feet);
+		set.view( a.pigs.feet, v.pigs.feet);
+		position( a.pigs.feet, 19, 104);
+		set.priority( a.pigs.feet, 4);
+		ignore.objs( a.pigs.feet);
+		draw( a.pigs.feet);
+		stop.update( a.pigs.feet);
+		}
+
+	if (previous.room == 62)
+		{
+		ego.x = 113;
+		ego.y = 92;
+		set.view( ego, v.ego.swimming);
+		move.obj( ego, 110, 92, 0, done);
+		}
+	else
+		{
+		if (previous.room == 24)
+			{
+			if (on.water)
+				{
+				set.view( ego, v.ego.swimming);
+				if (ego.y > 75 && ego.y < 78)
+					{
+					ego.y = 78;
+					}
+				}
+			else
+				{
+				if (ego.y > 59 && ego.y < 72)
+					{
+					ego.y = 59;
+					}
+				else
+					{
+					if (ego.y > 149 && ego.y < 155)
+						{
+						ego.y = 155;
+						}
+					}
+				}
+			}
+		}
+
+	position.f( ego, ego.x, ego.y);
+
+	draw( ego);
+
+	call( swim.logics);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+reset( doJump);
+reset( preventJump);
+
+if ((posn( ego,  49,  67, 159,  80) ||
+	posn( ego,  26,  73,  48, 167) ||
+	posn( ego,   0, 102, 159, 167)))
+	{
+	set( near.water);
+	}
+
+if (posn( ego, 28, 139, 159, 163))
+	{
+	set( no.on.water);
+	delta.x = 0;
+	delta.y = -5;
+	}
+
+if (on.water && !t.jumping)
+	{
+	observe.blocks( ego);
+	}
+else
+	{
+	ignore.blocks( ego);
+	}
+	
+if  (on.water &&
+    !edge.ego.hit &&
+	ego.dir &&
+	ego.dir == old.ego.dir &&
+	ego.x == old.ego.x &&
+	ego.y == old.ego.y) 			[	if he hasn't moved 
+	{
+	if (!seen.rock.message)
+		{
+		set( seen.rock.message);
+		print( 7);
+		}
+	}
+else
+	{
+	reset( seen.rock.message);
+	}
+
+
+if (ego.dir && 					[	remember which way he's facing
+	!doit)						[	Unless he said "JUMP"
+	{
+	directionToJump = ego.dir;
+	if ((directionToJump == ego.up.right ||
+		directionToJump == ego.down.right))
+		{
+		directionToJump = ego.right;
+		}
+
+	if ((directionToJump == ego.up.left ||
+		directionToJump == ego.down.left))
+		{
+		directionToJump = ego.left;
+		}
+	}
+
+
+if (lookit)
+	{
+	if (bigRockIsReady)
+		{
+		print( 4);
+		}
+	else
+		{
+		print( 1);
+		}
+	}
+
+
+ 
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it							[he pressed the "do something" button
+[*****
+
+if ((t.jumping || on.water))
+	{
+	set( preventJump);
+	}
+
+if (t.with.pig)
+	{
+	set( preventJump);
+	set( have.match);
+	print( 9);
+	}
+
+if (ego.on.the.rocks)
+	{
+	set( doJump);
+	}
+else
+	{
+	if  (posn( ego, 33, 90, 42, 107) &&
+		directionToJump == ego.right)
+		{
+		set( doJump);
+		}
+	else
+		{
+		set( preventJump);			[	Prevent takes priority over Do
+		}
+	}
+
+
+[*****
+[do.jump
+[*****
+
+if (!preventJump &&
+	doJump)
+	{
+	set( have.match);
+
+	if  (posn( ego, 54, 94, 65, 104) &&
+		directionToJump == ego.left)
+		{
+		reset( ego.on.the.rocks);
+		}
+	else
+		{
+		set( ego.on.the.rocks);
+		}
+
+
+	if (directionToJump == ego.left)
+		{
+		x = -20;
+		y = 0;
+		reposition( ego, x, y);
+		}
+	else
+		{
+		if (directionToJump == ego.down)
+			{
+			x = 0;
+			y = 20;
+			reposition( ego, x, y);
+			}
+		}
+
+	set( t.jumping);
+	set( ignore.water);
+	set( keep.cycling);
+	ignore.blocks( ego);
+	program.control( );
+	set.view( ego, v.ego.jumping.stones);
+	stop.motion( ego);
+	set.cel( ego, 0);
+	end.of.loop( ego, end.of.jump);
+	cycle.time( ego, three);
+	ego.dir = 0;
+	}
+
+
+[*****
+:use.it						[he pressed the "use current obj" button
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (end.of.jump)
+	{
+	reset( end.of.jump);
+	reset( t.jumping);
+	reset( ignore.water);
+	reset( keep.cycling);
+
+	start.motion( ego);
+	player.control( );
+	set.view( ego, v.ego);
+	cycle.time( ego, one);
+	if (directionToJump == ego.up)
+		{
+		x = 0;
+		y = -17;
+		reposition( ego, x, y);
+		}
+
+	if (directionToJump == ego.right)
+		{
+		x = 20;
+		y = 0;
+		reposition( ego, x, y);
+		}
+	}
+
+if (!t.jumping && on.water)
+	{
+	reset( ego.on.the.rocks);
+	}
+
+
+if (posn( ego, 125, 89, 140, 104) &&	[	on top of spinning rock
+	!on.water && 
+	!on.top.of.rock)
+	{
+	set( on.top.of.rock);
+	if (!bigRockIsReady)
+		{							
+		print( 6);
+		}
+	else
+		{
+		erase( ego);
+		add.to.pic( v.ego.whirlpool, 1, 0, 123, 103, 4, 4);
+		set.cel( a.whirlpool, 0);
+		draw( a.whirlpool);
+		print( 2);
+		end.of.loop( a.whirlpool, rock.sinking.done);
+		}
+	}
+
+if (rock.sinking.done)
+	{
+	reset( rock.sinking.done);
+	set.view( a.whirlpool, v.ego.draining);
+	start.cycling( a.whirlpool);
+	spin.timer = spin.time;
+	}
+
+--spin.timer;
+if (spin.timer == 1)
+	{
+	print( 3);					[	"bye bye
+	new.room( 62);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+call( swim.logics);
+
+if (edge.ego.hit == top)			{new.room( 18);}
+if (edge.ego.hit == bottom)		{new.room(  3);}
+if (edge.ego.hit == right)		{new.room( 24);}
+if (edge.ego.hit == left)		{new.room( 22);}
+

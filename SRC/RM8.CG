@@ -1,0 +1,178 @@
+[logics for room 8 -- front of Dallben's house
+
+%include	"rm8.msg"
+%include "gamedefs"
+
+
+
+%define	d.door.open		lf5
+%define	door.open			lf6
+%define	door.closed		lf7
+%define	indoor.closed		lf8
+%define	pig.logics.loaded	lf9
+
+
+%object	a.geese			small1
+%object	a.door	 		medium1
+%object	a.smoke			medium2
+
+
+if (init.log)
+	{
+	reset( pig.program.control);
+	set.horizon( 71);
+
+	if (t.with.pig)
+		{
+		set( pig.logics.loaded);
+		load.logics( pig.room);		[	room 116
+		set( can.lose.pig);
+		}
+
+	load.view( v.geese);
+	load.view( v.smoke.dallben);
+	load.view( v.door.d.house);
+
+	load.sound( s.goose);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	animate.obj( a.geese);
+	position( a.geese, 3, 100);
+	set.view( a.geese, v.geese);
+	draw( a.geese);
+	wander( a.geese);
+
+	animate.obj( a.smoke);
+	ignore.horizon( a.smoke);
+	position( a.smoke, 137, 14);
+	set.priority( a.smoke, 15);
+	set.view( a.smoke, v.smoke.dallben);
+	draw( a.smoke);
+
+	animate.obj( a.door);
+	position( a.door, 131, 119);
+	set.view( a.door, v.door.d.house);
+	ignore.blocks( a.door);
+	set.cel( a.door, 0);
+	draw( a.door);
+	stop.update( a.door);
+
+
+	if ((previous.room == 0 ||
+		previous.room == rm.titles))
+		{
+		status.line.on();
+		ego.x = 17;
+		ego.y = 154;
+		}
+
+	if (previous.room == 61)
+		{
+		ego.x = 137;
+		ego.y = 121;
+		move.obj( ego, 137, 124, 0, done);
+		}
+
+	if (previous.room == 9)
+		{
+		if (ego.y < 84)			[	prevents entrapment behind house
+			{
+			ego.y = 75;
+			}
+
+		if (ego.y < 120 && ego.y > 84) [	no wall walking
+			{
+			ego.y = 120;
+			}
+		}
+
+	position.v( ego, ego.x, ego.y);
+	draw( ego);
+
+	if (!heard.dallben.music)
+		{
+		load.sound( m.dallben);
+		sound( m.dallben, heard.dallben.music);
+		}
+
+	if (pig.logics.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+
+[*****
+:do.it							[he pressed the "do something" button
+[*****
+
+if (posn( ego, 131, 115, 150, 125))	[	handle ego by the door
+	{
+	if (!d.door.open)
+		{
+		start.update( a.door);
+		print( 5);
+		end.of.loop( a.door, door.open);
+		set( have.match);
+		}
+	}
+
+[*****
+:use.it						[he pressed the "use current obj" button
+[*****
+
+
+[*****
+:no.input
+[*****
+
+--wait.1;
+distance( ego, a.geese, work);		[	honk if you're horny
+if (!wait.1 && work < 10)
+	{
+	wait.1 = 50;
+	if (heard.dallben.music)
+		{
+		sound( s.goose, done);
+		}
+	print( 2);
+	}
+
+if (posn( ego, 106, 120, 137, 153))
+	{
+	set( near.water);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (pig.logics.loaded)
+	{
+	call( pig.room);
+	}
+
+if (door.open)						{new.room( 61);}
+if (edge.ego.hit == top)				{new.room( 3);}
+if (edge.ego.hit == right)			{new.room( 9);}
+if (edge.ego.hit == left)			{new.room( 7);}
+if (edge.ego.hit == bottom)			{new.room( 13);}

@@ -1,0 +1,166 @@
+[messages for room 105 -- the help room
+
+
+[                HELP
+[
+[         KEYBOARD COMMANDS
+[
+[
+[Use arrows or number keys to move
+[Taran.
+[
+[
+[Press ESC to see the menus.
+[Press ENTER to choose from a menu, or
+[ESC to return to the game.
+[
+[
+[Some menu choices list a function key
+["shortcut" beside their name.
+[
+[
+[
+[
+[
+[            Press any key to continue.
+[          JOYSTICK COMMANDS
+[
+[
+[Point joystick in desired direction
+[to move Taran.
+[
+[Press top button to DO things.
+[Press other button to USE the object
+[you made active earlier.
+[
+[Press top button twice to LOOK.
+[Press other button twice for the menu.
+[
+[Press the DO button to choose from a
+[menu, or USE to return to the game.
+[
+[Some menu choices list a function key
+["shortcut" beside their name.
+[
+[
+[
+[            Press any key to continue.
+[            MOUSE COMMANDS
+[
+[
+[
+[
+[Put cursor where you want Taran to
+[go, then press button.
+[
+[
+[Press button twice to see menus.
+[
+[
+[Some menu choices list a function key
+["shortcut" beside their name.
+[
+[
+[
+[
+[
+[
+[
+[      Press any key to return to game.
+[
+
+%message	1	"HELP"
+
+%message	2	"KEYBOARD COMMANDS"
+
+
+%message	3	"Use arrows or number keys to move"
+%message	4	"Taran."
+
+	
+%message	5	"Press ESC to see the menus."
+%message	6	"Press ENTER to choose from a menu, or"
+%message	7	"ESC to return to the game."
+
+
+%message	8	"Some menu choices list a function key"
+%message	9	"\"shortcut\" beside their name."
+
+	
+%message	11	"Press + to make sound louder."
+%message	12	"Press - to make sound softer."	
+
+%message	10	"Press any key to continue."
+%message	21	"JOYSTICK COMMANDS"
+	
+	
+%message	22	"Point joystick in desired direction"
+%message	23	"to move Taran."
+	
+%message	24	"Press top button to see the menus."
+%message	25	"Press other button to DO things."
+
+%message	26	"Press top button twice to LOOK."
+%message	27	"Press other button twice to USE the"
+%message	28	"object you made active earlier."
+
+%message	29	"Press the top button to choose from a"
+%message	30	"menu, or the other button to return"
+%message	31	"to the game."
+	
+[%message	 8	"Some menu choices list a function key"
+[%message	 9	"\"shortcut\" beside their name."
+
+	
+[message	10	"Press any key to continue."
+%message	41	"MOUSE COMMANDS"
+	
+	
+	
+	
+%message	42	"Put cursor where you want Taran to"
+%message	43	"go, then press button."
+
+	
+%message	44	"Press right button to use menus."		[	   ST only
+%message	45	"Press mouse button in the window bar"	[	AMIGA only
+%message	46	"to use menus."					[	AMIGA only
+
+	
+[message	 8	"Some menu choices list a function key"
+[message	 9	\"shortcut\"beside their name."
+	
+	
+	
+
+	
+	
+	
+%message	47	"Press any key to return to game."
+
+
+
+
+
+
+[	%message	21	"JOYSTICK COMMANDS"									[	ST
+[		
+[		
+[	%message	22	"Point joystick in desired direction"
+[	%message	23	"to move Taran."
+[		
+[	%message	24	"Press top button to DO things."
+[	%message	25	"Press other button to USE the object"
+[	%message	26	"you made active earlier."
+[		
+[	%message	27	"Press top button twice to LOOK."
+[	%message	28	"Press other button twice for the menu."
+[		
+[	%message	29	"Press the DO button to choose from a"
+[	%message	30	"menu, or USE to return to the game."
+	
+[%message	 8	"Some menu choices list a function key"
+[%message	 9	"\"shortcut\" beside their name."
+	
+[message	10	"Press any key to continue."
+	

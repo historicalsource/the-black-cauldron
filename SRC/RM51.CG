@@ -1,0 +1,308 @@
+[logics for room 51 -- entrance to Taran's cell
+
+%include "rm51.msg"
+%include "gamedefs"
+
+
+%object	a.gargoyle			large2
+%object	a.trapdoor			medium2
+%object	a.door.top			medium1
+%object	a.door.bottom			large1
+
+
+%define	trapdoor.done			lf0
+%define	gargoyle.done			lf1
+%define	door.opened			lf2
+%define	castle.interior.loaded	lf3
+
+
+if (init.log)
+	{
+	set.horizon( 90);
+	set( out.of.memory);
+	set( phony.water);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.view( v.turning.gargoyle.room51);
+	load.view( v.door.trap.in.floor);
+	load.view( v.door.t.cell.top);
+	load.view( v.door.t.cell.bottom);
+
+	if (!pig.in.castle && !pot.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+
+	animate.obj( a.door.top);
+	ignore.blocks( a.door.top);
+	ignore.horizon( a.door.top);
+	ignore.objs( a.door.top);
+	set.view( a.door.top, v.door.t.cell.top);
+	set.cel( a.door.top, 0);
+	position( a.door.top, 130, 81);
+	set.priority( a.door.top, 4);
+	draw( a.door.top);
+	stop.update( a.door.top);
+
+	animate.obj( a.door.bottom);
+	ignore.blocks( a.door.bottom);
+	ignore.objs( a.door.bottom);
+	set.view( a.door.bottom, v.door.t.cell.bottom);
+	set.cel( a.door.bottom, 0);
+	position( a.door.bottom, 130, 125);
+	set.priority( a.door.bottom, 4);
+	draw( a.door.bottom);
+	stop.update( a.door.bottom);
+
+	animate.obj( a.gargoyle);
+	set.view( a.gargoyle, v.turning.gargoyle.room51);
+	position( a.gargoyle, 28, 91);
+	work = 2;
+	cycle.time( a.gargoyle, work);
+	if (trapdoor.open)
+		{
+		last.cel( a.gargoyle, work);
+		set.cel.f( a.gargoyle, work);
+		}
+	else
+		{
+		set.cel( a.gargoyle, 0);
+		}
+	draw( a.gargoyle);
+	stop.update( a.gargoyle);
+
+	animate.obj( a.trapdoor);
+	ignore.blocks( a.trapdoor);
+	ignore.objs( a.trapdoor);
+	set.view( a.trapdoor, v.door.trap.in.floor);
+	position( a.trapdoor, 97, 132);
+	set.priority( a.trapdoor, 4);
+	work = 2;
+	cycle.time( a.trapdoor, work);
+	if (trapdoor.open)
+		{
+		last.cel( a.trapdoor, work);
+		set.cel.f( a.trapdoor, work);
+		}
+	else
+		{
+		set.cel( a.trapdoor, 0);
+		}
+	draw( a.trapdoor);
+	stop.update( a.trapdoor);
+
+	current.ego.view = normal;
+	if (previous.room == 52)
+		{
+		ego.x = 126;
+		ego.y = 112;
+		}
+	else
+		{
+		if (previous.room == 58)
+			{
+			ego.x = 103;
+			ego.y = 102;
+			}
+		else
+			{
+			if (previous.room == 50)
+				{
+				ego.y = 91;
+				if (ego.x < 49)
+					{
+					ego.x = 49;
+					}
+				if (ego.x > 121)
+					{
+					ego.x = 121;
+					}
+				}
+			}
+		}
+	position.f( ego, ego.x, ego.y);
+	draw( ego);
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 139, 167);
+		}
+
+	show.pic();
+
+	return();
+
+	}
+
+
+
+if ((posn( ego, 86, 101, 121, 113) ||  	[	near the trapdoor
+	posn( ego, 88, 114, 128, 134)))
+	{
+	ignore.blocks( ego);
+	}
+else
+	{
+	observe.blocks( ego);
+	}
+
+if ((posn( a.hench, 78, 102, 122, 114) || [	near the trapdoor
+	posn( a.hench, 80, 115, 128, 133)))
+	{
+	if (trapdoor.open)
+		{
+		observe.blocks( a.hench);	[	don't fall in, or walk on air
+		}
+	else
+		{
+		ignore.blocks( a.hench);		[	it's closed; who cares?
+		}
+	}
+else
+	{
+	observe.blocks( a.hench);
+	}
+
+
+if (lookit)
+	{
+	if (posn( ego, 23, 72, 47, 132))	[	near the gargoyle
+		{
+		distance( ego, a.gargoyle, work);
+		if (work < 40)
+			{
+			print( 4);
+			}
+		else
+			{
+			print( 1);
+			}
+		}
+	else
+		{
+		if (posn( ego, 86, 89, 132, 141) && [	near the trapdoor
+			trapdoor.open)
+			{
+			print( 7);
+			}
+		else
+			{
+			print( 1);			[	generic
+			}
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if  (know.eilonwy &&
+	posn( ego, 23, 72, 47, 132))		[	near the gargoyle
+	{
+	distance( ego, a.gargoyle, work);
+	if (work < 40)
+		{
+		set( have.match);
+		start.update( a.trapdoor);
+		start.update( a.gargoyle);
+		if (trapdoor.open)
+			{
+			reset( trapdoor.open);
+			print( 3);
+			reverse.loop( a.trapdoor, trapdoor.done);
+			reverse.loop( a.gargoyle, gargoyle.done);
+			}
+		else
+			{
+			set( trapdoor.open);
+			print( 2);
+			end.of.loop( a.trapdoor, trapdoor.done);
+			end.of.loop( a.gargoyle, gargoyle.done);
+			}
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (object.used == u.keys)
+	{
+	distance( ego, a.door.bottom, work);
+	set( have.match);
+	if (work > 30)
+		{
+		print( 5);
+		}
+	else
+		{
+		start.update( a.door.top);
+		end.of.loop( a.door.top, door.opened);
+		start.update( a.door.bottom);
+		end.of.loop( a.door.bottom, door.opened);
+		print( 8);
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (trapdoor.open)
+	{
+	if ((posn( ego, 94, 107, 112, 115) || 
+		posn( ego, 102, 116, 119, 125)))
+		{
+		print( 6);
+		new.room( 58);
+		}
+	}
+
+if (door.opened)
+	{
+	badguy = 0;
+	new.room( 52);
+	}
+
+if (trapdoor.done)
+	{
+	reset( trapdoor.done);
+	stop.update( a.trapdoor);
+	if (!discovered.dungeon)
+		{
+		set( discovered.dungeon);
+		score += 6;
+		}
+	}
+
+if (gargoyle.done)
+	{
+	reset( gargoyle.done);
+	stop.update( a.gargoyle);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == top)			{new.room( 50);}
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+

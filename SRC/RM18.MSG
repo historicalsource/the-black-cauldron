@@ -1,0 +1,17 @@
+[messages for room 18 -- landing strip.
+
+
+
+%message	1
+"Occasionally, while walking here, you think you see a flash
+ in the underbrush, as if something tiny was scampering past
+ the trees, just out of your sight."
+
+%message	2
+"Ouch!"
+
+%message	3
+"\"Where is that vile creature taking my beloved Hen Wen??\"
+ you think. \"I must find her, and get her to safety!\""
+
+

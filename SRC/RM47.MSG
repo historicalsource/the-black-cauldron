@@ -1,0 +1,25 @@
+[messages for room 47 -- the drawbridge
+
+
+
+%message	1
+"You are in the central courtyard of the castle. The great
+ chains of the drawbridge stretch over your head."
+
+%message	2
+"You leap into the wagon."
+
+%message	3
+"You leap from the wagon."
+
+%message	4
+"You have just ridden into the Horned King's castle on the
+ henchman's wagon. Be careful!"
+
+%message	5
+"You swing the magic sword over your head with a tremendous
+ force. It easily slices the chain, causing the drawbridge
+ to come crashing down."
+
+%message	6
+"\"Quick, Hen Wen,\" you shout, \"run!!\""

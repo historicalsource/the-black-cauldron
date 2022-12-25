@@ -1,0 +1,244 @@
+[logics for room 37 -- the parapet
+
+%include "rm37.msg"
+%include "gamedefs"
+
+
+%define	pig.on.ground			lf0
+%define	ego.on.parapet			lf1
+%define	ego.on.ground			lf2
+%define	pig.off.screen			lf3
+%define	pig.room.loaded		lf4
+%define	castle.interior.loaded	lf5
+
+
+if (init.log)
+	{
+	reset( coocoo);
+	wait.1 = 0;
+	wait.2 = 0;
+	set( poisoned.water);
+	set( impotable.water);
+
+	set( hench.program.control);
+	hench.x = 115;
+	hench.y = 58;
+			
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	if (!pig.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.logics( swim.logics);
+
+	load.sound( s.ego.falling);
+	load.sound( s.coocoo);
+
+	load.view( v.ego.jumping.off);
+	load.view( v.ego.stunned);
+	load.view( v.pig.falling);
+	load.view( v.ego.drowning);
+
+	if (previous.room == 38)
+		{
+		set( ego.on.parapet);
+		position( ego, 122, 58);
+		wait.1 = 100;
+		}
+
+
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		position( a.hench, 115, 58);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (ego.on.parapet)
+		{
+		print( 1);				
+		}
+	else
+		{
+		print( 6);
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (!ego.already.caught && 
+	posn( ego, 95, 43, 113, 80))		[	on the parapet
+	{
+	set( have.match);
+	if (t.with.pig)
+		{
+		reset( t.with.pig);
+		pig.safe = by.parapet;
+		score += 20;
+		print( 2);					[	"You fling Hen Wen over
+
+		set( pig.program.control);
+		set.priority( a.pig, 15);
+		ignore.objs( a.pig);
+		reposition.to( a.pig, 72, 59);
+		set.view( a.pig, v.pig.falling);
+		work = 2;
+		cycle.time( a.pig, work);
+		move.obj( a.pig, 71, 142, 3, pig.on.ground);
+		sound( s.ego.falling, done);
+		}
+	else
+		{
+		reset( ego.on.parapet);
+		print( 5);					[	"You jump from the parapet
+		set.priority( ego, 15);
+		reposition.to( ego, 72, 59);
+		set.view( ego, v.ego.jumping.off);
+		set.loop( ego, facing.left);
+		set( keep.cycling);
+		move.obj( ego, 71, 142, 3, ego.on.ground);
+		sound( s.ego.falling, done);
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (object.used == u.magic.sword &&
+	!swinging.sword &&
+	ego.on.parapet)
+	{
+	swing.x = 109;
+	swing.y = 58;
+	get.posn( ego, x, y);
+	swing.x -= x;
+	swing.y -= y;
+	reposition( ego, swing.x, swing.y);
+	}
+
+
+[*****
+:no.input
+[*****
+
+--wait.1;
+if (wait.1 == 1)
+	{
+	set( make.henchman.come);
+	}
+
+if (pig.on.ground)
+	{
+	reset( pig.on.ground);
+	release.priority( a.pig);
+	set.view( a.pig, v.pig);
+	start.cycling( a.pig);
+	print( 4);						[	"Hen runs away
+	move.obj( a.pig, 18, 142, 0, pig.off.screen);
+	}
+
+if (pig.off.screen)
+	{
+	reset( pig.off.screen);
+	erase( a.pig);
+	reset( pig.program.control);
+	print( 3);						[	"She's safe at last
+	}
+
+if (ego.on.ground)
+	{
+	reset( ego.on.ground);
+	release.priority( ego);
+	sound( s.coocoo, coocoo);
+	set.view( ego, v.ego.stunned);
+	stop.motion( ego);
+	wait.2 = 40;
+	}
+
+--wait.2;
+if (wait.2 == 1)
+	{
+	reset( keep.cycling);
+	set.view( ego, v.ego);
+	start.motion( ego);
+	}
+
+if (wait.2 && coocoo)
+	{
+	sound( s.coocoo, coocoo);
+	}
+
+if ((posn( ego,  71, 139, 159, 152) ||
+	posn( ego,  62,  53, 159, 167)))
+	{
+	set( near.water);
+	}
+
+		
+[*****
+:exit							[	test for leaving the room
+[*****
+
+call( swim.logics);
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == bottom)
+	{
+	new.room( 33);
+	}
+
+if (edge.ego.hit == left)
+	{
+	new.room( 33);
+	}
+
+if (posn( ego, 124, 50, 159, 64))
+	{
+	new.room( 38);
+	}

@@ -1,0 +1,87 @@
+[messages for room 20 -- morva marsh
+
+
+
+%message	1
+"You are in a hidden area of Morva Marsh. The ground
+ is wet and mushy, so be careful where you walk."
+
+%message	2
+"The door seems to be unlocked and the house deserted."
+
+%message	3
+"You cautiously open the door to this strange house."
+
+%message	4
+"Orwen laughs, \"Now you have the Black Cauldron you have been
+ seeking. But, it won't do you any good. Ha, ha!!\""
+
+%message	5
+" "
+
+%message	6
+"\"There's only one way to stop the evil power of the Black
+ Cauldron, Duckling,\" croaks Orgoch! \"A living being must
+ jump into the cauldron of its own free will. Unfortunately,
+ anyone who does will never emerge alive again!\""
+
+%message	7
+"\"Hee, hee,\" Orddu cackles. \"Now you've lost your magic sword
+ and have the cauldron. But there's nothing you can do to
+ destroy it!\""
+
+%message	8
+"Even though you attack the Black Cauldron with great force,
+ your efforts fail. It seems totally immune to your efforts.
+ You can't even make a dent in its harsh black shell."
+
+%message	9
+"The cauldron is squat and black and large enough to hold a
+ human body. Its rim is crooked and battered, its sides
+ dented and scarred.\n\n%m10"
+
+%message	10
+"Though made of iron, the cauldron seems alive, grim and
+ brooding with ancient evil. The sight of it makes you feel
+ like an icy hand is clutching your heart!"
+
+%message	11
+"Sacrificing your own life, you bravely leap into the evil Black Cauldron!!
+ It shakes violently, trembling the ground.
+ You've saved Prydain from the evil of the Horned King,
+ and have made the cauldron powerless."
+
+%message	12
+"For generations to come, the bards sing of your bravery!\n\n
+Congratulations, you have solved the mystery of the Black Cauldron.
+ Too bad you didn't live to enjoy it."
+
+%message	13
+"The vicious winged gwythaint is after the Black Cauldron!!"
+
+%message	14
+"The gwythaint has taken your Cauldron, and carried it off
+ over the Eagle Mountains in the direction of the Horned King's castle."
+
+%message	15
+"As you stare at the cauldron, you consider the witches' warning.
+ Leaping into the cauldron will mean certain death."
+
+%message	16
+"\"Farewell, Taran,\" screech the witches. \"There's nothing you
+ can do, now that the gwythaint has seen the Black Cauldron!\""
+
+[%message	17
+[""
+
+%message	18
+"The witches are extremely ugly."
+
+%message	19
+"It is difficult to open the door while flying."
+
+%message	20
+"The gwythaint is taking the Cauldron!"
+
+%message	21
+"There is no need for you to fly away in that direction."

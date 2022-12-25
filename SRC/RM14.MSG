@@ -1,0 +1,27 @@
+[room14 messages
+
+
+
+%message	1
+"This bridge marks the boundary of Caer Dallben. You
+ wonder what the future holds."
+
+%message	2
+"The solid fence blocks your way east. The footbridge,
+ over the shallow stream, will keep your feet dry."
+
+%message	3
+"Your feet are wet from walking through the shallow stream."
+
+%message	4
+"There is a wallet beneath the bridge."
+
+%message	5
+"Reaching under the foot- bridge, you take the wallet and look
+ inside. It is filled with food."
+
+%message	6
+"The water is too shallow to swim here."
+
+%message	7
+"This is the bridge where you found the food wallet."

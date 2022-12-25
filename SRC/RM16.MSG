@@ -1,0 +1,11 @@
+[room16 messages
+
+
+
+%message	1
+"You are at the northeast corner of Morva Marsh. It's a
+ dismal, gloomy swamp with dangerous bogs."
+
+%message	2
+"There is no need for you to fly away in that direction."
+

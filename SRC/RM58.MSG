@@ -1,0 +1,23 @@
+[messages for room 58 -- the trapdoor
+
+
+
+%message	1
+"There is a hideous gargoyle on the wall."
+
+%message	2
+"You twist the gargoyle clockwise. It turns easily, opening
+ the trapdoor in the ceiling above your head."
+
+%message	3
+"You twist the gargoyle counterclockwise. It turns easily,
+ closing the trapdoor in the ceiling above your head."
+
+%message	4
+"You bump your head on the ceiling. Ow!"
+
+%message	5
+"Eilonwy bids you farewell as you leave. \"I dare not go
+ with you,\" she says. \"I must remain in hiding down here.
+ Good luck, Taran of Caer Dallben!\""
+

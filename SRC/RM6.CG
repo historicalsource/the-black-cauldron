@@ -1,0 +1,196 @@
+[logics for room 6 -- 
+
+%include	"rm6.msg"
+%include "gamedefs"
+
+
+
+%define	white.water			lf1
+%define	white.water1			lf2
+%define	white.water2			lf3
+%define	warning				lf4
+%define	swim.logics.loaded		lf5
+%define	pig.room.loaded		lf6
+%define	gwyth.room.loaded		lf7
+
+
+%object	a.rapids				medium2
+
+
+if (init.log)
+	{
+	load.view( v.rapids.room6);
+	load.sound( s.rapids);
+	observe.blocks( ego);
+
+	if (ego.on.log)
+		{
+		load.view( v.ego.logged);
+		}
+	else
+		{
+		load.view( v.ego.drowning);
+		load.logics( swim.logics);	[	room 101
+		set( swim.logics.loaded);
+		set( poisoned.water);
+		}
+
+	set.horizon( 63);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);	[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	animate.obj( a.rapids);
+	set.view( a.rapids, v.rapids.room6);
+	position( a.rapids, 44, 99);
+	set.priority( a.rapids, 8);
+	set( s.waterfall.done);
+
+	get.posn( ego, x, y);
+	if (previous.room == 7 && y > 95)
+		{
+		y = 95;
+		}
+	else
+		{
+		if (previous.room == 11 && x > 105)[	if he walked into the river
+			{
+			x = 105;				[	put him on shore.
+			}
+		else
+			{
+			if (ego.on.log)
+				{
+				x = 30;
+				y = 74;
+				set.view( ego, v.ego.logged);
+				ignore.objs( ego);
+				move.obj( ego, 82, 118, 0, white.water);
+				}
+			}
+		}
+	position.f( ego, x, y);
+
+	draw( a.rapids);
+
+	draw( ego);
+
+	if (swim.logics.loaded)
+		{
+		call( swim.logics);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{	
+	print( 1);
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+[*****
+:do.it
+:use.it
+:no.input
+[*****
+
+if (!warning && 
+    !ego.on.log &&
+    (posn( ego, 13, 69, 45, 95) ||
+	posn( ego, 37, 96, 81, 131) ||
+	posn( ego, 81, 112, 159, 167) ||
+	posn( ego, 22, 53, 79, 96) ||
+	posn( ego, 80, 85, 159, 138)))	[	near rapids
+	{
+	set( warning);
+	print( 7);
+	}
+
+if (white.water)
+	{
+	reset( white.water);
+	move.obj( ego, 115, 119, 0, white.water1);
+	}
+
+if (white.water1)
+	{
+	reset( white.water1);
+	move.obj( ego, 130, 167, 0, white.water2);
+	}
+
+if (white.water2)
+	{
+	new.room( 7);
+	}
+
+if (s.waterfall.done && !gwyth.here)
+	{
+	sound( s.rapids, s.waterfall.done);
+	}
+
+if (posn( ego, 69, 92, 102, 125))
+	{
+	set( on.water);
+	}
+
+
+if ((posn( ego,   0,   0,  79,  82) ||
+	posn( ego,   0,  83, 109,  95) ||
+	posn( ego,  60, 125, 115, 132) ||
+	posn( ego, 105, 133, 140, 167)))
+	{
+	set( near.water);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (swim.logics.loaded)
+	{
+	call( swim.logics);
+	}
+
+if (edge.ego.hit == top)			{new.room( 1);}
+if (edge.ego.hit == right)		{new.room( 7);}
+if (edge.ego.hit == left)		{new.room( 5);}
+if (edge.ego.hit == bottom)		{new.room( 11);}
+	

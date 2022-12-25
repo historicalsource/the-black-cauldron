@@ -1,0 +1,31 @@
+[messages for room 59 -- entrance to the secret chamber
+
+
+
+%message	1
+"You are in the secret passageways below the Horned King's
+ dungeon."
+
+%message 	2
+"You fall into a hallway below the Horned King's dungeon.
+ There is a beautiful girl here who says, \"Oh, hello! You must
+ be a Prince or a great warrior. I'm Princess Eilonwy, and
+ this is my magic bauble.\""
+
+%message	3
+"\"I'm Taran, Assistant Pig-Keeper of Caer Dallben,\" you
+ respond."
+
+%message 	4
+"\"That's too bad. I was hoping for a great hero to get me
+ out of this dismal place. Oh, well.\""
+
+%message	5
+"\"What is down here?  Could there be a way to escape?\""
+
+%message	6
+"\"No, I think not,\" Eilonwy replies, \"but there are many
+ tunnels. Perhaps together we could find a way to escape!\""
+
+
+

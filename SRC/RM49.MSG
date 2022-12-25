@@ -1,0 +1,22 @@
+[messages for room 49 -- the bottom of the spiral staircase
+
+
+
+%message	1
+"You are in the castle dungeon."
+
+%message	2
+"There is a locked door to the East."
+
+%message	3
+"You try the key in the lock. It turns."
+
+%message	4
+"You open the heavy dungeon door."
+
+%message	5
+"The door is locked."
+
+%message	6
+"You are not near a door."
+

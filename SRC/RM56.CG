@@ -1,0 +1,196 @@
+[logics for room 56 -- the bottom of the trash chute
+
+%include "rm56.msg"
+%include "gamedefs"
+
+
+%define	eilonwy.response.delay 		27
+
+%define	eilonwys.first.time			lf0
+%define	eilonwy.room.loaded			lf1
+%define	pig.room.loaded			lf2
+%define	castle.climbing.room.loaded	lf3
+
+%define	dialog.count				lv1
+%define	dialog.timer				lv2
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set( t.in.basement);
+	if (e.in.basement)
+		{
+		load.logics( eilonwy.room);
+		set( eilonwy.room.loaded);
+		}
+
+	if ((pig.in.basement || t.with.pig))
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+	
+	room.bottom = 122;
+
+	if (previous.room == 69)
+		{
+		if (!entered.dungeon)
+			{
+			set( entered.dungeon);
+			score += 10;
+			}
+		load.logics( castle.climbing.room);
+		set( castle.climbing.room.loaded);
+
+		set( ego.is.falling);
+		position( ego, 74, 45);
+		set.priority( ego, 15);
+		}
+	else
+		{
+		if (previous.room == 55)
+			{
+			position( ego, 13, 142);
+			}
+		else
+			{
+			position( ego, 71, 166);
+			}
+		}
+
+	if (!know.eilonwy && e.in.basement)
+		{
+		set( eilonwys.first.time);
+		}
+
+	if (eilonwy.room.loaded)
+		{
+		call( eilonwy.room);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (castle.climbing.room.loaded)
+		{
+		call( castle.climbing.room);
+		}
+
+	draw( ego);
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (eilonwys.first.time)
+	{
+	if (dialog.count == 3)
+		{
+		print( 3);
+		dialog.timer = eilonwy.response.delay;
+		set( have.match);
+		++dialog.count;
+		goto no.input;
+		}
+	
+	if (dialog.count == 5)
+		{
+		print( 5);
+		dialog.timer = eilonwy.response.delay;
+		set( have.match);
+		++dialog.count;
+		goto no.input;
+		}
+	
+	if (dialog.count == 7 && pig.in.basement)
+		{
+		print( 7);
+		dialog.timer = eilonwy.response.delay;
+		set( have.match);
+		++dialog.count;
+		goto no.input;
+		}
+	}
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (!ego.is.falling && !know.eilonwy && eilonwys.first.time)
+	{
+	set( know.eilonwy);
+	reset( eilonwy.patiently.waiting);
+	dialog.timer = 15;
+	dialog.count = 2;
+	print( 8);
+	}
+
+--dialog.timer;
+if (dialog.timer == 1 && eilonwys.first.time)
+	{
+	if (dialog.count == 2)
+		{
+		print( 2);
+		}
+	if (dialog.count == 4)
+		{
+		print( 4);
+		}
+	if (dialog.count == 6)
+		{
+		print( 6);
+		}
+	++dialog.count;
+	}
+
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == bottom)			{new.room( 59);}
+if (posn( ego, 0, 0, 11, screen.bottom)){new.room( 55);}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (eilonwy.room.loaded)
+	{
+	call( eilonwy.room);
+	}
+
+if (castle.climbing.room.loaded)
+	{
+	call( castle.climbing.room);
+	}
+

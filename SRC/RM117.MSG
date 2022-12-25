@@ -1,0 +1,8 @@
+[messages for room 117 -- ego climbing the walls
+
+
+%message  1
+"Oh, nooooooo!"
+
+%message  2
+"Ouch!"

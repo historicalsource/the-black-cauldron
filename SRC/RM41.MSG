@@ -1,0 +1,10 @@
+[messages for room 41 -- the castle kitchen
+
+
+
+%message	1
+"Judging by the way the cook is looking at Hen Wen, you
+ should probably leave."
+
+%message	2
+"That looks like a real cleaver! Perhaps you shouldn't find out!"

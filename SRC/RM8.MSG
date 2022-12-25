@@ -1,0 +1,15 @@
+[messages for room 8 -- front of Dallben's house
+
+
+
+%message	1
+"This is the cottage of Dallben, the ancient wizard
+ of Prydain. You have lived here as long as you can remember,
+ serving as Assistant Pig-Keeper of Caer Dallben."
+
+%message	2
+"Honk.\n\n
+Honk! Honk!!"
+
+%message	5
+"You open the door."

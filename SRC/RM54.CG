@@ -1,0 +1,178 @@
+[logics for room 54 -- the nw corner, with a hole in the wall
+
+%include "rm54.msg"
+%include "gamedefs"
+
+
+%define	told.about.hole		lf0
+%define	eilonwy.room.loaded		lf2
+%define	pig.room.loaded		lf3
+
+%object	a.hole				large1
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set( t.in.basement);
+	if (e.in.basement)
+		{
+		load.logics( eilonwy.room);
+		set( eilonwy.room.loaded);
+		}
+
+	if (pig.in.basement)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	load.view( v.hole.room54);
+
+	animate.obj( a.hole);
+	set.view( a.hole, v.hole.room54);
+	work = 3;
+	cycle.time( a.hole, work);
+	position( a.hole, 47, 105);
+	set.cel.f( a.hole, hole.room54.cell);
+	ignore.blocks( a.hole);
+	ignore.objs( a.hole);
+	draw( a.hole);
+	stop.update( a.hole);
+
+
+	if (previous.room == 53)
+		{
+		position( ego, 58, 109);
+		}
+	else
+		{
+		if (previous.room == 55)
+			{
+			position( ego, 126, 132);
+			}
+		else
+			{
+			position( ego, 71, 166);
+			}
+		}
+
+	draw( ego);
+
+
+	if (eilonwy.room.loaded)
+		{
+		call( eilonwy.room);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (posn( ego, 47, 103, 64, 113))		[	near the hole in the wall
+		{
+		if (hole.room54.cell != hole.room54.all.open)
+			{
+			set( told.about.hole);
+			print( 2);				[	"There's a small hole here
+			}
+		else
+			{
+			print( 3);				[	"There's a large hole here
+			}
+		}
+	else
+		{
+		print( 1);					[	"generic
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if  (posn( ego, 47, 103, 64, 113) &&	[	near the hole in the wall
+	hole.room54.cell < hole.room54.all.open)
+	{
+	set( have.match);
+
+	if (!told.about.hole)
+		{
+		set( told.about.hole);
+		print( 4);
+		}
+	else
+		{
+		++hole.room54.cell;
+		set.cel.f( a.hole, hole.room54.cell);
+		force.update( a.hole);
+		message = hole.room54.cell;
+		message += 4;
+		print.v( message);			[	"You push and a block falls in
+		}
+	}
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if  (hole.room54.cell == hole.room54.all.open && 
+	posn( ego, 48, 105, 61, 107))
+	{
+	ignore.blocks( ego);
+	}
+else
+	{
+	observe.blocks( ego);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == bottom)			{new.room( 57);}
+if (edge.ego.hit == right)			{new.room( 55);}
+if (posn( ego, 56, 104, 60, 105))
+	{
+	if (!entered.burial.chamber)
+		{
+		set( entered.burial.chamber);
+		score += 10;
+		}
+	new.room( 53);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (eilonwy.room.loaded)
+	{
+	call( eilonwy.room);
+	}
+

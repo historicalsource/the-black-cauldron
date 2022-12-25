@@ -1,0 +1,360 @@
+[logics for room 104 -- Gurgiland
+
+%include "rm104.msg"
+%include "gamedefs"
+
+
+%define	max.number.of.hits		  3	[how many times gurgi gets ego
+%define	gurgi.munch.time		 44
+%define	gurgi.wait.time.min		 55
+%define	gurgi.wait.time.max		123
+%define	time.ego.stunned		 33
+%define	near.enough.for.gift	 33
+%define	too.far				 66
+%define	gurgi.stay.time2		  1
+							
+%define	gurgi.fed				df3
+%define	gurgi.found.ego		df7
+%define	make.gurgi.leave		df9
+							
+%define	ego.gurgi.distance		dv0
+%define	gurgi.caught.ego.count	dv1
+%define	gurgi.munch.timer		dv2
+%define	gurgi.wait.timer		dv8
+%define	ego.stunned.timer		dv4
+%define	gurgi.stay.timer1		dv5
+%define	gurgi.stay.timer2		dv6
+
+
+if (init.log)
+	{
+	%message	98 "Gurg's comin'!"
+	if (debugging && force.a.test)
+		{
+		print( 98);
+		}
+
+	gurgi.stay.timer1 = max.flag.value;
+	gurgi.stay.timer2 = gurgi.stay.time2;
+	reset( m.gurgi.done);
+	random( gurgi.wait.time.min, gurgi.wait.time.max, gurgi.wait.timer);
+
+	load.view( v.gurgi);
+	load.view( v.gurgi.eating);
+	load.view( v.ego.stunned);
+
+	load.sound( s.coocoo);
+	load.sound( m.gurgi);
+
+	animate.obj( a.gurgi);
+	set.view( a.gurgi, v.gurgi);
+	work = 2;
+	step.size( a.gurgi, work);
+	object.on.land( a.gurgi);
+
+	return();
+	}
+
+
+distance( ego, a.gurgi, ego.gurgi.distance);
+
+--gurgi.wait.timer;
+if (gurgi.wait.timer == 2)
+	{
+	stop.sound( );
+	}
+
+if (gurgi.wait.timer == 1)
+	{
+	set( gurgi.here);
+	draw( a.gurgi);
+	wander( a.gurgi);
+	stop.sound( );
+	reset( s.waterfall.done);
+	sound( m.gurgi, m.gurgi.done);
+	print( 1);
+	}
+
+if ((!gurgi.here || have.match))
+	{
+	goto exit;
+	}
+
+if (lookit)
+	{
+	print( 12);
+	}
+
+if (doit && friend.for.life)
+	{
+	print( 14);
+	set( have.match);
+	}
+
+if (!useit)						{goto no.input;}
+
+
+[*****
+:use.it
+[*****
+
+if (ego.stunned.timer)
+	{
+	set( have.match);
+	print( 17);
+	reset( useit);					[	Is this overkill?
+	object.used = u.nothing;
+	goto no.input;
+	}
+
+if ((object.used == u.nothing || have.match))
+	{
+	goto no.input;
+	}
+
+if (object.used == u.magic.word)
+	{
+	set( have.match);
+	print( 16);
+	goto no.input;
+	}
+
+if (gurgi.munch.timer)
+	{
+	set( have.match);
+	print( 8);
+	goto no.input;
+	}
+
+if (object.used == u.magic.mirror)
+	{
+	set( have.match);
+	print( 11);
+	goto no.input;
+	}
+
+
+
+[	If we get to here, he's not stunned, he's not swinging the sword,
+[so we assume he's offering an object to the Gurg!
+
+if (ego.gurgi.distance > near.enough.for.gift)
+	{
+	set( have.match);
+	print( 13);					[	Too far to see it.
+	}
+else
+	{
+	if (friend.for.life)
+		{
+		set( have.match);
+		print( 18);
+		}
+	else
+		{
+		if (!on.water)
+			{
+			if (object.used == u.magic.sword)
+				{
+				set( have.match);
+				set( prevent.sword.message);
+				print( 15);
+				}
+
+			if (object.used == u.apple)
+				{
+				set( gurgi.fed);
+				set( friend.for.life);
+				score += 10;
+				drop( i.apple);
+				object.used = 0;
+				active.object = 0;
+				print( 3);
+				}
+
+			if (object.used == u.cookies)
+				{
+				set( gurgi.fed);
+				set( friend.for.life);
+				score += 10;
+				drop( i.cookies);
+				object.used = 0;
+				active.object = 0;
+				print( 4);
+				}
+
+			if (object.used == u.bread)
+				{
+				set( gurgi.fed);
+				print( 5);
+
+				--bread.count;
+				--bread.count;
+				if (!bread.count)
+					{
+					drop( i.bread);
+					object.used = 0;
+					active.object = 0;
+					}
+				}
+
+			if (object.used == u.gruel)
+				{
+				set( gurgi.fed);
+				drop( i.gruel);
+				object.used = 0;
+				active.object = 0;
+				print( 6);
+				}
+
+			if (object.used == u.corn) 
+				{
+				set( gurgi.fed);
+				drop( i.corn);
+				object.used = 0;
+				active.object = 0;
+				print( 7);
+				}
+		
+
+			if (gurgi.fed)
+				{
+				reset( gurgi.fed);
+				set( have.match);
+				gurgi.munch.timer = gurgi.munch.time;
+				set.view( a.gurgi, v.gurgi.eating);
+				stop.motion( a.gurgi);
+				goto exit;
+				}
+			}
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+if  (ego.gurgi.distance > too.far &&
+    !make.gurgi.leave)
+	{
+	if (!friend.for.life)
+		{
+		follow.ego( a.gurgi, 4, gurgi.found.ego);
+		}
+	else
+		{
+		if (!gurgi.caught.ego.count)
+			{
+			follow.ego( a.gurgi, 4, gurgi.found.ego);
+			}
+		}
+	}
+
+if  (gurgi.found.ego &&
+    !gurgi.munch.timer &&
+    !swinging.sword)
+	{
+	reset( gurgi.found.ego);
+	++gurgi.caught.ego.count;
+
+	wander( a.gurgi);
+	if (gurgi.caught.ego.count == 1)
+		{
+		if (friend.for.life)
+			{
+			print( 10);
+			}
+		else
+			{
+			print( 2);
+			}
+
+		set( swing.override);
+		set.view( ego, v.ego.stunned);
+		stop.motion( ego);
+		set( coocoo);
+		set( keep.cycling);
+		ego.stunned.timer = time.ego.stunned;
+		}
+	else
+		{
+		if (!friend.for.life)
+			{
+			print( 9);
+			}
+
+		if (gurgi.caught.ego.count == max.number.of.hits)
+			{
+			set( make.gurgi.leave);
+			}
+		}
+	}
+
+
+--ego.stunned.timer;
+if (ego.stunned.timer == 1)
+	{
+	reset( swing.override);
+	set.view( ego, v.ego);
+	work = 1;
+	step.size( ego, work);
+	start.motion( ego);
+	reset( keep.cycling);
+	set( m.gurgi.done);				[	so rapids restart
+	}
+
+--gurgi.munch.timer;
+if (gurgi.munch.timer == 1)
+	{
+	set.view( a.gurgi, v.gurgi);
+	work = 2;
+	step.size( a.gurgi, work);
+	start.motion( a.gurgi);
+	wander( a.gurgi);
+	}
+
+--gurgi.stay.timer1;
+if (gurgi.stay.timer1 == 1)
+	{
+	if (gurgi.stay.timer2)
+		{
+		--gurgi.stay.timer2;
+		gurgi.stay.timer1 = max.flag.value;
+		}
+	else
+		{
+		set( make.gurgi.leave);
+		wander( a.gurgi);
+		}
+	}
+
+if (ego.stunned.timer && coocoo)
+	{
+	sound( s.coocoo, coocoo);
+	}
+
+if (m.gurgi.done)
+	{
+	reset( m.gurgi.done);
+	set( s.waterfall.done);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (make.gurgi.leave && edge.obj.hit)
+	{
+	reset( prevent.sword.message);
+	erase( a.gurgi);
+	reset( gurgi.here);
+	}
+
+%message	99	"%v230 "
+if (debugging && force.a.test)
+	{
+	display( 24, 0, 99);
+	}
+

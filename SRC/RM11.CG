@@ -1,0 +1,182 @@
+[logics for room 11 - more bad woods
+
+%include "rm11.msg"
+%include "gamedefs"
+
+
+%object	a.sign.and.dagger	medium2
+%object	a.gwythaint		giant1
+
+
+%define	seen.sign			lf0
+%define	sign.down		 	lf1
+%define	gwyth.room.loaded	lf2
+%define	pig.room.loaded	lf3
+
+
+if (init.log)
+	{
+	set.horizon( 57);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		set( can.lose.pig);
+
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);	[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+	load.view( v.sign.and.dagger);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	animate.obj( a.sign.and.dagger);
+	set.view( a.sign.and.dagger, v.sign.and.dagger);
+	position( a.sign.and.dagger, 68, 120);
+	set.priority( a.sign.and.dagger, 11);
+	if (!dagger.taken)
+		{
+		work = 3;
+		cycle.time( a.sign.and.dagger, work);
+		set.cel( a.sign.and.dagger, 0);
+		}
+	else
+		{
+		last.cel( a.sign.and.dagger, work);
+		set.cel.f( a.sign.and.dagger, work);
+		set( seen.sign);
+		}
+
+	draw( a.sign.and.dagger);
+	stop.update( a.sign.and.dagger);
+
+	if (previous.room == 10)
+		{
+		position( ego, 4, 155);
+		}
+	else
+		{
+		if (previous.room == 6)
+			{
+			position( ego, 144, 56);
+			}
+		}
+
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	if (posn( ego, 53, 103, 84, 134))			[	near the dagger
+		{
+		set( seen.sign);
+		if (dagger.taken)
+			{
+			print( 5);
+			}
+		else
+			{
+			print( 1);
+			}
+		}
+	else
+		{
+		print( 4);
+		}
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+[*****
+:do.it
+[*****
+ 
+if (posn( ego, 53, 103, 84, 134))			[	near the dagger
+	{
+	set( have.match);
+	if (!seen.sign)
+		{
+		print( 1);
+		set( seen.sign);
+		}
+	else
+		{
+		if (!dagger.taken)
+			{
+			set( dagger.taken);
+			start.update( a.sign.and.dagger);
+			print( 3);
+			get( i.dagger);
+			end.of.loop( a.sign.and.dagger, sign.down);
+			}
+		else
+			{
+			print( 6);
+			}
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+ 
+if (sign.down)
+	{
+	reset( sign.down);
+	stop.update( a.sign.and.dagger);
+	}
+
+	
+[*****
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+
+if (edge.ego.hit == top)			{new.room( 6);}
+if (edge.ego.hit == bottom)		{new.room( 16);}
+if (edge.ego.hit == right)		{new.room( 12);}
+if (edge.ego.hit == left)		{new.room( 10);}

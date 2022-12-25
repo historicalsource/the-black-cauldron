@@ -1,0 +1,303 @@
+[logics for room 24 -- waterfall by the Fairy Cave
+
+%include "rm24.msg"
+%include "gamedefs"
+
+
+
+%define	rock.is.down			lf0
+%define	ego.dead				lf1
+%define	rock.lowering.done		lf3
+%define	rock.raising.done		lf4
+%define	seen.warning			lf5
+%define	pig.room.loaded		lf6
+%define	gurgiland.loaded		lf7
+
+
+%object	a.rock				medium1
+%object	a.waterfall.bottom		medium7
+%object	a.waterfall.top		large1
+
+
+
+if (init.log)
+	{
+	set.horizon( 58);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		set( can.lose.pig);
+		}
+
+ 	if ((pig.in.castle || pig.safe))
+		{
+		random( 0, 255, work);
+		if (work < chance.gurgi.shows)
+			{
+			load.logics( gurgiland);	[	room 104
+			set( gurgiland.loaded);
+			}
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.logics( swim.logics);
+
+	load.view( v.ego.swimming);
+	load.view( v.ego.drowning);
+	load.view( v.ego.jumping.stones);
+	load.view( v.top.waterfall.rm24);
+	load.view( v.bottom.waterfall.rm24);
+	load.view( v.sinking.rock.room24);
+
+	load.sound( s.rapids);
+	set( s.waterfall.done);
+
+	animate.obj( a.waterfall.top);
+	set.view( a.waterfall.top, v.top.waterfall.rm24);
+	position( a.waterfall.top, 94, 130);
+	set.priority( a.waterfall.top, 15);
+	draw( a.waterfall.top);
+
+	animate.obj( a.waterfall.bottom);
+	set.view( a.waterfall.bottom, v.bottom.waterfall.rm24);
+	position( a.waterfall.bottom, 87, 150);
+	set.priority( a.waterfall.bottom, 13);
+	draw( a.waterfall.bottom);
+
+	animate.obj( a.rock);
+	ignore.blocks( a.rock);
+	set.priority( a.rock, 14);
+	set.view( a.rock, v.sinking.rock.room24);
+	set.cel( a.rock, 0);
+	position( a.rock, 105, 167);
+	work = 4;
+	cycle.time( a.rock, work);
+	draw( a.rock);
+	stop.update( a.rock);
+
+	if (previous.room == 62)
+		{
+		ego.x = 132;
+		ego.y = 132;
+		load.view( v.ego);			[	just in case
+		set( seen.warning);			[	prevent message below
+		set.view( ego, v.ego);
+		move.obj( ego, 127, 137, 0, done);
+		edge.ego.hit = 0;
+		}
+	else
+		{
+		if (previous.room == 19)
+			{
+			if (ego.x > 78)
+				{
+				ego.x = 78;
+				}
+			}
+		else
+			{
+			if (previous.room == 23)
+				{
+				if (on.water)
+					{
+					if (ego.y > 148)
+						{
+						ego.y = 148;
+						}
+					}
+				else
+					{
+					if (ego.y < 77 && ego.y > 65)
+						{
+						ego.y = 65;
+						}
+					}
+				}
+			}
+		}
+	position.f( ego, ego.x, ego.y);
+	draw( ego);
+
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gurgiland.loaded)
+		{
+		call( gurgiland);
+		position( a.gurgi, 70, 60);
+		}
+
+	call( swim.logics);
+
+	show.pic();
+	return();
+
+	}
+
+
+if ((posn( ego, 67, 73, 113, 153) ||
+	posn( ego, 67, 120, 83, 153)))
+	{
+	set( on.water);
+	}
+
+if (on.water)
+	{
+	if (posn( ego, 100, 154, 128, 166) &&
+		rock.is.down)				[	walk on rock
+		{
+		reset( on.water);
+		}
+	else
+		{
+		if  (posn( ego, 84, 119, 113, 153) &&[	drown him by the waterfall
+		    !ego.dead)
+			{
+			drown.swim = 0;
+			set( poisoned.water);
+			set( ego.dead);
+			}
+		}
+	}
+
+
+if (posn( ego, 0, 69, 84, 76))		[	near the far shore
+	{
+	ignore.blocks( ego);
+	}
+else
+	{
+	if (posn( ego, 92, 154, 114, 165) &&
+		rock.is.down)		 		[	west of the rock
+		{
+		ignore.blocks( ego);
+		}
+	else
+		{
+		if (posn( ego, 115, 142, 144, 154) &&
+			rock.is.down)			[	east of the rock
+			{
+			ignore.blocks( ego);
+			}
+		else						[	what else is there?
+			{
+			observe.blocks( ego);
+			}
+		}
+	}
+
+
+if (lookit)
+	{
+	if (!gurgi.here)
+		{
+		print( 1);
+		}
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+[*****
+:do.it
+[*****
+ 
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (object.used == u.magic.word && !on.water)
+	{								
+	if ((posn( ego,  85, 150, 159, 167) ||
+		posn( ego, 114, 122, 144, 154)))
+		{
+		set( have.match);
+		print( 3);				[	"BMMPXF!!
+		start.update( a.rock);
+		stop.motion( ego);
+
+		if (rock.is.down)
+			{
+			beginning.of.loop( a.rock, rock.raising.done);
+	    		print( 5);
+			}
+		else
+			{
+			end.of.loop( a.rock, rock.lowering.done);
+			print( 4);
+			}
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (hit.special && !seen.warning)
+	{
+	set( seen.warning);
+	print( 2);
+	}
+
+if (rock.lowering.done)
+	{
+	reset( rock.lowering.done);
+	set( rock.is.down);
+	stop.update( a.rock);
+	start.motion( ego);
+	}
+
+if (rock.raising.done)
+	{
+	reset( rock.raising.done);
+	reset( rock.is.down);
+	stop.update( a.rock);
+	start.motion( ego);
+	}
+
+if (s.waterfall.done)
+	{
+	sound( s.rapids, s.waterfall.done);
+	}
+
+set( near.water);					[	Sure, it looks funny, but...
+
+
+[*****
+:exit
+[*****
+
+call( swim.logics);
+
+if (gurgiland.loaded)
+	{
+	call( gurgiland);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == top)			{new.room( 19);}
+if (edge.ego.hit == bottom)		{new.room( 4);}
+if (edge.ego.hit == left)		{new.room( 23);}
+if (edge.ego.hit == right)
+	{
+	print( 6);
+	new.room( 62);
+	}
+

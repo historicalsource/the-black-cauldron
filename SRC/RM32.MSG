@@ -1,0 +1,6 @@
+[messages for room 32 -- mesa east
+
+
+%message	1
+"This is a dangerously narrow pathway leading to the Castle
+ of the Horned King."

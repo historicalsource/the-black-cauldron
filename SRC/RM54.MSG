@@ -1,0 +1,31 @@
+[messages for room 54 -- the hole in the wall
+
+
+
+%message	1
+"You are roaming around below the Horned King's dungeon.
+ It is dark and cold down here."
+
+%message	2
+"There is a hole in the wall here."
+
+%message	3
+"There is an opening here leading to a dark room."
+
+
+%message	4
+"You look through the hole in the wall. It's very dark,
+ but you think you see light. There might be another passage
+ through there."
+
+%message	5
+"When you push on the wall, a block falls inward."
+
+%message	6
+"You push another block."
+
+%message	7
+"And still another."
+
+%message	8
+"And another."

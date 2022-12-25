@@ -1,0 +1,6 @@
+[messages for room 42 -- middle of stairs
+
+
+%message	1
+"There are spiral staircases going both up and down here."
+

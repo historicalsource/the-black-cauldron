@@ -1,0 +1,480 @@
+[logics for room 9 -- the back of Dallben's house
+
+%include "rm9.msg"
+%include "gamedefs"
+
+
+
+%define	goat.at.ego			lf0
+%define	leanto.opened	 		lf1
+%define	pig.out				lf2
+%define	pig.at.gate			lf3
+%define	door.leanto.open		lf4
+%define	said.hello			lf5
+%define	said.hello.again		lf7
+%define	pig.gone			 	lf9
+%define	pig.going				lf10
+%define	warning				lf11
+%define	ldoor.closed			lf12
+%define	pgate.opened			lf14
+%define	pig.room.loaded		lf15
+%define	goat.attacking			lf16
+
+
+%define	honk.timer			lv0
+%define	butt.timer			lv1
+%define	ego.stunned.timer		lv2
+%define	pig.out.time			lv6
+
+
+%object	a.geese			small1
+%object	a.goat			medium1
+%object	a.corn			small2
+%object	a.door.leanto		medium2
+%object	a.pig.gate		large1
+
+
+
+if (init.log)
+	{
+	set.horizon( 71);
+
+	if (t.with.pig)
+		{
+		load.view( v.pig);
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+	else
+		{
+		if (!pig.fed)
+			{
+			load.view( v.pig);
+			}
+		}
+
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	load.view( v.corn);
+	load.view( v.door.leanto);
+	load.view( v.door.pig.gate);
+	load.view( v.geese);
+	load.view( v.goat);
+	load.view( v.ego.stunned);
+	load.view( v.goat.butting);
+	load.view( v.pig.eating.corn);
+	load.view( v.pig.eating.gruel);
+	load.sound( s.coocoo);
+	load.sound( s.goose);
+	
+
+	animate.obj( a.corn);
+	animate.obj( a.door.leanto);
+	animate.obj( a.pig.gate);
+	animate.obj( a.geese);
+	animate.obj( a.goat);
+
+	set.view( a.door.leanto, v.door.leanto);
+	set.view( a.pig.gate, v.door.pig.gate);
+	set.view( a.corn, v.corn);
+	set.view( a.geese, v.geese);
+	set.view( a.goat, v.goat);
+
+	set.cel( a.door.leanto, 0);
+	set.cel( a.pig.gate, 0);
+
+	position( a.door.leanto, 4, 96);
+	position( a.pig.gate, 89, 153);
+	position( a.corn, 7, 90);
+	position( a.geese, 30, 140);
+	position( a.goat, 60, 99);
+
+	ignore.blocks( a.pig.gate);
+	ignore.blocks( a.door.leanto);
+
+	set.priority( a.corn, 9);
+	set.priority( a.door.leanto, 8);
+
+	if (!pig.fed)
+		{
+		animate.obj( a.pig);
+		set.priority( a.pig, 10);
+		set.view( a.pig, v.pig);
+		position( a.pig, 116, 125);
+		wander( a.pig);
+		draw( a.pig);
+		}
+
+	if (pgate.open)
+		{
+		last.cel( a.pig.gate, work);
+		set.cel.f( a.pig.gate, work);
+		}
+
+	draw( a.pig.gate);
+	draw( a.door.leanto);
+	draw( a.geese);
+	draw( a.goat);
+	draw( ego);
+
+	wander( a.geese);
+	wander( a.goat);
+
+	stop.update( a.door.leanto);
+	stop.cycling( a.pig.gate);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+[*****
+:look.it
+[*****
+
+if (lookit)
+	{
+	if (!said.hello && 
+			(posn( ego, 62, 99, 95, 165) || posn( ego, 91, 143, 139, 165)))
+		{
+		set( said.hello);
+		print( 14);				[	henwen pen
+		}
+	else
+		{
+		if (posn( ego, 97, 119, 149, 142))
+			{
+			if (!pig.fed)
+				{
+				print( 15);			[	henwens house
+				}
+			else
+				{
+				print( 18);			[	hw not here
+				}
+			}
+		else
+			{
+			if (posn( ego, 0, 92, 27, 109))
+				{
+		 		print( 16);			[	leanto mess
+				}
+			else
+				{
+				print( 1);
+				set( have.match);
+				}
+			}
+		}
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+
+[*****
+:do.it
+[*****
+
+if (doit && posn( ego, 7, 95, 17, 108))		[	handle ego by the leanto
+	{
+	if (!door.leanto.open)
+		{
+		set( door.leanto.open);
+		start.update( a.door.leanto);
+		end.of.loop( a.door.leanto, leanto.opened);
+		if (!corn.taken)
+			{
+			print( 2);
+			}
+		else
+			{
+			print( 11);
+			}
+		set( have.match);
+		}
+	else
+		{
+		if (!corn.taken)
+			{
+			set( corn.taken);
+			get( i.corn);
+			print( 3);
+			erase( a.corn);
+			set( have.match);
+			}
+		else
+			{
+			reset( door.leanto.open);
+			start.update( a.door.leanto);
+			reverse.loop( a.door.leanto, ldoor.closed);
+			set( have.match);
+			}
+		}
+	}
+
+if (posn( ego, 87, 144, 97, 165))			[	handle ego by the pig gate
+	{
+	set( have.match);
+
+	if (!pgate.open)
+		{
+		end.of.loop( a.pig.gate, pgate.opened);
+		}
+	else
+		{
+		print( 17);
+		}
+	}
+
+distance( ego, a.pig, work);			[	handle ego by the pig
+if (!said.hello.again && work < 30)
+	{
+	set( said.hello.again);
+	print( 6);	
+	set( have.match);
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (!pig.fed)
+	{
+	if (posn( ego, 99, 125, 135, 146))
+		{
+		if (object.used == u.gruel)
+			{
+			set( have.match);
+			object.used = 0;
+			active.object = 0;
+			print( 4);
+			drop( i.gruel);
+			set.view( a.pig, v.pig.eating.gruel);
+			score += 5;
+			set( pig.out);
+			}
+		else
+			{
+			if (object.used == u.corn)
+				{
+				set( have.match);
+				object.used = 0;
+				active.object = 0;
+				print( 5);
+				drop( i.corn)
+				set.view( a.pig, v.pig.eating.corn);
+				stop.motion( a.pig);
+				score += 5;
+				set( pig.out);
+				}
+			}
+
+		if (pig.out)
+			{
+			reset( pig.out);
+			set( pig.fed);
+			set( pig.in.d.house);
+			release.priority( a.pig);
+			ignore.objs( a.pig);
+			reposition.to( a.pig, 113, 139);
+			force.update( a.pig);
+			observe.objs( a.pig);
+			pig.out.time = 50;
+			stop.motion( a.pig);
+			}
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (pgate.opened)
+	{
+	reset( pgate.opened);
+	print( 13);
+	set( pgate.open);
+	}
+
+if (posn( ego, 87, 144, 97, 160))
+	{
+	ignore.objs( a.pig.gate);
+	if (pgate.open)
+		{
+		ignore.blocks( ego);
+		}
+	else
+		{
+		observe.blocks( ego);
+		}
+	}
+else
+	{
+	observe.blocks( ego);
+	}
+
+if (!warning && posn( ego, 151, 0, 152, 100))
+	{
+	print( 12);
+	set( warning);
+	}
+
+--honk.timer;						[	honk if you're horny
+distance( ego, a.geese, work);
+if (!honk.timer &&
+    !have.match &&
+	work < 10  &&
+    !swinging.sword)
+	{
+	sound( s.goose, done);
+	print( 7);
+	honk.timer = 50;
+	}
+
+--butt.timer;						[	handle T & the goat
+distance( ego, a.goat, work);
+if (!butt.timer &&
+	work < 13 &&
+    !posn( ego, 71, 116, 114, 157) &&
+    !swinging.sword)
+	{
+	set( swing.override);
+	set( handsOff);
+	set.view( a.goat, v.goat.butting);
+	stop.motion( ego);
+	follow.ego( a.goat, 4, goat.at.ego);
+	set( goat.attacking);
+	butt.timer = 60;
+	}
+
+if (butt.timer == 22 &&
+	goat.attacking)			[	He can't get to ego!
+	{
+	butt.timer = 0;
+	reset( goat.attacking);
+	reset( swing.override);
+	reset( handsOff);
+	start.motion( ego);
+	set.view( a.goat, v.goat);
+	wander( a.goat);
+	}
+
+
+if (goat.at.ego)
+	{
+	reset( goat.at.ego);
+	set.view( ego, v.ego.stunned);
+	stop.motion( ego);
+	print( 10);
+	set( coocoo);
+	set( keep.cycling);
+	set.view( a.goat, v.goat);
+	wander( a.goat);
+	ego.stunned.timer = ego.stunned.time;
+	}
+
+--ego.stunned.timer;
+if (ego.stunned.timer == 1)
+	{
+	ego.stunned.timer = 0;
+	reset( swing.override);
+	reset( handsOff);
+	reset( coocoo);
+	set.view( ego, v.ego);
+	step.size( ego, one);
+	start.motion( ego);
+	reset( keep.cycling)
+	}
+
+if (coocoo && ego.stunned.timer)
+	{
+	sound( s.coocoo, coocoo);
+	}
+
+if (leanto.opened)
+	{
+	reset( leanto.opened);
+	stop.update( a.door.leanto);
+	if (!corn.taken)
+		{
+		draw( a.corn);
+		}
+	}
+
+if (ldoor.closed)
+	{
+	reset( ldoor.closed);
+	stop.update( a.door.leanto);
+	}
+
+ 
+--pig.out.time;
+if (pig.out.time == 20)
+	{
+	print( 8);
+	}
+
+if (pig.out.time == 1)
+	{
+	set.view( a.pig, v.pig);
+	start.motion( a.pig);
+	set( pig.in.d.house);
+	ignore.objs( a.pig);
+	ignore.blocks( a.pig);
+	move.obj( a.pig, 94, 139, 1, pig.at.gate);
+	work = 1;
+	step.size( a.pig, work);
+	}
+
+if (pig.at.gate)
+	{
+	reset( pig.at.gate);
+	print( 9);
+	move.obj( a.pig, 90, 153, 1, pig.going);	[85, 153, 0, pig.going);
+	}
+
+if (pig.going)
+	{
+	reset( pig.going);
+	print( 19);
+	move.obj( a.pig, 1, 160, 1, pig.gone);
+	x = -2;
+	y = 6;
+	reposition( a.pig, x, y);
+	}
+
+if (pig.gone)
+	{
+	reset( pig.gone);
+	erase( a.pig);
+	}
+
+
+[*****
+:exit							[test for leaving room
+[*****
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == top)			{new.room( 4);}
+if (edge.ego.hit == bottom)		{new.room( 14);}
+if (edge.ego.hit == left)		{new.room( 8);}

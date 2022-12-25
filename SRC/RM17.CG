@@ -1,0 +1,100 @@
+[logics for room 17 
+
+%include "rm17.msg"
+%include "gamedefs"
+
+
+%define	pig.room.loaded		lf0
+
+
+if (init.log)
+	{
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[room 116
+		set( pig.room.loaded);
+		set( can.lose.pig);
+		}
+
+
+	if (previous.room == 65)
+		{
+		position( ego, 88, 101);
+		}
+
+	if (previous.room == 12)
+		{
+		position( ego, 38, 101);
+		}
+
+	if (previous.room == 18 && posn( ego, 150, 0, 159, 112))
+		{
+		position( ego, 143, 103);
+		}
+
+	if (previous.room == 16)
+		{
+		get.posn( ego, x, y);
+		if (y < 142)
+			{
+			position( ego, 1, 139);
+			}
+		else
+			{
+			position( ego, 1, 157);
+			}
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+
+[*****
+:do.it
+:use.it
+:no.input
+:exit
+[*****
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (posn( ego, 32, 97, 42, 99))		{new.room( 12);}
+if (edge.ego.hit == bottom)			{new.room( 22);}
+if (edge.ego.hit == right)			{new.room( 18);}
+if (edge.ego.hit == left)			{new.room( 16);}
+if (posn( ego, 84, 96, 92, 97))
+	{
+	if (!first.time.rm17.to.rm65)
+		{
+		set( first.time.rm17.to.rm65);
+		score += 4;
+		}
+	new.room( 65);
+	}

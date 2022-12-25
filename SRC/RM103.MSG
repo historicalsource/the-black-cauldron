@@ -1,0 +1,26 @@
+[messages for room 103 -- hey, you be a winner! room
+
+
+
+%message	1	
+"We hope you've enjoyed your visit to Prydain, and
+ your success with \"The Black Cauldron.\""
+
+%message	2	
+"You probably think you could have earned a higher score.
+ Of course, there's an easy way to find out: play the game
+ again."
+
+%message	3	
+"Don't forget, if you make different decisions, the game will
+ be different. We hope you'll try again and again."
+
+%message	4	
+"Congratulations!! You've played a tremendous game!!"
+
+%message	5	
+""
+
+%message	6	
+"You jumped in the cauldron causing it to explode. The Horned
+ King's army of Cauldron-Born is now powerless."

@@ -1,0 +1,524 @@
+[logics for room 45 -- the Horned King's throne room
+
+%include "rm45.msg"
+%include "gamedefs"
+
+
+%define	henchman.comes.time		99
+%define	time.before.creeper		30
+%define	pig.entrance.time		12
+%define	length.of.pigvision		170
+
+
+%define	hk.at.1				lf0
+%define	hk.at.2				lf1
+%define	hk.at.3				lf2
+%define	ego.on.balcony			lf3
+%define	ego.on.floor			lf4
+%define	creeper.at.1			lf5
+%define	creeper.at.2			lf6
+%define	creeper.at.3			lf7
+%define	pig.at.1				lf8
+%define	pig.at.2				lf9
+%define	pig.at.3				lf10
+%define	creeper.here			lf12
+%define	hk.here				lf13
+%define	pigvision.done			lf14
+%define	henchmen.partying		lf16
+%define	hk.on.the.throne		lf17
+%define	pigvision.music.done	lf18
+%define	ego.hit.floor			lf19
+%define	creeper.stopped		lf20
+%define	read.message			lf21
+%define	hench.on.balcony		lf22
+
+
+%define	henchman.comes.timer	lv0
+%define	pig.entrance.timer		lv1
+
+
+%object	a.creeper			medium2
+%object	a.pigvision		medium7
+%object	a.hk				medium1
+%object	a.hench1			large1
+%object	a.hench2			large2
+
+
+
+if (init.log)
+	{
+	creep.timer = 0;
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.logics( pig.room);
+	load.logics( castle.interior);
+
+	if (previous.room != 40)
+		{	
+		set( ego.on.floor);
+		if (previous.room == 43)
+			{
+			position( ego, 8, 130);
+			hench.x = 38;
+			hench.y = 167;
+			set( make.henchman.come);
+			}
+		}
+	else							[	" 'cho-time, 'cho-time"
+		{
+		load.sound( s.ego.falling);
+		load.sound( m.hk);
+
+		load.view( v.ego.jumping.off);
+		load.view( v.hk.sitting);
+
+		if (!pig.in.castle)
+			{
+			load.view( v.hk.grabbing);
+			load.view( v.creeper.grabbing);
+			load.view( v.creeper);
+			}
+
+		load.view( v.hk);
+		animate.obj( a.hk);
+		creep.timer = time.before.creeper;
+		position( ego, 11, 44);
+		set( ego.on.balcony);
+
+		if (pot.in.castle)
+			{
+			load.view( v.hench);
+			load.view( v.h.grabbing);
+			}
+		}
+
+	set( hench.program.control);
+
+	call( castle.interior);
+	call( pig.room);
+
+	draw( ego);
+
+	if (pig.in.castle)
+		{
+		set( out.of.memory);
+		set( henchmen.partying);
+
+		load.view( v.h.partying1);
+		load.view( v.h.partying2);
+
+		load.view( v.pig.bowl);
+		add.to.picture( v.pig.bowl, 0, 0, 95, 93, 4, 4);
+		discard.view( v.pig.bowl);
+
+		animate.obj( a.hench1);
+		position( a.hench1, 80, 125);
+		set.view( a.hench1, v.h.partying1);
+		draw( a.hench1);
+
+		animate.obj( a.hench2)
+		position( a.hench2, 82, 164);
+		set.view( a.hench2, v.h.partying2);
+		draw( a.hench2);
+
+		work = 2;
+		cycle.time( a.hench1, work);
+		cycle.time( a.hench2, work);
+		}
+
+	show.pic();
+
+	if (pig.in.castle)
+		{
+		print( 12);
+		}
+
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (hench.on.balcony)
+	{
+	reset( doit);
+	stop.motion( ego);				[	Your ass is grass, T-baby!
+	goto no.input;					[	Added 5/26/87
+	}
+
+if (ego.on.balcony)
+	{
+	set( have.match);
+	if ((creep.timer || henchmen.partying))	[	if the Horned King is coming
+		{
+		if (pig.in.castle)
+			{
+			print( 11);
+			}
+		else
+			{
+			print( 14);
+			}
+		}
+	else
+		{
+		reset( ego.on.balcony);
+		set( ego.on.floor);
+
+		program.control( );			[	make him leap
+		set( keep.cycling);
+		set.view( ego, v.ego.jumping.off);
+		set.loop( ego, facing.right);
+		set.priority( ego, 15);
+		x = 10;
+		y = 0;
+		reposition( ego, x, y);
+		move.obj( ego, 40, 132, 3, ego.hit.floor);
+		print( 18);
+
+		if (!pigvision.in.progress)
+			{
+			sound( s.ego.falling, done);
+			}
+		}
+	goto no.input;
+	}
+
+if (ego.on.floor && (pigvision.in.progress || pig.in.castle))
+	{
+	distance( ego, a.pig, work);
+	if (work < 20)
+		{
+		set( have.match);
+		set( t.with.pig);			[	handle the piggy
+		reset( pig.program.control);
+		reset( pig.in.castle);
+		pig.timer.1 = 0;			[	pig timer dead completely
+		pig.timer.2 = 0;
+		print( 3);
+		start.update( a.pig);
+		if (pigvision.in.progress)
+			{
+			set( make.creeper.come);	[erase creeper; let henchroom handle
+			if (creeper.stopped)
+				{
+				reset( creeper.stopped);
+				start.update( a.creeper);
+				}
+			get.posn( a.creeper, hench.x, hench.y);
+			erase( a.creeper);
+
+			erase( a.pigvision);	[	handle the vision
+			stop.sound( );
+			reset( pigvision.music.done);
+			}
+		reset( pigvision.in.progress);
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if  (object.used == u.magic.sword &&
+    !swinging.sword &&
+	ego.on.balcony)
+	{
+	swing.x = 11;			
+	swing.y = 47;
+	}
+
+
+if  (object.used == u.magic.sword &&
+    (hk.here || creeper.here))
+	{
+	set( have.match);
+	print( 15);
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (ego.hit.floor)
+	{
+	reset( ego.hit.floor);			[	restore ego to his full brillance
+	reset( keep.cycling);
+	release.priority( ego);
+	set.view( ego, v.ego);
+	player.control( );
+
+	if (pigvision.in.progress)
+		{
+		print( 6);				[	"You leap...  (Nobody notices.)
+		}
+	else
+		{
+		if (creeper.here)
+			{
+			print( 8);			[	"Creeper's coming.  Run, Taran!
+			if (creeper.stopped)
+				{
+				reset( creeper.stopped);
+				start.update( a.creeper);
+				}
+			get.posn( a.creeper, hench.x, hench.y);
+			set( make.creeper.come);
+			erase( a.creeper);
+			reset( creeper.at.3);
+			}
+		else
+			{
+			if (hk.here)
+				{
+				print( 9);		[	"HK's after you.  Run, Taran!
+				get.posn( a.hk, hench.x, hench.y);
+				set( make.hk.come);
+				erase( a.hk);
+				}
+			else
+				{
+				print( 5);		[	"You leap... but are observed!
+				hench.x = 95;
+				hench.y = 127;
+				set( make.henchman.come);
+				}
+			}
+		}
+	}
+
+--creep.timer;
+if (creep.timer == 1)
+	{
+	set( hk.here);
+	position( a.hk, 11, 132);
+	set.view( a.hk, v.hk);
+	set.loop( a.hk, 0);
+	set.cel( a.hk, 0);
+	draw( a.hk);
+	sound( m.hk, done);
+	move.obj( a.hk, 53, 132, 0, hk.at.1);
+	if (henchmen.partying)
+		{
+		stop.update( a.hench1);
+		stop.update( a.hench2);
+		}
+	}
+
+if (hk.at.1)
+	{
+	reset( hk.at.1);
+	if (henchmen.partying)
+		{
+		print( 2);
+		start.update( a.hench1);
+		start.update( a.hench2);
+		erase( a.hench1);
+		erase( a.hench2);
+		reset( henchmen.partying);
+
+		discard.view( v.h.partying2);
+		discard.view( v.h.partying1);
+		if (previous.room == 40)
+			{
+			load.view( v.pig.pigvision);
+			load.sound( m.pigvision);
+			load.view( v.pig);
+			animate.obj( a.pigvision);
+			}
+		}
+
+	if (previous.room == 40)
+		{
+		load.view( v.hk.grabbing);
+		load.view( v.creeper.grabbing);
+		load.view( v.creeper);
+		animate.obj( a.creeper);
+		}
+
+	move.obj( a.hk, 53, 108, 0, hk.at.2);
+	}
+
+if (hk.at.2)
+	{
+	reset( hk.at.2);
+	move.obj( a.hk, 92, 70, 0, hk.at.3);
+
+	set( creeper.here);
+	set.view( a.creeper, v.creeper);
+	set.loop( a.creeper, 0);
+	position( a.creeper, 11, 132);
+	draw( a.creeper);
+	move.obj( a.creeper, 53, 132, 0, creeper.at.1);
+	if (!pig.safe && pig.in.castle)
+		{
+		pig.entrance.timer = pig.entrance.time;
+		}
+	}
+
+
+if (hk.at.3)
+	{
+	reset( hk.at.3);
+	set( hk.on.the.throne);
+	set.view( a.hk, v.hk.sitting);
+	reposition.to( a.hk, 90, 73);
+	stop.update( a.hk);
+	force.update( a.hk);
+	}
+
+if  (hk.on.the.throne && 
+    !pigvision.in.progress &&
+	ego.on.floor)
+	{
+	if (posn( ego, 50, 75, 137, 91))	[	ego steps on the steps
+		{
+		x = 0;
+		y = 19;
+		reposition( ego, x, y);
+		if (!read.message)
+			{
+			set( read.message);
+			print( 16);
+			}
+		}
+	}
+
+--pig.entrance.timer;
+if (pig.entrance.timer == 1)
+	{
+	animate.obj( a.pig);
+	set( pigvision.has.occured);
+	pig.timer.1 = 59;
+	pig.timer.2 = 4;
+	position( a.pig, 11, 132);
+	set.view( a.pig, v.pig);
+	set.loop( a.pig, 0);
+	draw( a.pig);
+	move.obj( a.pig, 53, 132, 0, pig.at.1);
+	}
+
+if (pig.at.1)
+	{
+	reset( pig.at.1);
+	move.obj( a.pig, 53, 108, 0, pig.at.2);
+	}
+
+if (pig.at.2)
+	{
+	reset( pig.at.2);
+	move.obj( a.pig, 83, 97, 0, pig.at.3);
+	}
+
+if (pig.at.3)
+	{
+	reset( pig.at.3);
+	stop.update( a.pig);
+	}
+
+if (creeper.at.1)
+	{
+	reset( creeper.at.1);
+	move.obj( a.creeper, 53, 108, 0, creeper.at.2);
+	}
+
+if (creeper.at.2)
+	{
+	reset( creeper.at.2);
+	move.obj( a.creeper, 108, 99, 0, creeper.at.3);
+	}
+
+
+if (creeper.at.3)
+	{
+	reset( creeper.at.3);
+	set.loop( a.creeper, 1);
+	stop.update( a.creeper);
+	force.update( a.creeper);
+	set( creeper.stopped);
+
+	if ((pig.safe || !pig.in.castle))
+		{
+		if (pot.in.castle)
+			{
+			print( 13);
+			henchman.comes.timer = henchman.comes.time;
+			}
+		else
+			{
+			print( 10);
+			print( 17);
+			}
+		}
+	else
+		{
+		position( a.pigvision, 87, 85);
+		set.view( a.pigvision, v.pig.pigvision);
+		set.loop( a.pigvision, vision.room45);
+		work = 3;
+		cycle.time( a.pigvision, work);
+		set( pigvision.in.progress);
+		set( pigvision.has.occured);
+		draw( a.pigvision);
+		stop.sound( );
+		sound( m.pigvision, pigvision.music.done);
+		}
+	}
+
+--henchman.comes.timer;
+if (henchman.comes.timer == 1 && ego.on.balcony &&
+	!useit && !doit)				[	Added 5/26/87
+	{
+	stop.motion( ego);				[	Added 5/26/87
+	set( make.henchman.come);
+	set( hench.on.balcony);
+	hench.x = 10;
+	hench.y = 48;
+	}
+
+if (pigvision.music.done)
+	{
+	print( 7);
+	certain.death = 1;
+	}
+
+
+[*****
+:exit
+[*****
+
+if (hit.special)
+	{
+	if (posn( ego, 0, 0, 28, 44))
+		{
+		new.room( 40);
+		}
+	else
+		{
+		new.room( 43);
+		}
+	}
+
+call( castle.interior);
+call( pig.room);
+

@@ -1,0 +1,793 @@
+[logics for room 64 -- frog room
+
+%include	"rm64.msg"
+%include "gamedefs"
+
+
+%define	ego.is.frog.time		188	[	time from offer to acceptance
+%define	number.of.frogs		6	[ 	your mileage may vary.
+%define	width.of.frog.jump		5
+%define	time.between.frogs		50
+%define	witch.talk.time 		30
+%define	number.of.pots			7
+%define	pot.y.min				53
+%define	pot.y.max				119
+%define	last.visible.x			142
+		
+
+%define	this.is.it			lf0	[	define local variables
+%define	chest.open			lf1
+%define	chest.opening.done		lf2
+%define	chest.closing.done		lf3	
+%define	witches.here			lf4
+%define	make.ego.a.frog		lf5
+%define	start.frog.1			lf6
+%define	start.frog.2			lf7
+%define	start.frog.3			lf8
+%define	frog.1.out			lf9
+%define	frog.2.out			lf10
+%define	frog.3.out			lf11
+%define	frog.1.free			lf12
+%define	frog.2.free			lf13
+%define	frog.3.free			lf14
+%define	frogs.free			lf15
+%define	witches.poofed.in		lf16
+%define	ok.for.t.to.talk		lf17
+%define	heard.witches			lf18
+%define	ready.to.swap			lf19
+%define	start.pot				lf20
+%define	pot.done				lf21
+%define	ego.hit.one			lf22
+%define	ego.got.hit			lf23
+%define	witches.poofed.out		lf24
+%define	ego.is.frog			lf25
+%define	pot.fight				lf26
+%define	witches.gone			lf27
+%define	ribbit.done			lf28
+%define	frogs.out.tonight		lf29
+%define	ready.for.a.fight		df0
+%define	ego.is.a.dead.mother	df1	[	the end
+
+
+%define	ego.is.frog.timer		lv0
+%define	object.given			lv1
+%define	witches.speech.num		lv2
+%define	frog.count			lv3
+%define	witch.talk.cycles		lv4
+%define	pot.count				lv5
+%define	pot.x				lv6
+%define	pot.y				lv7
+
+
+%object	a.pot				small1 [	define objects
+%object	a.frog.1				small2
+%object	a.frog.2				small3
+%object	a.frog.3				small4
+%object	a.chest				medium1
+%object	a.witches				giant1
+
+
+if (init.log)						[	initialize room
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (king.gifted && !witches.gave.pot)[	is this the time????
+		{
+		set( this.is.it);			[	yep; this is it!
+		}
+
+	load.view( v.witches.chest);		[	the chest is always present
+	animate.obj( a.chest);	
+	set.view( a.chest, v.witches.chest);
+	position( a.chest, 84, 103);
+	ignore.blocks( a.chest);
+	set.cel( a.chest, 0);			[	start with chest closed
+	set.priority( a.chest, 5);
+
+	if (!this.is.it)
+		{
+		load.pic( current.room);
+		draw.pic( current.room);
+		}
+	else
+		{
+		set( out.of.memory);
+
+		load.view( v.witches.poofing);
+		load.view( v.witches.talking);
+		load.view( v.flying.pot);
+		load.view( v.frog.from.chest);
+		load.view( v.frog.jumping);
+		load.view( v.ego.poofing);	[	can't get poofed if no witches
+		load.view( v.ego.frog);
+
+		load.sound( s.ribbit);
+		load.sound( s.poofing);
+
+		  set( prevent.sword.message);
+
+		animate.obj( a.frog.1);		[	animate objects
+		animate.obj( a.frog.2);	
+		animate.obj( a.frog.3);	
+		animate.obj( a.pot);	
+
+		set.priority( a.pot, 10);
+		set.priority( a.frog.1, 10);
+		set.priority( a.frog.2, 10);
+		set.priority( a.frog.3, 10);
+
+		ignore.objs( a.pot);
+		ignore.objs( a.frog.1);
+		ignore.objs( a.frog.2);
+		ignore.objs( a.frog.3);
+
+		ignore.blocks( a.pot);
+		set.view( a.pot, v.flying.pot);
+		work = 2;
+		step.size( a.pot, work);
+
+		position( a.witches, 45, 104);
+		}
+
+	draw( a.chest);				[	draw the objects
+	stop.update( a.chest);
+
+	if (previous.room == 63)
+		{
+		position( ego, 4, 120);		[	position ego
+		}
+	else
+		{
+		position( ego, 146, 117);
+		move.obj( ego, 144, 117, 0, done);
+		}
+	observe.blocks( ego);
+	draw( ego);
+
+	show.pic();
+	return();
+	}							[	end init.log
+
+
+
+if (ego.is.a.dead.mother)
+	{
+	set( have.match);
+	goto no.fucking.input;
+	}
+
+
+get.posn( ego, ego.x, ego.y);
+
+if (lookit)
+	{
+	set( have.match);
+	if (posn( ego, 78, 100, 113, 110))	[	ego near the chest
+		{
+		if (!this.is.it)
+			{
+			print( 7);			[	"there is an old locked chest
+			}
+		else
+			{
+			if (frogs.free)
+				{
+				if (!chest.open)
+					{
+					print( 4);	[	"chest is closed but unlocked
+					}
+				else				[	(chest closed & no frogs)
+					{
+					if (witches.here)
+						{
+						print( 2); [	"was releasing frogs worth this?
+						}
+					else
+						{
+						if (!frogs.out.tonight)
+							{
+							print( 33);[	"chest is empty
+							}
+						else
+							{
+							print( 3); [	"frogs hop to freedom
+							}
+						}
+					}
+				}
+			else					[	(frogs not free)
+				{
+				if (witches.gone)
+					{
+					print( 35);
+					}
+				else
+					{
+					if (chest.open)
+						{
+						print( 5);[	"the frogs look human
+						}
+					else
+						{
+						print( 6);[	"you hear a faint ribbit
+						}
+					}
+				}
+			}
+		}
+	else							[	(not by chest)
+		{
+		if (posn( ego, 40, 100, 77, 110) &&
+			witches.here)			[	t near the witches
+			{
+			print( 8);			[	"they're ugly
+			}
+		else
+			{
+			if (witches.gone)
+				{
+				print( 35);
+				}
+			else
+				{
+				print( 1);		[	Generic:  "This is an old house
+				}
+			}
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (ok.for.t.to.talk && witches.here)
+	{
+	reset( ok.for.t.to.talk);
+	set( have.match);
+
+	print( 17);					[	t says:
+	print( 19);
+	print( 20);					[	witches reply:
+	print( 21);
+
+	set( ready.to.swap);
+	print( 37);
+	start.cycling( a.witches);
+	witches.speech.num = 5;			[	this init's timer "to frog" below
+	witch.talk.cycles = witch.talk.time;
+	goto exit;
+	}
+
+if (!witches.here &&
+	posn( ego, 78, 100, 113, 110))	[	near the chest
+	{
+	set( have.match);
+	if (!this.is.it)
+		{
+		print( 11);				[	"this chest is locked
+		}
+	else
+		{
+		if (!chest.open)
+			{
+			print( 10);			[	"you open the chest
+			set( ribbit.done);		[	so it starts automatically
+			start.update( a.chest);
+			end.of.loop( a.chest, chest.opening.done);
+			goto no.input;
+			}
+		else
+			{
+			if ((frog.count == 0 || frog.count == number.of.frogs)) 
+				{
+				print( 9);			[	"you close the chest
+				start.update( a.chest);
+				reverse.loop( a.chest, chest.closing.done);
+				goto no.input;
+				}
+			else
+				{
+				if (!witches.gone)
+					{
+					print( 5);	[	"frogs faces look humanoid
+					}
+				}
+			}
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it							[	pressed "use current obj"
+[*****
+
+if (swinging.sword)
+	{
+	object.used = 0;
+	active.object = 0;
+	set( have.match);
+	}
+
+if (!object.given && 
+	object.used == u.magic.sword && 
+	witches.here &&
+    !swinging.sword)
+	{
+	if (ready.to.swap)
+		{
+		set( have.match);			[	prevent sword swinging
+		object.given = 1;
+		drop( i.magic.sword);
+		object.used = 0;
+		active.object = 0;
+		reset( ready.to.swap);
+		score += 18;
+		stop.motion( ego);
+		print( 25);	[	"here's a big one for you, girls
+		print( 26);	[	"thanks, let's go outside & do it in the dirt
+		start.cycling( a.witches);
+		witches.speech.num = 2;
+		witch.talk.cycles = witch.talk.time;
+		goto no.input;
+		}
+	else
+		{
+		if (!pot.fight)
+			{
+			set( ready.for.a.fight);
+			goto exit;			[	rm102 swings the sword
+			}
+		}
+	}
+
+if (!object.given && 
+	object.used == u.magic.mirror && 
+	witches.here && 
+	ready.to.swap)
+	{
+	set( have.match);
+	object.given = 1;
+	drop( i.magic.mirror);
+	object.used = 0;
+	active.object = 0;
+	reset( ready.to.swap);
+	reset( witches.here);
+	set( witches.gone);
+	print( 22);					[	"here's a mirror for you, girls
+	print( 23);					[	"we won't kill you, but no pot!
+	print( 24);					[	"goodbye, taran
+	print( 32);
+	start.cycling( a.witches);
+	set.view( a.witches, v.witches.poofing);
+	set.cel( a.witches, 0);
+	end.of.loop( a.witches, witches.poofed.out);	
+	goto no.input;
+	}
+	
+if (!object.given && 
+	posn( ego, 78, 100, 113, 110))	[	near the chest
+	{
+	if (object.used == u.magic.sword &&
+			!swinging.sword)
+		{
+		set( prevent.sword.message);
+		[don't set( have.match); rm102 will swing sword
+		print( 12);				[	"something prevents you hitting
+		}
+
+	if (object.used == u.keys)
+		{
+		set( have.match);
+		print( 13);
+		}
+	}
+	
+
+[*****
+:no.input
+:no.fucking.input
+:also.no.mother.fucking.input
+[*****
+
+if (ready.for.a.fight && !swinging.sword)
+	{
+	reset( ready.for.a.fight);
+	set( pot.fight);				[	begin fighting
+	print( 27);					[	"Threaten us?  Here's some pot
+	reset( ok.for.t.to.talk);
+	start.cycling( a.witches);
+	witches.speech.num = 3;
+	witch.talk.cycles = witch.talk.time;
+	pot.count = 0;
+	set( start.pot);
+	}
+
+if ((witches.here ||
+	posn( ego, 78, 100, 113, 110)))	[	near the chest
+	{
+	set( prevent.sword.message);
+	}
+else
+	{
+	reset( prevent.sword.message);
+	}
+
+if (chest.closing.done)
+	{
+	reset( chest.closing.done);
+	stop.update( a.chest);
+	reset( chest.open);
+	}
+
+if (chest.opening.done)				[	can only open it if ok for frogs
+	{
+	reset( chest.opening.done);
+	stop.update( a.chest);
+	set( chest.open);
+	if (!frogs.free)
+		{
+		set( frogs.free);
+		set( frogs.out.tonight);
+		frog.count = 0;
+		set( start.frog.1);			[	queue up frog #1
+		print( 14);
+		}
+	}
+
+
+
+[*****
+[frog.stuff
+[*****
+
+if (start.frog.1)
+	{
+	reset( start.frog.1);
+	if (frog.count < number.of.frogs)	[	here comes another Kermit.
+		{
+		++frog.count;
+		set.view( a.frog.1, v.frog.from.chest);
+		position( a.frog.1, 88, 104);
+		set.cel( a.frog.1, 0);
+		stop.motion( a.frog.1);
+		draw( a.frog.1);
+		end.of.loop( a.frog.1, frog.1.out);
+		timer.1 = time.between.frogs;
+		}
+	else
+		{						[	most frogs out, here come witches
+		set( witches.here);
+		reset( frogs.out.tonight);
+		animate.obj( a.witches);	
+		set.view( a.witches, v.witches.poofing);
+		last.cel( a.witches, work);
+		set.cel.f( a.witches, work);
+		draw( a.witches);
+		reverse.loop( a.witches, witches.poofed.in);
+		stop.motion( a.witches);	
+		sound( s.poofing, done);
+		}
+	}
+
+if (start.frog.2)
+	{
+	reset( start.frog.2);
+	if (frog.count < number.of.frogs)
+		{
+		++frog.count;
+		set.view( a.frog.2, v.frog.from.chest);
+		position( a.frog.2, 88, 104);
+		set.cel( a.frog.2, 0);
+		stop.motion( a.frog.2);
+		draw( a.frog.2);
+		end.of.loop( a.frog.2, frog.2.out);
+		}
+	}
+
+if (start.frog.3)
+	{
+	reset( start.frog.3);
+	if (frog.count < number.of.frogs)
+		{
+		++frog.count;
+		set.view( a.frog.3, v.frog.from.chest);
+		position( a.frog.3, 88, 104);
+		set.cel( a.frog.3, 0);
+		stop.motion( a.frog.3);
+		draw( a.frog.3);
+		end.of.loop( a.frog.3, frog.3.out);
+		}
+	}
+
+if (frog.1.out)					[	frog clear of chest & on floor
+	{
+	reset( frog.1.out);
+	delta.x = width.of.frog.jump;
+	delta.y = 0;
+	reposition( a.frog.1, delta.x, delta.y);
+	set.view( a.frog.1, v.frog.jumping);
+	work = 2;
+	step.size( a.frog.1, work);
+	set.cel( a.frog.1, 0);
+	start.cycling( a.frog.1);
+	move.obj( a.frog.1, last.visible.x, 118, 2, frog.1.free);
+	}
+
+if (frog.2.out)
+	{
+	reset( frog.2.out);
+	delta.x = width.of.frog.jump;
+	delta.y = 0;
+	reposition( a.frog.2, delta.x, delta.y);
+	set.view( a.frog.2, v.frog.jumping);
+	work = 2;
+	step.size( a.frog.2, work);
+	set.cel( a.frog.2, 0);
+	start.cycling( a.frog.2);
+	move.obj( a.frog.2, last.visible.x, 118, 2, frog.2.free);
+	}
+
+if (frog.3.out)
+	{
+	reset( frog.3.out);
+	delta.x = width.of.frog.jump;
+	delta.y = 0;
+	reposition( a.frog.3, delta.x, delta.y);
+	set.view( a.frog.3, v.frog.jumping);
+	work = 2;
+	step.size( a.frog.3, work);
+	move.obj( a.frog.3, last.visible.x, 118, 2, frog.3.free);
+	set.cel( a.frog.3, 0);
+	start.cycling( a.frog.3);
+	timer.2 = time.between.frogs;
+	}
+
+if (frog.1.free)					[	frog reached screen right
+	{
+	reset( frog.1.free);
+	erase( a.frog.1);
+	set( start.frog.1);
+	}
+
+if (frog.2.free)
+	{
+	reset( frog.2.free);
+	erase( a.frog.2);
+	}
+
+if (frog.3.free)
+	{
+	reset( frog.3.free);
+	erase( a.frog.3);
+	}
+
+--timer.1;
+if (timer.1 == 30)
+	{
+	set( start.frog.2);
+	}
+
+if (timer.1 == 1)
+	{
+	set( start.frog.3);
+	}
+
+
+
+[*****
+[witch.stuff
+[*****
+
+if (witches.poofed.in)				[	the witches are now here, talking
+	{
+	reset( witches.poofed.in);
+	set.view( a.witches, v.witches.talking);
+	witch.talk.cycles = witch.talk.time;
+	witches.speech.num = 1;
+	print( 15);
+	}
+
+--witch.talk.cycles;
+if (witch.talk.cycles == 1)
+	{
+	stop.cycling( a.witches);
+	set.cel( a.witches, 0);			[	shut your mouth, girls
+	if (witches.speech.num == 1)
+		{
+		witches.speech.num = 0;
+		print( 16);
+		set( ok.for.t.to.talk);
+		}
+	if (witches.speech.num == 2)
+		{
+		witches.speech.num = 0;
+		set( ready.to.give.pot);
+		set( witches.gave.pot);		[	wasn't being set anywhere!
+		new.room( 20);
+		}
+	if (witches.speech.num == 3)		[	generic; does nothing.
+		{
+		witches.speech.num = 0;
+		}
+	if (witches.speech.num == 4)
+		{
+		witches.speech.num = 0;
+		start.cycling( a.witches);
+		certain.death = turned.into.frog;
+		}
+	if (witches.speech.num == 5)
+		{
+		witches.speech.num = 0;
+		ego.is.frog.timer = ego.is.frog.time;
+		}
+	}
+
+if (witches.poofed.out)				[	w poof away.
+	{
+	reset( witches.poofed.out);
+	erase( a.witches);
+	reset( witches.here);
+	set( witches.gone);
+	}
+
+
+
+[*****
+[pot.stuff
+[*****
+
+if (start.pot)						[	hurl a pot at ego
+	{
+	reset( start.pot);
+	if (pot.count < number.of.pots)
+		{
+		++pot.count;
+		position( a.pot, 0, 76);
+		draw( a.pot);
+		x = last.visible.x;
+		y = ego.y;				[	aim pot at ego's gut
+		y -= ego.height;
+		y += 10;
+		if (y < pot.y.min)			[	If ego's above or below the
+			{					[	doorframe, adjust so pot will
+			y = pot.y.min;			[	always fit through door.
+			}
+		if (y > pot.y.max)
+			{
+			y = pot.y.max;
+			}
+		step = 2;
+		move.obj.f( a.pot, x, y, step, pot.done);
+		}
+	else							[	let's not do this all day!
+		{
+		reset( pot.fight);			[	all done.
+		reset( witches.here);
+		set( witches.gone);
+		print( 28);				[	"ok, nice dodging, but boring
+		print( 29);				[	"goodbye, t
+		print( 30);
+		set.view( a.witches, v.witches.poofing);
+		set.cel( a.witches, 0);
+		start.cycling( a.witches);
+		end.of.loop( a.witches, witches.poofed.out);	
+		}
+	}
+
+if (pot.fight)						[	they're throwing pots at ego
+	{
+	get.posn( a.pot, pot.x, pot.y);	[	do collision detection
+	work = ego.x;
+	work += ego.width;
+	if (work > pot.x)				[	is it past him?
+		{
+		work = pot.x;
+		work += pot.width;
+		if (work > ego.x)			[	is it to his left?
+			{
+			work = ego.y;
+			work -= ego.height;
+			if (work < pot.y)		[	is it above his head?
+				{
+				work = pot.y;
+				work -= pot.height;
+				if (work < ego.y)	[	is it below his feet?
+					{
+					erase( a.pot);	[	IT'S A HIT!!
+					reset( pot.fight);
+					object.used = 0;
+					active.object = 0;
+				
+					if (!swinging.sword)		[	ego hit pot!
+						{
+						set( make.ego.a.frog);	[	pot hit ego!
+						}
+					else
+						{
+				  		set( ready.to.swap);
+						print( 34);
+						start.cycling( a.witches);
+						witches.speech.num = 3;
+						witch.talk.cycles = 20;
+						}
+					}
+				}
+			}
+		}
+	}
+
+if (pot.done)						[	flying pot reached screen.right
+	{
+	reset( pot.done);
+	erase( a.pot);
+	set( start.pot);
+	}
+
+
+
+[*****
+[other.stuff
+[*****
+
+--ego.is.frog.timer;
+if (ego.is.frog.timer == 1 &&
+	!object.given &&
+	witches.here)
+	{
+	set( make.ego.a.frog);
+	}
+
+if (make.ego.a.frog)
+	{
+	reset( make.ego.a.frog);
+	set( ego.is.a.dead.mother);
+	stop.motion( ego);
+	program.control( );
+	sound( s.poofing, done);
+	set.view( ego, v.ego.poofing);
+	set.cel( ego, 0);
+	set( keep.cycling);
+	end.of.loop( ego, ego.is.frog);
+	}
+
+if (ego.is.frog)
+	{
+	reset( ego.is.frog);
+	set.view( ego, v.ego.frog);
+	set( ribbit.done);
+	set( frogs.out.tonight);
+	print( 31);					[	"Too bad, t; goodbye
+	start.cycling( a.witches);
+	witches.speech.num = 4;
+	witch.talk.cycles = witch.talk.time;
+	print( 14);					[	"ribbit
+	}
+
+if (swinging.sword)
+	{
+	set( ribbit.done);
+	}
+
+if (ribbit.done && frogs.out.tonight && !swinging.sword)
+	{
+	reset( ribbit.done);
+	sound( s.ribbit, ribbit.done);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (posn( ego,   0, 98,   2, 121))		{new.room( 63);}
+if (posn( ego, 148, 97, 159, 125))		{new.room( 20);}
+

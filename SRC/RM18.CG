@@ -1,0 +1,209 @@
+[logics for room 18 -- landing strip.
+
+%include "rm18.msg"
+%include "gamedefs"
+
+
+%define	gwyth.at.center		lf0
+%define	ego.hit.ground			lf1
+%define	gwyth.at.right			lf2
+%define	gwyth.off.screen		lf3
+%define	s.falling.done			lf4
+%define	s.gwyth.done			lf5
+%define	gurgiland.loaded		lf6
+%define	pig.room.loaded		lf7
+
+%object	a.gwythaint			giant1
+
+
+if (init.log)
+	{
+ 	set.horizon( 58);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (previous.room == 70)			[	Handle Taran flying GwythAir.
+		{
+		program.control( );
+		load.view( v.g.and.t.and.pig);
+		load.view( v.g.and.pig);
+		load.view( v.ego.falling);
+		load.view( v.ego.stunned);
+
+		load.sound( s.gwythaint);
+		load.sound( s.ego.falling);
+
+		animate.obj( a.gwythaint);
+		position( a.gwythaint, 0, 50);
+		work = 2;
+		step.size( a.gwythaint, work);
+		cycle.time( a.gwythaint, work);
+		set.view( a.gwythaint, v.g.and.t.and.pig);
+		ignore.horizon( a.gwythaint);
+		draw( a.gwythaint);
+		move.obj( a.gwythaint, 60, 80, 2, gwyth.at.center);
+
+		set( s.gwyth.done);
+		set( gwyth.here);
+		reset( ego.falling);
+		}
+	else
+		{
+	 	if ((pig.in.castle || pig.safe))
+			{
+			random( 0, 255, work);
+			if (work < chance.gurgi.shows)
+				{
+				load.logics( gurgiland);	[	room 104
+				set( gurgiland.loaded);
+				}
+			}
+
+		if (t.with.pig)
+			{
+			load.logics( pig.room);		[	room 116
+			set( pig.room.loaded);
+			set( can.lose.pig);
+			}
+
+		draw( ego);
+		}
+
+	if (gurgiland.loaded)
+		{
+		call( gurgiland);
+		position( a.gurgi, 0, 160);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	if (!gurgi.here)
+		{
+		print( 1);
+		}
+	}
+
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+[*****
+:do.it							[	pressed the "do something" button
+[*****
+
+goto no.input;
+
+
+[*****
+:use.it							[	pressed "use current obj" button
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (previous.room != 70)
+	{
+	goto exit;
+	}
+
+if (gwyth.at.center)
+	{
+	reset( gwyth.at.center);
+
+	position( ego, 80, 90);
+	set.view( ego, v.ego.falling);
+	draw( ego);
+	move.obj( ego, 80, 150, 3, ego.hit.ground);
+	sound( s.ego.falling, s.falling.done);
+
+	set.view( a.gwythaint, v.g.and.pig);
+	set.priority( a.gwythaint, 15);
+	move.obj( a.gwythaint, 80, 60, 2, gwyth.at.right);
+	set( ego.falling);
+	}
+
+if (gwyth.at.right)
+	{
+	reset( gwyth.at.right);
+	move.obj( a.gwythaint, 4, 45, 2, gwyth.off.screen);
+	}
+
+if (gwyth.off.screen)
+	{
+	reset( gwyth.off.screen);
+	reset( gwyth.here);
+	erase( a.gwythaint);
+	print( 3);						[	"where is he taking henwen
+	}
+
+if (ego.hit.ground)
+	{
+	reset( ego.hit.ground);
+	reset( ego.falling);
+	set.view( ego, v.ego.stunned);
+	stop.motion( ego);
+	set( keep.cycling);
+	set( s.gwyth.done);
+	force.update( ego);
+	print( 2);						[	"ouch
+	timer.1 = ego.stunned.time;
+	}
+
+--timer.1;
+if (timer.1 == 1)
+	{
+	set.view( ego, v.ego);
+	work = 1;
+	step.size( ego, work);
+	reset( keep.cycling);
+	player.control( );
+	}
+
+if (s.falling.done)
+	{
+	reset( s.falling.done);
+	set( s.gwyth.done);
+	}
+
+if (s.gwyth.done && gwyth.here && !ego.falling)
+	{
+	reset( s.gwyth.done);
+	sound( s.gwythaint, s.gwyth.done);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (gurgiland.loaded)
+	{
+	call( gurgiland);
+	}
+
+if (edge.ego.hit == top)			{new.room( 13);}
+if (edge.ego.hit == bottom)		{new.room( 23);}
+if (edge.ego.hit == right)		{new.room( 19);}
+if (edge.ego.hit == left)		{new.room( 17);}
+

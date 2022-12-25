@@ -1,0 +1,20 @@
+[messages for room 11 
+
+
+
+%message	1
+"You look at the tree and see a dagger holding up a \"NO TRESPASSING\" sign."
+
+%message	3
+"You carefully remove the sharp dagger from the tree."
+
+%message	4
+"This is a frightening forest, with wicked trees. The
+ winds from the evil land of the Horned King blow strongly here."
+
+%message	5
+"The \"NO TRESPASSING\" sign is lying at the base of the tree."
+
+%message	6
+"You have no use for a \"NO TRESPASSING\" sign, so you leave it."
+ 

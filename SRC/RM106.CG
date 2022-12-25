@@ -1,0 +1,176 @@
+[logics for room 106 -- Ken's climbing room
+
+%include "rm106.msg"
+%include "gamedefs"
+
+
+%define	ego.stunned.time.rm58	11
+
+%define	hit.bottom			df18
+
+%define	ego.stunned.timer		dv19
+
+
+if (init.log)
+	{
+	load.view( v.ego.falling);
+	load.view( v.ego.stunned);
+	if (t.with.pig)
+		{
+		load.view( v.ego.falling.with.pig);
+		}
+
+	load.sound( s.ego.falling);
+	load.sound( s.coocoo);
+
+	if (resume.fall.in.next.room)
+		{
+		reset( resume.fall.in.next.room);
+		set( ego.is.falling);
+		}
+
+	if (ego.is.falling)
+		{
+		y = room.bottom;
+		move.obj.f( ego, ego.x, y, four, hit.bottom);
+		ignore.blocks( ego);
+		ignore.objs( ego);
+		set( keep.cycling);
+		program.control( );
+		sound( s.ego.falling, done);
+		}
+
+[	return();
+	}
+
+
+
+if (!ego.is.falling &&
+	hit.special &&
+	current.room != 56 &&
+	current.room != 59)
+	{
+	if (t.with.pig)
+		{
+		erase( a.pig);
+		set.view( ego, v.ego.falling.with.pig);
+		}
+	else
+		{
+		set.view( ego, v.ego.falling);
+		}
+
+	if  (current.room != 58)
+		{
+		print( 1);
+		sound( s.ego.falling, done);
+		}
+
+	if (ego.is.climbing)
+		{
+		reset( ego.is.climbing);
+		ego.climbing = 0;
+		if (eilonwy.patiently.waiting)
+			{
+			reset( eilonwy.patiently.waiting);
+			set( make.eilonwy.follow);
+			}
+		}
+
+	if (current.room == 39)
+		{
+		set( fell.from.rm39);
+		}
+
+	if (override.fall.loc)
+		{
+		x = override.fall.x;
+		y = override.fall.y;
+		}
+	else
+		{
+		x = ego.x;
+		y = room.bottom;
+		}
+
+	ignore.blocks( ego);
+	ignore.objs( ego);
+	program.control();
+	move.obj.f( ego, x, y, four, hit.bottom);
+	set( ego.is.falling);
+	set( keep.cycling);
+	}
+
+
+
+if (hit.bottom)
+	{
+	reset( hit.bottom);
+	stop.motion( ego);
+
+	if (fell.from.rm39)
+		{
+		erase( ego);
+		certain.death = by.sudden.stop;
+		}
+	else
+		{
+		set.view( ego, v.ego.stunned);
+
+		if (t.with.pig)
+			{
+			position.f( a.pig, ego.x, ego.y);
+			draw( a.pig);
+			if (current.room == 56)
+				{
+				reset( t.with.pig);
+				set( pig.in.basement);
+				}
+			}
+
+		if (current.room == 58)
+			{
+			ego.stunned.timer = ego.stunned.time.rm58;  [It's a short fall!
+			}
+		else
+			{
+			ego.stunned.timer = ego.stunned.time;
+			}
+
+		observe.blocks( ego);
+		observe.objs( ego);
+		release.priority( ego);
+		set( coocoo);
+		set( keep.cycling);
+		}
+	}
+
+
+
+--ego.stunned.timer;
+if (ego.stunned.timer == 1)
+	{
+	reset( ego.is.falling);
+	reset( keep.cycling);
+	set.view( ego, v.ego);
+	step.size( ego, one);
+	cycle.time( ego, one);
+	start.motion( ego);
+	player.control();
+
+	if ((t.with.pig || pig.in.basement))
+		{
+		wander( a.pig);
+		}
+	}
+
+if (ego.stunned.timer && coocoo)
+	{
+	sound( s.coocoo, coocoo);
+	}
+
+
+[*****
+:exit
+[*****
+

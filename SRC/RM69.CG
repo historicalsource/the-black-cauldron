@@ -1,0 +1,56 @@
+[logics for room 69 -- falling thru the garbage chute
+
+%include "gamedefs"
+
+
+if (init.log)
+	{
+	program.control();
+	load.logics( castle.climbing.room);
+	room.bottom = fall.through;
+	set( ego.is.falling);
+
+	if (t.with.pig)
+		{
+		load.view( v.ego.falling.with.pig);
+		set.view( ego, v.ego.falling.with.pig);
+		}
+	else
+		{
+		load.view( v.ego.falling);
+		set.view( ego, v.ego.falling);
+		}
+
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	ego.x = 72;
+	ego.y = 36;
+	position.v( ego, ego.x, ego.y);
+	draw( ego);
+
+	call( castle.climbing.room);
+
+	set( resume.fall.in.next.room);	[	keep right on fallin'
+
+	show.pic();
+	return();
+
+	}
+
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == bottom)
+	{
+	erase( ego);
+	new.room( 56);
+	}
+
+call( castle.climbing.room);
+

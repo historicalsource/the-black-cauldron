@@ -1,0 +1,555 @@
+[logics for room 28 -- Canyon Climber east
+
+%include  "rm26.msg"				[	there are no rm28. messages
+%include "gamedefs"
+
+
+%define	horizon				40
+
+%define	end.of.rope			lf1
+%define	change.positions		lf2
+%define	read.message			lf3
+%define	hit.bottom			lf4
+%define	read.message.1			lf5
+%define	read.message.2			lf6
+%define	falling.sign			lf7
+
+%define	start.walking			lv0
+
+
+if (init.log)
+	{
+	reset( ego.falling);
+	room.bottom = screen.bottom;
+	ego.climbing = walking;
+
+	load.sound( s.ego.falling);
+	load.view( v.ego.climbing.rope.east);
+	load.view( v.ego.climbing.wall);
+	load.view( v.ego.falling);
+	load.view( v.rope.east);
+
+	set.horizon( horizon);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+	
+	if (rope.east)
+		{
+		add.to.picture( v.rope.east, 0, 0, 0, 118, 4, 4);
+		}
+
+	set.view( ego, v.ego);
+	set.priority( ego, 14);
+	start.motion( ego);
+
+	if (previous.room == 29)			[	position ego
+		{
+		position( ego, 8, 57);
+		move.obj( ego, 10, 57, 0, done);
+		}
+	else
+		{
+		position( ego, 4, 142);
+		}
+
+	draw( ego);
+
+	show.pic();
+
+	if (debugging)
+		{
+		print( 12);
+		}
+
+	if (previous.room == 25)
+		{
+		print( 4);
+		}
+
+	return();
+
+	}
+
+
+if (ego.falling)
+	{
+	if ((ego.y > 130 || 			[	so he's below the bridge
+		ego.x < 40))				[	to skip the add.to.pic
+		{
+		set.priority( ego, 15);
+		}
+	goto exit;
+	}
+
+if (lookit)						[	pressed "look" button
+	{
+	set( have.match);
+	if (ego.climbing == walking)
+		{
+		print( 4);				[	"You're on a ledge
+		}
+	else
+		{
+		if (ego.climbing == on.rope.east)
+			{
+			print( 5);			[	"You're on a rope
+			}
+		else
+			{
+			print( 6);			[	"Your finger's in a crack
+			}
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (rope.east)
+	{
+	if (posn( ego, 0, 129, 23, 149))
+		{
+		set( have.match);
+		if (ego.climbing == walking)
+			{
+			ego.climbing = on.rope.east;
+			print( 1);			[	"you grab the rope and descend
+			set.view( ego, v.ego.climbing.rope.east);
+			start.motion( ego);
+			get.posn( ego, x, y);
+			work = 4;
+			work -= x;
+			x = work;
+			work = 131;
+			work -= y;
+			reposition( ego, x, work);
+			ignore.blocks( ego);
+			set( ignore.special);
+			move.obj( ego, 3, 132, 2, end.of.rope);
+			}
+		else
+			{
+			ego.climbing = walking;
+			set.view( ego, v.ego);
+			work = 1;
+			step.size( ego, work);
+			start.motion( ego);
+			erase( ego);
+			observe.blocks( ego);
+			reset( ignore.special);
+			draw( ego);
+			position( ego, 140, 142);
+			}
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it							[	pressed "use current obj"
+[*****
+
+if (object.used == u.dagger)
+	{
+	print( 3);					[	"you dull your dagger on a rock
+	set( have.match);
+	}
+
+
+[*****
+:no.input
+[*****
+
+if  (posn( ego, screen.left, screen.bottom, 33, 31) &&	[	near rope
+	previous.room == 29 &&
+    !read.message)
+	{
+	set( read.message);
+	print( 7);					[	"Made it.
+	}
+
+if (posn( ego, screen.left, screen.top, 40, 47) && [	at top of cliff
+	previous.room == 25 &&
+    !read.message)
+	{
+	set( read.message);
+	print( 7);					[	"Made it.
+	}
+
+if (on.water)
+	{
+	if (posn( ego, 51, 136, 63, 138))
+		{
+		if (ego.climbing == walking)
+			{
+			start.climbing = 1;
+			ego.x = 52;
+			ego.y = 135;
+			}
+		else
+			{
+			start.walking = 1;
+			ego.x = 55;
+			ego.y = 139;
+			}
+		}
+
+	if (posn( ego, 72, 147, 81, 149))
+		{
+		if (ego.climbing == walking)
+			{
+			start.climbing = 2;
+			ego.x = 74;
+			ego.y = 146;
+			}
+		else
+			{
+			start.walking = 2;
+			ego.x = 78;
+			ego.y = 150;
+			}
+		}
+
+	if (posn( ego, 101, 145, 115, 147))
+		{
+		if (ego.climbing == walking)
+			{
+			start.climbing = 3;
+			ego.x = 103;
+			ego.y = 144;
+			}
+		else
+			{
+			start.walking = 3;
+			ego.x = 106;
+			ego.y = 148;
+			}
+		}
+
+	if (posn( ego, 91, 76, 103, 78))
+		{
+		if (ego.climbing == walking)
+			{
+			start.climbing = 4;
+			ego.x = 92;
+			ego.y = 75;
+			}
+		else
+			{
+			start.walking = 4;
+			ego.x = 95;
+			ego.y = 79;
+			}
+		}
+
+	if (posn( ego, 26, 72, 44, 74))
+		{
+		if (ego.climbing == walking)
+			{
+			start.climbing = 5;
+			ego.x = 30;
+			ego.y = 71;
+			}
+		else
+			{
+			start.walking = 5;
+			ego.x = 33;
+			ego.y = 75;
+			}
+		}
+
+	if (posn( ego, 14, 53, 26, 55))
+		{
+		if (ego.climbing == walking)
+			{
+			start.climbing = 6;
+			ego.x = 15;
+			ego.y = 52;
+			}
+		else
+			{
+			start.walking = 6;
+			ego.x = 18;
+			ego.y = 56;
+			}
+		}
+	}
+
+
+if (start.climbing)
+	{
+	start.climbing = 0;
+	ego.climbing = on.wall;
+	set.priority( ego, 12);
+	start.motion( ego);
+	observe.blocks( ego);
+	set.view( ego, v.ego.climbing.wall)
+	reposition.to.v( ego, ego.x, ego.y);
+	if (!read.message.1)
+		{
+		set( read.message.1);
+		print( 8);			["you stick your fingers in your crack
+		}
+	}
+
+if (start.walking)
+	{
+	start.walking = 0;
+	ego.climbing = walking;
+	set.priority( ego, 14);
+	step.size( ego, one);
+	start.motion( ego);
+	observe.blocks( ego);
+	set.view( ego, v.ego);
+	reposition.to.v( ego, ego.x, ego.y);
+	if (!read.message.2)
+		{
+		set( read.message.2);
+		print( 9);			[	"You drop to the ledge
+		}
+	}
+
+
+
+[	The preceding section has eliminated the "shit-for-brains" code that
+[follows:
+
+[	if ((posn( ego, 51, 136, 60, 137) 	||	[	all the transition points
+[		posn( ego, 69, 147, 80, 149) 	||
+[		posn( ego, 101, 145, 125, 146)||
+[		posn( ego, 92, 77, 99, 78) 	||
+[		posn( ego, 27, 74, 39, 75) 	||
+[		posn( ego, 8, 53, 23, 55)))
+[		{
+[		if (ego.climbing == walking)
+[			{
+[			ego.climbing = on.wall;
+[			set.priority( ego, 12);
+[			start.motion( ego);
+[			observe.blocks( ego);
+[			set.view( ego, v.ego.climbing.wall)
+[			delta.x = -3;
+[			if (posn( ego, 78, 147, 80, 148))
+[				{					
+[				delta.x = -6;			
+[				}					
+[			delta.y = -3;
+[			reposition( ego, delta.x, delta.y);
+[			if (!read.message.1)
+[				{
+[				set( read.message.1);
+[				print( 8);			["you stick your fingers in your crack
+[				}
+[			}
+[		else
+[			{
+[			ego.climbing = walking;
+[			set.priority( ego, 14);
+[			work = 1;
+[			step.size( ego, work);
+[			start.motion( ego);
+[			observe.blocks( ego);
+[			set.view( ego, v.ego);
+[			delta.x = 3;
+[			delta.y = 3;
+[			reposition( ego, delta.x, delta.y);
+[			if (!read.message.2)
+[				{
+[				set( read.message.2);
+[				print( 9);			[	"You drop to the ledge
+[				}
+[			}
+[		}
+
+if ((posn( ego, 40, 80, 50, 88)	|| 	[	if walking, ignore block
+	posn( ego, 73, 81, 83, 89)	||		
+	posn( ego, 95, 77, 105, 87)	||
+	posn( ego, 57, 138, 66, 148)	||
+	posn( ego, 17, 55, 26, 60)))
+	{
+	if (ego.climbing == walking)
+		{
+		reset( ignore.special);
+		ignore.blocks( ego);
+		}
+	else
+		{
+		set( ignore.special);
+		observe.blocks( ego);
+		}
+	}
+else
+	{
+	if (!ego.falling)
+		{
+		reset( ignore.special);
+		observe.blocks( ego);
+		}
+	}
+
+if (ego.climbing == on.wall)			[	if climbing, ignore special 
+	{
+	if ((posn( ego, 27, 54, 32, 61)	|| 
+		posn( ego, 95, 76, 111, 87)	||
+		posn( ego, 49, 78, 82, 91)	||
+		posn( ego, 66, 138, 70, 148)))
+		{
+		set( ignore.special);
+		}
+	else
+		{
+		reset( ignore.special);
+		}
+	}
+
+if (posn( ego, screen.left, screen.bottom, 35, 31)) [	near the rope
+	{
+	if (ego.climbing == on.rope.east)
+		{
+		set( ignore.special);
+		ignore.blocks( ego);
+		}
+	else
+		{
+		reset( ignore.special);
+		observe.blocks( ego);
+		}
+	}
+
+if (hit.special && 					[	handle klutzes
+    !ignore.special && 
+    !ego.falling)
+	{
+	if (force.a.test &&
+		monitor.type != mono)
+		{
+		toggle( falling.sign);
+		if (falling.sign)
+			{
+			display( 22, 30, 10);
+			}
+		else
+			{
+			display( 22, 31, 10);
+			}
+		}
+	else
+		{
+		set( ego.falling);
+		set.view( ego, v.ego.falling);
+		sound( s.ego.falling, done);
+		set( keep.cycling);
+		ignore.blocks( ego);
+		if (posn( ego, 50, 78, 60, 79)) [	falling off left end of bridge
+			{
+			x = 6;
+			y = 1;
+			reposition( ego, x, y);
+			set.priority( ego, 11);
+			}
+		else
+			{
+			if (posn( ego, 61, 79, 72, 80)) [falling off the middle of bridge
+				{
+				set.priority( ego, 11);
+				}
+			else
+				{
+				if (posn( ego, 73, 79, 84, 80)) [	right end of bridge
+					{
+					x = -6;
+					y = 1;
+					reposition( ego, x, y);
+					set.priority( ego, 11);
+					}
+				else
+					{
+					if (posn( ego, 49, 56, 82, 67))[ climbing behind bridge
+						{
+						set.priority( ego, 11);
+						}
+					else
+						{
+						set.priority( ego, 15);[	everywhere else is ok!
+						}
+					}
+				}
+			}
+		get.posn( ego, x, y);
+		step = 4;
+		move.obj.f( ego, x, room.bottom, step, hit.bottom);
+		}		   
+	}
+else
+	{
+	if (force.a.test &&
+		monitor.type != mono)
+		{
+		display( 22, 30, 11);
+		}
+	}
+
+
+if (!cliff.first.time &&
+	posn( ego, 0, 54, 16, 63))
+	{
+	score += 6;
+	set( cliff.first.time);
+	}
+
+if (posn( ego, 0, 0, 6, 55))			[	upper left corner
+	{
+	set.view( ego, v.ego);
+	reposition.to( ego, 4, 57);
+	}
+
+
+[*****
+:exit							[test for leaving the room
+[*****
+
+if (hit.bottom)
+	{
+	if (debugging)
+		{
+		reset( ego.falling);
+		reset( keep.cycling);
+		current.ego.view = normal;
+		current.room = 25;
+		new.room( 28);
+		}
+	else
+		{
+		erase( ego);
+		certain.death = 1;
+		}
+	}
+
+if (end.of.rope)
+	{
+	reset( ignore.special);
+	new.room( 25);
+	}
+
+if (edge.ego.hit == left && !ego.falling)
+	{
+	start.motion( ego);
+	get.posn( ego, x, y);
+	if (y < 80)
+		{
+		set.view( ego, v.ego);
+		new.room( 29);
+		}
+	else
+		{
+		new.room( 25);
+		}
+	}
+

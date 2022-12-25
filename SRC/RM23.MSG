@@ -1,0 +1,37 @@
+[room23 messages
+
+
+
+%message	1
+"The cool lake and its smooth-topped stones makes a
+ beautiful setting."
+
+%message	2
+"You feel a rumbling under your feet, and begin
+ to spin around."
+
+%message	3
+"You take a deep breath and hold it until you are
+ certain you are going to black out!"
+
+%message	4
+"You notice pig footprints near the water. The large
+ rock in the center of the forest pool attracts your eye."
+
+%message	5
+"Sure it's fun to jump up and down, but you must continue
+ your quest."
+
+%message	6
+"At last you've made it to the top of this rock. You're
+ undecided about what to do next."
+
+%message	7
+"The rocks are too slippery to climb on."
+
+%message	8
+"If you jump from here, you risk getting wet."
+
+%message	9
+"This is no time to mess around, Taran. Quick, get Hen Wen to safety!"
+

@@ -1,0 +1,149 @@
+[messages for room 61 -- Dallben's house interior
+
+
+
+%message	1
+"Ever since you were young, you have loved this cottage
+ and its master, the wise old Dallben."
+
+%message	2
+"There are several items in the cupboard."
+
+%message	3
+"This is the cupboard where you and Dallben keep some things."
+
+%message	4
+"You open the cupboard."
+
+%message	5
+"\"Thank you, Taran,\" says kindly old Dallben. \"You have
+ gotten Hen Wen to safety, and kept her powers from the evil
+ uses of the Horned King.\""
+
+%message	6
+"\"Taran, it's time for you to feed our favorite
+ pig, Hen Wen,\" says old Dallben. \"Take good care of her.
+ She is a very special animal.\""
+
+%message	7
+"Caer Dallben warms your heart, as the glow of
+ this fire warms your body."
+
+%message	8
+"Hen Wen's gruel is warming over the fire."
+
+%message	9
+"You open the cupboard."
+
+%message	10
+"The cupboard is bare, so you close it."
+
+%message	11
+"Dallben looks relieved, now that Hen Wen is safe from the
+ Horned King."
+
+%message	12
+"The water flask is made of soft leather."
+
+%message	13
+"This looks like enough bread for three meals!"
+
+%message	14
+"You take the apple. (It certainly looks delicious.)"
+
+%message	15
+"This knapsack will hold just about anything you may find."
+
+%message	16
+"Dallben looks very worried about what Hen Wen has
+ revealed."
+
+%message	17
+"Dallben, master of Caer Dallben, is a kind, wise old man.
+ He has been like a father to you as long as you can
+ remember."
+
+%message	18
+"Dallben is studying his \"Book of Three,\" a mysterious volume
+ that no one else is allowed to read."
+
+%message	19
+"\"Look, something's wrong with Hen Wen!\""
+
+%message	20
+"It appears that Dallben's cupboard is bare."
+
+%message	21
+""
+
+%message	22
+"An empty water flask is here."
+
+%message	23
+"You notice some freshly baked bread that smells delicious."
+
+%message	24
+"Caer Dallben is noted for its delicious apples!
+ You love their sweet, crisp taste."
+
+%message	25
+"Here's your good old knapsack. It might be useful."
+
+%message	26
+"\"Goodbye, Taran,\" says Dallben. \"Hurry! Get Hen Wen to
+ safety!\""
+
+%message	27
+""
+
+%message	28
+"Ouch! Don't stick your hand in the fire!!"
+
+%message	29
+"You carefully reach over the fire, and take Hen Wen's pot of
+ simmering gruel."
+
+%message	30
+"Dallben gazes into the mirror and smiles knowingly."
+
+
+[the following mess should all be one full-text screen:
+
+%message	31
+"\"Taran,\" says Dallben, \"you've never known about Hen Wen's
+ magic powers, but unfortunately, the time has come for me
+ to tell you."
+
+%message	32
+"\"Hen Wen can show us things that happen in faraway
+ places. Through her vision, she is now telling me a
+ terrible tale."
+
+%message	33
+"\"The Horned King, the most evil ruler in all Prydain, is
+ searching for Hen Wen. He could force her to use her
+ visions to reveal the location of the great, Black Cauldron."
+
+%message	34
+"\"If he finds the Black Cauldron, he will have unspeakable
+ power. Taran, you must take Hen Wen to the hidden cottage of
+ the Fair Folk. They are our only hope to keep her from the
+ Horned King."
+
+%message	35
+"\"Good luck, Taran. Take this coil of rope, and hurry -- before the Horned
+ King's power becomes unstoppable!\""
+
+%message	36
+"\"Tired already, Taran?\" says Dallben. \"You must learn
+ perseverance!\""
+
+%message	37
+"As Hen Wen places her snout in the water, she enters a
+ trance. A vision appears above the bowl."
+
+%message	38
+"\"What a fine sword, Taran,\" says Dallben. \"You must be
+ proud to own a weapon with such great magic that it need not
+ hurt anyone!\""
+

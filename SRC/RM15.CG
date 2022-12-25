@@ -1,0 +1,382 @@
+[logics for room 15 -- swamp jumper arcade
+
+%include "rm15.msg"
+%include "gamedefs"
+
+
+%define	made.it				lf0
+%define	glug				 	lf1
+%define	end.of.jump			lf2
+%define	going.down			lf3
+%define	pig.room.loaded		lf4
+%define	ego.on.the.rocks		lf5
+%define	warned.him			lf6
+%define	preventJump			lf7
+%define	doJump				lf8
+
+%define	directionToJump		lv0
+
+	
+if (init.log)
+	{
+	set.horizon( 50);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[room 116
+		set( pig.room.loaded);
+		}
+	else
+		{
+	  	load.view( v.ego.jumping.stones);
+		load.view( v.ego.and.log.sinking);
+		}
+
+	load.logics( morva.marsh);		[room 108
+	
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	if (previous.room == 20 && !t.is.fairy)
+		{
+		position( ego, 38, 165);
+		}
+
+	if (previous.room == 10)
+		{
+		get.posn( ego, x, y);
+		if (x < 50)
+			{
+			position( ego, 49, 51);
+			}
+		}
+
+	if (t.is.fairy)
+		{
+		set.priority( ego, 15);
+		}
+
+	draw( ego);
+	
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	call( morva.marsh);
+
+	show.pic();
+
+	if (!previous.room == 20 && !t.is.fairy)
+		{
+		print( 1);
+		}
+
+	return();
+
+	}
+
+
+
+reset( doJump);
+reset( preventJump);
+
+if (!edge.ego.hit)
+	{
+	reset( warned.him);
+	}
+
+if (lookit)
+	{
+	if (posn( ego, 31, 61, 94, 73))
+		{
+		print( 2);
+		}
+	else
+		{
+		print( 1);
+		}
+	}
+
+if (t.is.fairy)
+	{
+	goto exit;
+	}
+
+if (ego.dir && 					[	remember which way he's facing
+	!doit)						[	Unless he said "JUMP"
+	{
+	directionToJump = ego.dir;
+	if ((directionToJump == ego.up.right ||
+		directionToJump == ego.down.right))
+		{
+		directionToJump = ego.right;
+		}
+
+	if ((directionToJump == ego.up.left ||
+		directionToJump == ego.down.left))
+		{
+		directionToJump = ego.left;
+		}
+	}
+
+
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+
+[*****
+:do.it
+[*****
+
+if ((t.jumping || on.water))
+	{
+	set( preventJump);
+	}
+
+if (!ego.on.the.rocks)
+	{
+	if  (posn( ego, 69, 61, 84, 75) && [	on NW shore, ready to jump to log
+		directionToJump == ego.down)
+		{
+		if (t.with.pig)
+			{
+			print( 7);
+			set( have.match);
+			set( preventJump);		[	Prevent takes priority over Do
+			}
+		set( doJump);
+		}
+
+	if  (posn( ego, 26, 60, 42, 76) && [	on shore, upper left corner
+		directionToJump == ego.left)
+		{
+		if (t.with.pig)
+			{
+			print( 7);
+			set( have.match);
+			set( preventJump);
+			}
+		set( doJump);
+		}
+
+	if  (posn( ego, 56, 152, 74, 167) && [	at bottom shore, heading back
+		directionToJump == ego.right)
+		{
+		set( doJump);
+		}
+	}
+else								[	Ego IS on the rocks already.
+	{
+	set( doJump);
+
+	if  (posn( ego, 0, 68, 19, 102) && [	on upper left two rocks
+		directionToJump == ego.left)
+		{
+		set( preventJump);
+		}
+
+	if  (posn( ego, 4, 115, 23, 125) && [	on lower left center rock
+		directionToJump == ego.left)
+		{
+		set( preventJump);
+		}
+
+	if  (posn( ego, 79, 153, 99, 163) && [	on bottom center rock
+		directionToJump == ego.down)
+		{
+		set( preventJump);
+		}
+
+	if  (posn( ego, 0, 68, 15, 76) && 	[	on upper left rock going up
+		directionToJump == ego.up)
+		{
+		set( preventJump);
+		}
+
+	if  (posn( ego, 73, 128, 118, 144) && [	root on lower right
+		directionToJump == ego.right)
+		{
+		set( preventJump);
+		}
+	}
+
+
+[*****
+[do.jump
+[*****
+
+if (!preventJump &&
+	doJump)
+	{
+	set( have.match);
+	
+	if  (posn( ego, 6, 66, 15, 77) && 	[	leaving upper left rock to shore
+		directionToJump == ego.right)
+		{
+		reset( ego.on.the.rocks);
+		}
+	else
+		{
+		if  (posn( ego, 85, 153, 98, 164) && [	on bottom rock, jumping to shore
+			directionToJump == ego.left)
+			{
+			reset( ego.on.the.rocks);
+			}
+		else
+			{
+			set( ego.on.the.rocks);
+			}
+		}
+
+
+	if (directionToJump == ego.left)
+		{
+		x = -20;
+		y = 0;
+		reposition( ego, x, y);
+		}
+	else
+		{
+		if (directionToJump == ego.down)
+			{
+			x = 0;
+			y = 18;
+			reposition( ego, x, y);
+			}
+		}
+
+	set( t.jumping);
+	set( keep.cycling);
+	set( ignore.water);
+	ignore.blocks( ego);
+	program.control( );
+	set.view( ego, v.ego.jumping.stones);
+	stop.motion( ego);
+	set.cel( ego, 0);
+	end.of.loop( ego, end.of.jump);
+	cycle.time( ego, three);
+	ego.dir = 0;
+	}
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+	 
+if (end.of.jump)
+	{
+	reset( end.of.jump);
+	reset( t.jumping);
+	reset( ignore.water);
+	reset( keep.cycling);
+
+	start.motion( ego);
+	player.control( );
+	set.view( ego, v.ego);
+	cycle.time( ego, one);
+	if (directionToJump == ego.up)
+		{
+		x = 0;
+		y = -18;
+		reposition( ego, x, y);
+		}
+
+	if (directionToJump == ego.right)
+		{
+		x = 20;
+		y = 0;
+		reposition( ego, x, y);
+		}
+	}
+
+
+if (!glug &&
+    !t.is.fairy &&
+    !handsOff &&
+    !t.jumping &&
+	posn( ego, 64, 75, 81, 84))
+	{
+	set( handsOff);
+	set.view( ego, v.ego.and.log.sinking);
+	set.cel( ego, 0);
+	reposition.to( ego, 64, 85);
+	cycle.time( ego, four);
+	end.of.loop( ego, glug);
+
+	stop.motion( ego);
+	program.control();
+	set( keep.cycling);
+	set( ignore.water);
+	print( 3);
+	}
+
+if (glug)
+	{
+	reset( glug);
+	erase( ego);
+	certain.death = 1;
+	goto exit;
+	}
+
+if (previous.room != 20 &&
+	!made.it &&
+	!t.jumping &&
+	!t.is.fairy)
+	{
+	if (posn( ego, 18, 161, 68, 167))
+		{
+		set( made.it);
+		print( 5);
+		}
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+call( morva.marsh);
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == right)		{new.room( 16);}
+if (edge.ego.hit == bottom)		{new.room( 20);}
+if (edge.ego.hit == top)
+	{
+	if (!t.is.fairy)
+		{
+		new.room( 10);
+		}
+	else
+		{
+		if (!warned.him)
+			{
+			set( warned.him);
+			print( 6);
+			}
+		}
+	}
+
+if (edge.ego.hit == left)
+	{
+	if (t.is.fairy)
+		{
+		if (!warned.him)
+			{
+			set( warned.him);
+			print( 6);
+			}
+		}
+	}
+

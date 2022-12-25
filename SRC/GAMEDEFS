@@ -1,0 +1,783 @@
+[
+[	gamedefs:
+[
+[			BLACK CAULDRON-SPECIFIC GAME DEFINITIONS
+[
+[	Tuesday, April 21, 1987 at 11:29 p.m.
+[
+
+
+%tokens	"..\\words.tok"
+%include	"sysdefs"
+%include	"sysdefs.al"
+%include 	"flag_var.h"
+
+
+
+[************ CONSTANTS
+%define	INVENTORY				255
+%define	text.color			15
+%define	bg.color				0
+%define	BLUE					1
+%define	WHITE				15
+
+%define	speed.fastest			0
+%define	speed.fast			1
+%define	speed.normal			2
+%define	speed.slow			3
+
+%define	water.search.distance	44
+%define	max.water.count		4
+%define	one.bag.full			4
+
+%define	ego.stunned.time		33
+%define	hench.stunned.time		99
+%define	striking.distance		30
+%define	hench.catch.distance	8
+%define	cycles.before.death		44
+%define	drowning.time			50
+%define	normal				0
+
+
+
+[************ FLAGS
+[Only the interpreter can use	  1-29	(globals)
+[		Any room can use	200-229	(lf's)
+[Only dynamic logics can use	230-255	(df's)
+
+%flag	pig.program.control			30
+%flag	make.hk.come				31
+%flag	keys.taken				32
+%flag	chain.sliced				33
+%flag	hench.program.control		34
+%flag	tincup.taken				35
+%flag	door.dungeon.unlocked		36
+%flag	make.henchman.come			37
+%flag	bauble.warned.ego			38
+%flag	sword.taken				39
+%flag	first.time.rm17.to.rm65		40
+%flag	first.time.in.fair.folk.cave	41
+%flag	first.time.rm5.to.rm25		42
+%flag	beenIn20					43
+%flag	rope.thrown.and.climbed		44
+%flag	cliff.first.time			45
+%flag	first.catwalk.cross			46
+%flag	entered.dungeon			47
+%flag	entered.castle				48
+%flag	left.castle.with.sword		49
+%flag	goal1					50
+%flag	water.flask.in.room13		51
+%flag	quicksand					52
+%flag	friend.for.life			53
+%flag	gurgi.dead				54
+%flag	t.heard.dallben			55	[ok to get rope, etc.
+%flag	pig.fed					56
+%flag	discovered.dungeon			57
+%flag	pig.in.d.house	 			58
+%flag	pig.in.castle				59	[ if pig follows t into 
+%flag	pig.in.basement			60	[ basement, he can't get out
+%flag	done						61	[	always
+%flag	entered.burial.chamber		62	
+%flag	ego.already.caught			63	
+%flag	visited.eiddileg			64
+%flag	vines.open				65	[ if set, can exit S from 38
+%flag	moat.water				66
+%flag	t.visited.castle			67
+%flag	impotable.water			68
+%flag	out.of.memory				69
+%flag	aSecondPassed				70
+%flag	t.jumping					71
+%flag	phony.water				72
+%flag	ego.swung.sword			73
+%flag	heard.dallben.music			74
+%flag	ready.to.give.pot 			75	[sets up rm20 swap for pot
+%flag	wallet.taken	 			76
+%flag	king.gifted		 		77
+%flag	gurgi.here	 			78
+%flag	pot.in.castle				79
+%flag	fell.from.rm39				80
+%flag	ff.free					81
+%flag	m.gurgi.done				82
+%flag	e.in.basement				83
+%flag	know.eilonwy				84	[in the biblical sense??
+%flag	tuned.lute	 			85
+%flag	t.on.wagon				86
+%flag	survivable.fall			87	
+%flag	near.water				88
+%flag	handsOff					89 
+%flag	my.have.match				90 
+%flag	clock.on					91
+%flag	update.clock				92
+%flag	displayed.choice			93
+%flag	stuff.in.closet			94
+%flag	can.lose.pig				95
+%flag	hench.in.room				96
+%flag	t.in.basement				97
+%flag	pig.lost					98
+%flag	debugging					99  
+%flag	hench.chasing.ego			100
+%flag	seen.naked.women			101
+%flag	swinging.sword				102
+%flag	t.is.fairy				103
+%flag	swing.override				104
+%flag	stop.flying		 		105
+%flag	coocoo					106
+%flag	sound.sword.done			107
+%flag	t.with.pig				108
+%flag	taken.away				109
+%flag	ego.drowning				110
+%flag	ego.swimming				111	[ego swimming in water
+%flag	hench.caught.ego			112
+%flag	dont.swim		 			113
+%flag	debug.lf0					114
+%flag	debug.lf1					115
+%flag	pigvision.has.occured		116
+%flag	no.on.water		 		117
+%flag	within.striking.distance		118
+%flag	next.frame				119
+%flag	make.creeper.come			120
+%flag	no.on.land				121
+%flag	ego.is.falling				122
+%flag	ego.is.climbing			123
+%flag	pigvision.in.progress		124
+%flag	ignore.water				125
+%flag	ego.on.log				126
+%flag	corn.taken				127
+%flag	doit			 			128
+%flag	useit					129
+%flag	lookit			 		130
+%flag	xy.on					131
+%flag	poisoned.water	 			132
+%flag	keep.cycling				133
+%flag	debounce					134
+%flag	already.met.eilonwy 		135
+%flag	lute.taken				136
+%flag	dagger.taken				137
+%flag	caught					138
+%flag	witches.gave.pot			139
+%flag	demo						140
+%flag	odd.even					141
+%flag	mouse.machine				142
+%flag	game.over					143
+%flag	force.a.test				144
+%flag	prevent.sword.message		145
+%flag	rope.west					146
+%flag	rope.east					147
+%flag	been.in.cupboard			148
+%flag	ego.arrived				149
+%flag	doit.tgl					150
+%flag	useit.tgl					151
+%flag	ego.falling				152
+%flag	gruel.taken				153
+%flag	mirror.taken				154
+%flag	cookies.taken				155
+%flag	no.cycling				156
+%flag	resume.fall.in.next.room		157
+%flag	two.button.joystick			158
+%flag	s.waterfall.done			159
+%flag	ignore.special				160
+%flag	seen.self					161
+%flag	override.fall.loc			162
+%flag	pig.no.swim				163
+%flag	pgate.open				164
+%flag	eilonwy.escaped			165
+%flag	trapdoor.open				166
+%flag	wandering					167
+%flag	eilonwy.patiently.waiting	168
+%flag	make.eilonwy.follow			169
+%flag	bridge.crossed				170
+%flag	not.together				171
+%flag	fell.into.newroom			172
+%flag	gwyth.here				173
+%flag	pig.caught.ego				174
+[nextflag
+
+
+
+[************ VARS
+[Only the interpreter can use	  1-29	(globals)
+[		Any room can use	200-229	(lv's)
+[Only dynamic logics can use	230-255	(dv's)
+
+%var		hench.x					30
+%var		hench.y					31
+%var		d.cupboard.inventory		32
+	[define	c.knapsack		5		[	These 5 views are 5 cels
+	[define	c.apple			4		[		in v.d.cupboard.stuff.
+	[define	c.bread			3
+	[define	c.water.flask		2		[(actual definitions in rm61.
+	[define	c.rope			1
+	[define	c.nothing			0
+
+%var		missions.flown				33
+%var		badguy					34	[says whether ego caught by 
+	%define	f.not.caught		0
+	%define	f.hench			1 		[creeper or a henchman
+	%define	f.creeper			2
+	%define	f.hk				3
+
+%var		certain.winner				35	[end of game, but he's a winner
+	%define	generic			1
+	%define	ego.jumped.into.the.pot 2
+	%define 	took.book.of.knowledge  3
+	%define	took.pot.of.gold	4
+	%define	took.dead.gurgi	5
+	%define	took.hero.shield	6
+	%define	took.suit.of.armor	7
+	%define	took.magic.sword	8
+
+%var		kill.time		 			36
+%var		hole.room54.cell			37
+	%define	hole.room54.all.open 4
+
+%var		ego.x					38
+%var		ego.y					39
+%var		choice					40
+%var		old.choice				41
+%var		active.object				42
+%var		old.active.object			43
+%var		show.object				44
+%var		debug.0					45
+%var		debug.1					46
+%var		test.room					47
+%var		death.message				48
+%var		clear.status.seconds		49
+%var		override.fall.x			50
+%var		override.fall.y			51
+%var		bread.count				52
+%var		pig.distance.from.ego		53
+%var		eilonwy.message.count		54
+%var		swing.x					55 
+%var		swing.y					56
+%var		pig.safe					57
+	%define	by.parapet		1
+	%define	by.gwystyl		2
+	%define	by.eilonwy		3
+	%define	by.burial.chamber	4
+	%define	by.drawbridge		5
+
+%var		creep.timer				58
+%var		certain.death				59 
+[	%define	generic			1
+	%define	food				2
+	%define	drink			3
+	%define	pig.told.all		4
+	%define	gator.ade			5
+	%define	marsh			6
+	%define	too.many.skeletons	7
+	%define	ego.thrown.in.pot 	8
+	%define	by.sudden.stop		9
+	%define	turned.into.frog	10
+
+%var		object.used				60 
+%var		work						61	[	always
+%var		x						62	[		expect these
+%var		y						63	[			to be garbage
+%var		start.climbing				64	[******** Climbing.logic stuff:
+%var		ego.climbing				65 
+	%define	walking	 		1
+	%define	jumping			2
+	%define	falling			3
+	%define	on.rope.west 		4
+	%define	on.rope.east		5
+	%define 	on.rock	 		6
+	%define	on.wall	 		7
+	%define	stunned			8
+	%define	done.climbing 		99
+
+%var		room.bottom				66
+%var		step						67
+%var		water.count		 		68
+%var		flight.count				69
+	%define	number.of.flights 	4
+
+%var		timer.1			 		70
+%var		timer.2			 		71
+%var		drown.duration				72
+%var		message					73
+%var		seen.help					74
+%var		drown.swim				75 
+	%define	drowning			1
+	%define	swimming			2
+
+%var		delta.x					76
+%var		delta.y					77
+%var		old.ego.x					78
+%var		old.ego.y					79
+%var		hench.stunned				80
+%var		ego.step.size				81
+%var		ego.step.time				82
+%var		ego.cycle.time				83
+%var		ego.location				84 
+%var		seconds.in.room			85
+%var		old.ego.dir				86
+
+[************ CLOCKS, WATCHES (and fine jewelry department)
+%var		wait.1			 		87	[generic timer
+%var		wait.2			 		88
+
+[Timers are tenths of seconds, and fourths of minutes. Therefore, 
+[food.init = 240 (which is 60*4), etc.  Warnings are keyed off quarter-minutes.
+
+	%define	timer.1.init		150
+
+%var		food.timer.1				89
+%var		food.timer.2				90
+	%define	food.init		 	240		[	60 minutes
+	%define	food.warning.1		96		[	24	"
+	%define	food.warning.2		28		[	7	"
+
+%var		water.timer.1				91
+%var		water.timer.2				92
+	%define	water.init		140		[	35 minutes
+	%define	water.warning.1	56		[	14	"
+	%define	water.warning.2	 16		[	4	" 
+
+%var		pig.timer.1		 		93
+%var		pig.timer.2		 		94
+	%define	pig.init		 	240 		[	60 minutes
+	%define	pig.warning.1		116		[	29	"
+	%define	pig.warning.2		 36		[	9	"
+
+%var		flight.seconds				95
+%var		flight.minutes				96
+	%define	flight.seconds.init	30
+	%define	flight.minutes.init	1
+	%define	flight.warning.1	55		[	seconds left in minute 0
+	%define	flight.warning.2	30
+
+%var		object					97
+%var		room						98
+%var		priority					99
+%var		view						100
+%var		old.seconds				101
+%var		current.status				102
+	%define	dead				13
+	%define	won.game			69
+
+%var		loop						103
+%var		zero						104
+%var		one						105
+%var		two						106
+%var		three					107
+%var		four						108
+%var		five						109
+%var		current.ego.view			110
+%var		old.animation.interval		110
+[nextvar
+%var		gameSeconds				115
+%var		gameMinutes				116
+%var		gameHours					117
+%var		gameDays					118
+
+
+
+[************* VIEWS
+%view	v.ego					0
+	%define	ego.width			8
+	%define	ego.height		32
+
+%view	v.ego.swimming		 		1
+%view	v.ego.drowning		 		2
+%view	v.ego.whirlpool			3	 [rock lowers into water
+%view	v.ego.draining		 		4	 [T's head revolves around center
+%view	v.ego.swinging.sword		5
+%view	v.ego.falling				6	 [out of control
+%view	v.ego.stunned				7
+%view	v.ego.poofing				8
+%view	v.ego.frog				9
+%view	v.ego.climbing.rope.west		10
+%view	v.ego.climbing.wall	 		11
+%view	v.ego.into.sunset			12
+%view	v.heroes					13
+%view	v.ego.jumping.stones		14	[in swamp & whirlpooh
+%view	v.corn					15
+%view	v.gruel					16
+%view	v.tiny.heroes				17
+%view	v.cookies					18
+%view	v.magic.sword				19
+	%define	c.sword.here		0
+	%define	c.sword.taken		1
+
+[	%view	v.hk.throwing.ego.into.pot	20
+%view	v.g.right.only				21
+%view	v.g.and.t.and.pig	 		22 
+%view	v.g.grabbing				23	[gwythaint holding T in beak
+%view	v.ego.falling.with.pig		24
+%view	v.ego.logged				25	[T on log through rapids
+%view	v.splash					26	[T hits moat
+%view	v.torch.red.background		27
+%view	v.ego.fairy				28
+%view	v.ego.climbing.rope.east		29
+%view	v.hk				 		30
+%view	v.hk.sitting				31
+%view	v.ego.and.log.sinking		32
+%view	v.hk.carrying.skeleton		33
+%view	v.hk.dropping.skeleton.into.pot 34
+%view	v.gurgi.into.sunset			35
+[	%view		hk&skeleton.BAD		36
+%view	v.hk.grabbing				37
+%view	v.tin.cup					38
+%view	v.ego.sinking				39
+%view	v.pig					40
+%view	v.pig.eating.corn	 		41
+%view	v.pig.pigvision			42
+	%define	vision.room61		0
+	%define	vision.room45		1
+
+%view	v.pig.falling				43
+%view	v.pig.bowl				44
+%view	v.gurgi					45
+%view	v.gurgi.eating		 		46
+%view	v.gurgi.falling			47
+%view	v.g.pecking				48
+%view	v.ego.and.dead.gurgi		49
+%view	v.gwythaint				50
+%view	v.g.and.pig				51
+%view	v.g.looking				52
+%view	v.g.and.bc				53	[in flight
+%view	v.g.tiny					54	[circling castle in distance
+%view	v.chain.room47				55
+%view	v.creeper			 		56
+[	%view	57
+%view	v.creeper.grabbing			58
+%view	v.keys					59
+%view	v.hench.stunned			60
+%view	v.hench					61
+%view	v.h.grabbing				62
+%view	v.h.partying1				63
+%view	v.h.partying2				64
+%view	v.chain.room47.sliced		65
+%view	v.turning.gargoyle.room51	66
+%view	v.h.pulling.meatwagon		67
+%view	v.meatwagon				68
+%view	v.cloud1			 		69
+%view	v.eilonwy			 		70
+%view	v.hole.room52				71
+%view	v.eilonwy.into.sunset		72
+%view	v.sign.and.dagger			73
+%view	v.pigs.feet				74
+%view	v.ff				 		75
+%view	v.ff.hanging				76
+%view	v.ff.into.sunset			77
+%view	v.door.room52				78
+%view	v.bc.floating				79
+%view	v.witches.talking			80
+%view	v.witches.flying			81
+%view	v.the 					82
+%view	v.end				 	83
+%view	v.witches.poofing			84
+%view	v.witches.chest			85
+%view	v.bc				 		86
+%view	v.bc.drooling				87
+%view	v.bc.exploding				88
+%view	v.dallben.standing			89
+%view	v.dallben.talking			90
+%view	v.geese					91
+%view	v.goat					92
+%view	v.goat.butting		 		93
+%view	v.eiddileg				94
+%view	v.flying.pot				95
+	%define	pot.width			12
+	%define	pot.height		14
+
+%view	v.gwystyl					96
+%view	v.gator					97
+%view	v.cauldron.born			98
+%view	v.pig.eating.gruel			99
+%view	v.drawbridge.interior.top 	100
+%view	v.bauble					101
+[	%view	102
+%view	v.frog.from.chest			103
+%view	v.frog.jumping		 		104
+%view	v.water.flask				105
+%view	v.fairy					106
+%view	v.cupboard.dallben			107
+%view	v.cupboard.gwystyl			108
+%view	v.grate					109
+%view	v.smoke.dallben			110
+%view	v.smoke.gwystyl			111
+%view	v.dallben.into.sunset		112
+%view	v.rapids.room.7			113
+%view	v.rapids.room.12			114
+%view	v.fire			 		115
+%view	v.turning.gargoyle			116
+%view	v.gargoyle				117
+%view	v.hole.room54				118
+%view	v.door.room43				119
+%view	v.top.waterfall.rm24		120
+%view	v.waterfall.room32			121
+%view	v.pool.room32 				122
+%view	v.bottom.waterfall.rm24		123
+%view	v.torch					124
+%view	v.al						125
+%view	v.drawbridge.interior.bottom	126
+%view	v.drawbridge.exterior		127
+%view	v.rope.east				128
+%view	v.rope.west				129
+%view	v.door.leanto				130
+%view	v.door.d.house		 		131
+%view	v.door.t.cell.bottom 		132
+[	%view	v.door.dungeon.right		133	[	not used?
+%view	v.pig.into.sunset			134
+%view	v.door.ff.cell		 		135
+%view	v.door.t.cell.top			136
+%view	v.door.gwystyl.house		137
+%view	v.door.witches.house		138
+%view	v.door.trap.in.floor		139
+%view	v.door.trap.in.ceiling		140
+%view	v.door.pig.gate			141
+%view	v.rapids.room1		 		142
+%view	v.rapids.room6		 		143
+%view	v.lightning				144
+%view	v.highlight.1				145
+%view	v.highlight.2				146
+%view	v.highlight.3				147
+%view	v.falling.rock				148
+	%define	rock.width		9
+	%define	rock.height		15
+
+%view	v.vines					149
+%view	iv.knapsack				150	[	INVENTORY VIEWS 
+%view	iv.corn					151
+%view	iv.gruel					152
+%view	iv.food.wallet				153
+%view	iv.bread					154
+%view	iv.water.flask				155
+%view	iv.water					156
+%view	iv.apple					157
+%view	iv.cookies				158
+%view	iv.rope					159
+%view	iv.dagger					160
+%view	iv.magic.sword				161
+%view	iv.harp					162
+%view	iv.lute					163
+%view	iv.fairy.dust				164
+%view	iv.keys					165
+%view	iv.tin.cup				166
+%view	iv.magic.word				167
+%view	iv.magic.mirror			168
+%view	iv.book.of.knowledge		169
+%view	iv.pot.of.gold				170
+%view	iv.hero.shield				171
+%view	iv.suit.of.armor			172
+%view	iv.bread.two.thirds			173
+%view	iv.bread.one.third			174	[	last inventory view
+%view	v.sinking.rock.room24		175
+%view	v.chain.exterior			176
+%view	v.cloud2					177
+%view	v.ego.jumping.into.pot		178	[	in room 20.
+%view	v.ego.green.logged			179
+%view	v.ego.jumping.off			180
+%view	v.trade.stuff	 			181	[Contains 6 different objects:
+	%define 	c.book.of.knowledge	0		[	These 6 views are 6 cels
+	%define	c.pot.of.gold		1		[	in v.trade.stuff
+	%define	c.dead.gurgi		2
+	%define	c.hero.shield		3
+	%define	c.suit.of.armor	4
+	%define	c.magic.sword		5
+
+%view	v.cupboard.stuff			182	[Contains 5 different objects:
+	%define	c.knapsack		5		[	these 5 views are 5 cels
+	%define	c.apple			4		[	in v.cupboard.stuff.
+	%define	c.bread			3
+	%define	c.water.flask		2
+	%define	c.rope			1
+	%define	c.nothing			0
+
+
+
+[************* ANIMATED OBJECTS		[Bytes allocated:
+%object	ego					0	[1100
+%object	a.gurgi				7	[medium2
+%object	a.pig				8	[medium6
+%object	a.hench				9	[medium7
+
+%define	tiny1				1	[200
+
+%define	small1			 	2	[500
+%define	small2			 	3
+%define	small3			 	4
+%define	small4			 	5
+
+%define	medium1				6	[1050
+%define	medium2				7	[1000
+%define	medium6				8
+%define	medium7				9
+
+%define	large1				10	[1600
+%define	large2				11
+
+%define	giant1				12	[2000
+%define	giant2				13
+
+%define	monster1				14	[2700
+
+
+
+[************* INVENTORY OBJECTS	    
+%object	i.knapsack			1
+%object	i.corn			 	2
+%object	i.gruel				3
+%object	i.food.wallet			4
+%object	i.bread				5
+%object	i.water.flask			6
+%object	i.water				7
+%object	i.apple				8
+%object	i.cookies		 		9
+%object	i.rope			 	10
+%object	i.dagger				11
+%object	i.magic.sword			12
+%object	i.harp			 	13
+%object	i.lute			 	14
+%object	i.fairy.dust			15
+%object	i.keys			 	16
+%object	i.tin.cup		 		17
+%object	i.magic.word			18
+%object	i.magic.mirror	 		19
+%object	i.book.of.knowledge 	20
+%object	i.pot.of.gold			21
+%object	i.hero.shield			22
+%object	i.suit.of.armor		23
+%object	i.bread.two.thirds		24
+%object	i.bread.one.third		25
+
+%define	SIZE_OF_INVENTORY		25
+%define	SIZE_OF_INVENTORY_PLUS_1 26
+
+
+
+[************ OBJECT.USED VALUES.
+%define	u.nothing				0
+%define	u.knapsack 			1
+%define	u.corn				2
+%define	u.gruel				3
+%define	u.food.wallet			4
+%define	u.bread				5
+%define	u.water.flask			6
+%define	u.water				7
+%define	u.apple				8
+%define	u.cookies				9
+%define	u.rope				10
+%define	u.dagger				11
+%define	u.magic.sword			12
+%define	u.harp				13
+%define	u.lute				14
+%define	u.fairy.dust			15
+%define	u.keys				16
+%define	u.tin.cup				17
+%define	u.magic.word			18
+%define	u.magic.mirror			19
+%define	u.book.of.knowledge 	20
+%define	u.pot.of.gold			21
+%define	u.hero.shield			22
+%define	u.suit.of.armor 		23
+%define	u.bread.two.thirds		24
+%define	u.bread.one.third		25
+
+
+
+[************ CONTROLLERS
+%define	c.quit				1
+%define	c.help				2
+%define	c.save				3
+%define	c.speed				4
+%define	c.restore				5
+%define	c.doit				6
+%define	c.restart				7
+%define	c.lookit				8
+%define	c.echo.line			9
+%define	c.status				10
+%define	c.new.obj				11
+%define	c.toggle.monitor		12
+%define	c.show.mem			13
+%define	c.debug				14
+%define	c.init.joy			15
+%define	c.sound.toggle			16
+%define	c.cancel.line			17
+%define	c.pause				18
+%define	c.show.priority		19
+%define	c.version				20
+%define	c.show.ego			21
+%define	c.test				22
+%define	c.menu				23
+%define	c.show.obj			24
+%define	c.clock				25
+%define	c.useit				26
+%define	c.about				27
+%define	c.xy					28
+%define	c.inv.numbers			29
+%define	c.gimme				30
+
+%define	c.speed.slow			31
+%define	c.speed.normal			32
+%define	c.speed.fast			33
+%define	c.speed.fastest		34
+
+
+%define	c.obj.info			36
+%define	c.dummy				37
+
+%define	c.crescendo			38	[	Tandy odds & ends.
+%define	c.decrescendo			39
+
+
+
+[************ SOUND EFFECTS
+%define	s.rapids				1
+%define	s.ego.falling			2
+%define	s.wind				3
+%define	s.lightning			4
+%define	s.thunder				5
+%define	s.poofing				6
+%define	s.ribbit				7
+%define	s.zap				8
+%define	s.gwythaint			9
+%define	s.sword				10
+%define	s.coocoo				11
+%define	s.splash				12
+%define	s.harp.twang			13
+%define	s.rattle				14
+%define	s.goose				15
+[	%define	s.door.opening			16
+[	%define	s.door.closing			17
+%define	s.pot.bubbling			18
+%define	s.pot.exploding		19
+
+
+[************ MUSIC
+%define	m.pigvision			20
+%define	m.theme.song			21
+%define	m.dallben				22
+%define	m.lute.tuning	 		23
+%define	m.whoops				24
+%define	m.gurgi				25
+%define	m.hk					26
+%define	m.hench				27
+%define	m.lute.song			28
+
+
+
+[************ DYNAMIC LOGICS
+%define	rm.restart			 8
+%define	rm.titles				67
+%define	into.the.sunset		71
+%define	lgc.trace				96 
+%define	lgc.error				98
+%define	lgc.debug				99
+%define	lgc.death				100
+%define	swim.logics			101
+%define	lgc.rm0.init.log		102
+%define	lgc.winner			103
+%define	gurgiland		 		104
+	%define	chance.gurgi.shows	88
+%define	help.room				105
+%define	castle.climbing.room	106
+%define	lgc.startup			107
+%define	morva.marsh			108
+%define	castle.interior		112
+%define	gwyth.room			114
+	%define	gwyth.showing	125
+%define	pig.room				116
+%define	climbing.room			117
+%define	eilonwy.room			118

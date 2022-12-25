@@ -1,0 +1,314 @@
+[logics for room 112 -- castle.interior (dynamic logics for random henchman)
+
+%include "rm112.msg"
+%include "gamedefs"
+
+
+%define	chance.hench.comes		125
+
+%define	henchman.is.coming		df1
+%define	hench.grabbed.ego		df3
+%define	creeper.is.coming		df4
+%define	henchman.is.leaving 	df6
+%define	hench.off.screen		df7
+
+%define	wait			 		dv0
+%define	countdown				dv5
+
+
+if (init.log)
+	{
+	load.sound( m.hench);
+	load.sound( s.coocoo);
+
+	animate.obj( a.hench);
+	object.on.land( a.hench);
+
+	if ((has( i.magic.sword) || current.room == 37))
+		{
+		load.view( v.hench.stunned);
+		}
+	
+	badguy = 0;
+	reset( hench.in.room);
+	reset( hench.caught.ego);
+	reset( ego.swung.sword);
+	reset( ego.already.caught);
+
+
+	random( 0, 255, work);
+	if (!hench.program.control && 
+		(work < chance.hench.comes || has( i.magic.sword)))
+		{
+		load.view( v.hench);
+		load.view( v.h.grabbing);
+		set( henchman.is.coming);
+		random( 0, 255, wait);		[	figure out when
+		}
+
+	if (make.henchman.come)
+		{
+		badguy = f.hench;
+		load.view( v.hench);
+		load.view( v.h.grabbing);
+		set.view( a.hench, v.hench);
+		}
+	
+	if (make.creeper.come)
+		{
+		badguy = f.creeper;
+		load.view( v.creeper);
+		load.view( v.creeper.grabbing);
+		set.view( a.hench, v.creeper);
+		}
+
+	if (make.hk.come)
+		{
+		badguy = f.hk;
+		load.view( v.hk);
+		load.view( v.hk.grabbing);
+		set.view( a.hench, v.hk);
+		}
+
+	return();
+	}								[	end init.log
+
+
+if (!useit)
+	{
+	goto no.input;
+	}
+
+
+[*****
+:use.it
+[*****
+
+if (hench.in.room && object.used == u.magic.mirror)
+	{
+	set( have.match);
+	if (make.henchman.come)
+		{
+		print( 3);
+		}
+	else
+		{
+		if (make.creeper.come)
+			{
+			print( 4);
+			}
+		else
+			{
+			print( 5);
+			}
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (!hench.in.room && 
+	hench.program.control && 
+	(make.henchman.come || make.creeper.come || make.hk.come))
+	{
+	wait = 2;
+	}
+
+--wait;
+if (wait == 1)
+	{
+	set( hench.in.room);
+	set( hench.chasing.ego);
+
+	sound( m.hench, done);
+
+	if (hench.program.control)
+		{
+		position.f( a.hench, hench.x, hench.y);
+		}
+	else
+		{
+		set( make.henchman.come);
+		}
+
+	if (make.henchman.come)
+		{
+		badguy = f.hench;
+		load.view( v.hench);
+		set.view( a.hench, v.hench);
+		}
+	else
+		{
+		if (make.creeper.come)
+			{
+			badguy = f.creeper;
+			load.view( v.creeper);
+			set.view( a.hench, v.creeper);
+			}
+		else
+			{
+			badguy = f.hk;
+			load.view( v.hk);
+			set.view( a.hench, v.hk);
+			}
+		}
+
+	draw( a.hench);
+	follow.ego( a.hench, 8, hench.caught.ego);
+
+	if (current.room == 39)
+		{
+		observe.blocks( a.hench);
+		}
+
+	goto exit;
+	}
+
+
+if (hench.caught.ego && !ego.already.caught)
+	{	 
+	reset( hench.caught.ego);
+	set( ego.already.caught);
+	stop.motion( ego);
+
+	if (badguy == f.hench)
+		{
+		load.view( v.h.grabbing);
+		set.view( a.hench, v.h.grabbing);
+		}
+	else
+		{
+		if (badguy == f.creeper)
+			{
+			load.view( v.creeper.grabbing);
+			set.view( a.hench, v.creeper.grabbing);
+			}
+		else 					[	badguy == f.hk
+			{
+			load.view( v.hk.grabbing);
+			set.view( a.hench, v.hk.grabbing);
+			}
+		}
+
+	work = 2;
+	cycle.time( a.hench, work);
+	set.cel( a.hench, 0);
+	end.of.loop( a.hench, hench.grabbed.ego);
+	countdown = 7;					[ 	3 cels * step time of 2
+	stop.motion( ego);
+	program.control( );
+	}
+
+
+--countdown;
+if (countdown == 1)
+	{
+	erase( ego);
+	if (make.creeper.come)
+		{
+		y =	0;
+		x = -8;
+		reposition( a.hench, x, y);
+		}
+	}
+
+
+if (hench.grabbed.ego)
+	{
+	if (t.with.pig)
+		{
+		print( 1);
+		certain.death = 1;
+		}
+	else
+		{
+		if (has( i.magic.sword))
+			{
+		 	print( 2);
+			drop( i.magic.sword);
+			certain.death = 1;
+			}
+		else
+			{
+			new.room( 52);
+			}
+		}
+	}
+
+
+if (hench.chasing.ego)
+	{
+	if (!ego.already.caught &&
+		(ego.hidden || ego.is.falling))
+		{
+		if ((current.room == 38 || 
+			current.room == 47 ||
+			current.room == 40))
+			{
+			reset( hench.chasing.ego);
+			get.posn( a.hench, x, y);
+		
+			if (current.room == 38)
+				{
+				x = 145;
+				}
+			else
+				{
+				if (current.room == 47)
+					{
+					x = 80;
+					y = 95;
+					}
+				else				[	room 40
+					{
+					x = 2;
+					}
+				}
+
+			step = 1;
+			move.obj.f( a.hench, x, y, step, hench.off.screen);
+			}
+		else
+			{
+			reset( hench.chasing.ego);
+			wander( a.hench);
+			}
+		}
+	}
+else
+	{
+	if (hench.in.room && 
+		!ego.hidden && 
+		!hench.stunned &&
+		ego.climbing != falling && 
+		ego.climbing != stunned &&
+		!hench.chasing.ego)
+		{
+		follow.ego( a.hench, 8, hench.caught.ego);
+		set( hench.chasing.ego);
+		}
+	}
+
+
+if (hench.off.screen)
+	{
+	reset( hench.off.screen);
+	reset( hench.in.room);
+	reset( hench.chasing.ego);
+
+	if (current.room == 47)
+		{
+		reset( hench.program.control);
+	 	reset( make.henchman.come);
+		}
+
+	erase( a.hench);
+	print( 6);
+	}
+
+
+[*****
+:exit
+[*****

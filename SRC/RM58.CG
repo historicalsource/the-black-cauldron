@@ -1,0 +1,268 @@
+[logics for room 58 -- the trapdoor
+
+%include "rm58.msg"
+%include "gamedefs"
+
+
+%define	on.ladder				lf0
+%define	stop.trapdoor.updating	lf1
+%define	stop.gargoyle.updating	lf2
+%define	eilonwy.room.loaded		lf3
+%define	pig.room.loaded		lf4
+
+%object	a.trapdoor			small2
+%object	a.gargoyle			medium1
+
+
+if (init.log)
+	{
+	set.horizon( 118);
+	ignore.horizon( ego);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set( t.in.basement);
+	if (e.in.basement)
+		{
+		load.logics( eilonwy.room);
+		set( eilonwy.room.loaded);
+		}
+
+	if (pig.in.basement)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	load.logics( castle.climbing.room);
+	room.bottom = 127;
+	load.view( v.ego.climbing.wall);
+	load.view( v.ego.falling);
+	load.view( v.ego.stunned);
+	load.sound( s.ego.falling);
+	load.sound( s.coocoo);
+
+	load.view( v.door.trap.in.ceiling);
+	load.view( v.turning.gargoyle);
+
+
+	animate.obj( a.gargoyle);
+	ignore.horizon( a.gargoyle);
+	set.view( a.gargoyle, v.turning.gargoyle);
+	position( a.gargoyle, 50, 110);
+	work = 2;
+	cycle.time( a.gargoyle, work);
+	
+	animate.obj( a.trapdoor);
+	ignore.horizon( a.trapdoor);
+	set.view( a.trapdoor, v.door.trap.in.ceiling);
+	work = 3;
+	cycle.time( a.trapdoor, work);
+	set.priority( a.trapdoor, 4);
+	position( a.trapdoor, 71, 84);
+
+	if (trapdoor.open)
+		{
+		last.cel( a.trapdoor, work);
+		set.cel.f( a.trapdoor, work);
+		last.cel( a.gargoyle, work);
+		set.cel.f( a.gargoyle, work);
+		}
+	else
+		{
+		set.cel( a.gargoyle, 0);
+		set.cel( a.trapdoor, 0);
+		}
+
+	draw( a.gargoyle);
+	stop.update( a.gargoyle);
+
+	draw( a.trapdoor);
+	stop.update( a.trapdoor);
+
+
+	if (previous.room == 51)
+		{
+		set.view( ego, v.ego.climbing.wall);
+		position( ego, 76, 94);
+		set.loop( ego, facing.front);
+		set( on.ladder);
+		set( ego.is.climbing);
+		move.obj( ego, 76, 96, 2, done);
+		if (!entered.dungeon)
+			{
+			set( entered.dungeon);
+			score += 10;
+			}
+		}
+
+	draw( ego);
+
+	if (eilonwy.room.loaded)
+		{
+		call( eilonwy.room);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	call( castle.climbing.room);
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (posn( ego, 51, 118, 68, 127))		[	near the gargoyle on the wall
+	{
+	set( have.match);
+	start.update( a.trapdoor);
+	start.update( a.gargoyle);
+
+	if (!trapdoor.open)
+		{
+		set( trapdoor.open);
+		end.of.loop( a.trapdoor, stop.trapdoor.updating);
+		end.of.loop( a.gargoyle, stop.gargoyle.updating);
+		print( 2);
+		}
+	else
+		{
+		reset( trapdoor.open);
+		reverse.loop( a.trapdoor, stop.trapdoor.updating);
+		reverse.loop( a.gargoyle, stop.gargoyle.updating);
+		print( 3);
+		}
+	}
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (ego.is.falling)
+	{
+	reset( on.ladder);
+	goto exit;
+	}
+
+if (posn( ego, 73, 92, 88, 93) &&		[	top of ladder
+	trapdoor.open)
+	{
+	if (e.in.basement)
+		{
+		print( 5);
+		}
+	reset( ego.is.climbing);
+	ego.climbing = 0;
+	current.ego.view = normal;
+	new.room( 51);
+	}
+
+if  (posn( ego, 73, 92, 88, 110) &&	[	middle of ladder
+    !trapdoor.open &&				[	Auto bump head on ceiling.
+	ego.is.climbing)
+	{
+	reset( ego.is.climbing);
+	set( hit.special);
+	print( 4);
+	}
+
+
+
+[	Next, handle getting on and off the ladder.
+
+if (on.water && !on.ladder)
+	{
+	reset( hit.special);
+	reset( on.water);
+	set( on.ladder);
+	set( ego.is.climbing);
+	set.view( ego, v.ego.climbing.wall);
+	start.motion( ego);
+	step.size( ego, two);
+	cycle.time( ego, two);
+	ego.x = 75;
+	ego.y = 114;
+	reposition.to.v( ego, ego.x, ego.y);
+	}
+
+if (on.ladder && ego.y > 115)
+	{
+	reset( hit.special);
+	reset( on.water);
+	reset( on.ladder);
+	reset( ego.is.climbing);
+	ego.climbing = 0;
+	set.view( ego, v.ego);
+	start.motion( ego);
+	step.size( ego, one);
+	cycle.time( ego, one);
+	ego.x = 78;
+	ego.y = 123;
+	reposition.to.v( ego, ego.x, ego.y);
+
+	if (eilonwy.patiently.waiting)
+		{
+		reset( eilonwy.patiently.waiting);
+		set( make.eilonwy.follow);
+		}
+	}
+
+
+if (stop.trapdoor.updating)
+	{
+	reset( stop.trapdoor.updating);
+	stop.update( a.trapdoor);
+	}
+
+if (stop.gargoyle.updating)
+	{
+	reset( stop.gargoyle.updating);
+	stop.update( a.gargoyle);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == left)			{new.room( 57);}
+if (edge.ego.hit == right)			{new.room( 59);}
+
+call( castle.climbing.room);
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (eilonwy.room.loaded)
+	{
+	call( eilonwy.room);
+	}
+

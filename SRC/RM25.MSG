@@ -1,0 +1,48 @@
+[messages for room 25 -- the rope toss
+
+
+
+%message	1
+"You are in front of a vertical rock wall, too smooth to
+ climb."
+
+%message	2
+"You successfully climb the rope, and stand up on a narrow
+ ledge."
+
+%message	3
+"You throw the rope as hard as you can. It fails to catch on
+ anything."
+
+%message	4
+"Throwing your rope high overhead, it catches on a dead
+ branch. You tie your end securely to the limb in front of you."
+
+%message	5
+"Ouch! You just walked directly into a solid granite cliff."
+
+%message	6
+"Oh, no! You slip off the ledge and fall!"
+
+%message	7
+"Looking far up the mountain, you see a dead tree protruding
+ from the cliff face."
+
+%message	8
+"Your rope seems to be securely attached to the tree."
+
+%message	9
+"You grab the rope and hang on tightly. Don't look down
+ because the rocks are far below you!"		
+
+%message	10
+"Your hands slip from the rope!"
+
+%message	11
+"You drop from the rope (hopefully onto the ledge)."
+
+%message	12
+"To use it, you let go of the rope -- and fall..."
+
+%message	13
+"You can't use anything while you are on the rope."

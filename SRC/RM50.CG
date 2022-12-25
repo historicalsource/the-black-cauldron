@@ -1,0 +1,309 @@
+[logics for room 50 -- the entrance to Fflewdder's cell
+
+%include "rm50.msg"
+%include "gamedefs"
+
+
+%define	keys.here				0
+%define	keys.gone				1
+
+
+%define	grate.examined			lf0
+%define	castle.interior.loaded	lf1
+%define	ff.door.open			lf2
+%define	through.grate			lf3
+%define	grate.open			lf4
+
+
+%object	a.torch1			tiny1
+%object	a.keys			small1
+%object	a.torch2			small2
+%object	a.grate			medium1
+%object	a.ff.door			large1
+
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (!pot.in.castle)
+		{
+		load.logics( castle.interior);
+		set( castle.interior.loaded);
+		set( hench.program.control);
+
+		if (previous.room == 49)		[	always catch him by left door
+			{
+			hench.x = 60;			[	set to 57, 133 on next version
+			hench.y = 133;
+			set( make.henchman.come);
+			}
+		else
+			{
+			hench.x = 106;			[	Hench is by the keyhook.
+			hench.y = 150;
+			if (previous.room == 51) [	Nail his ass, hench!
+				{
+				set( make.henchman.come);
+				}
+			}
+		}
+
+	load.view( v.door.ff.cell);
+	load.view( v.grate);
+	load.view( v.keys);
+	load.view( v.torch.red.background);
+
+
+	animate.obj( a.keys);
+	set.priority( a.keys, 4);
+	set.view( a.keys, v.keys);
+	position( a.keys, 130, 150);
+	if (keys.taken)
+		{
+		set.cel( a.keys, keys.gone);
+		}
+	else
+		{
+		set.cel( a.keys, keys.here);
+		}
+	draw( a.keys);
+	stop.update( a.keys);
+
+	animate.obj( a.ff.door);
+	ignore.blocks( a.ff.door);
+	position( a.ff.door, 70, 98);
+	set.view( a.ff.door, v.door.ff.cell);
+	work = 2;
+	cycle.time( a.ff.door, work);
+	set.cel( a.ff.door, 0);
+	draw( a.ff.door);
+	stop.update( a.ff.door);
+
+	animate.obj( a.grate);
+	ignore.objs( a.grate);
+	set.priority( a.grate, 4);
+	position( a.grate, 104, 132);
+	set.view( a.grate, v.grate);
+	if (grate.open)
+		{
+		last.cel( a.grate, work);
+		set.cel.f( a.grate, work);
+		}
+	else
+		{
+		set.cel( a.grate, 0);
+		}
+	draw( a.grate);
+	stop.update( a.grate);
+
+	animate.obj( a.torch1);
+	position( a.torch1, 2, 62);
+	set.view( a.torch1, v.torch.red.background);
+	set.cel( a.torch1, 1);
+	draw( a.torch1);
+
+	animate.obj( a.torch2);
+	position( a.torch2, 33, 61);
+	set.view( a.torch2, v.torch.red.background);
+	draw( a.torch2);
+
+
+	if (previous.room == 48)
+		{
+		ego.x = 80;
+		ego.y = 100;
+		loop = 2;
+		}
+	else
+		{
+		if (previous.room == 49)
+			{
+			ego.x = 37;
+			ego.y = 126;
+			loop = 0;
+			}
+		else
+			{
+			if (previous.room == 51)
+				{
+				ego.y = 167;
+				if (ego.x < 27)
+					{
+					ego.x = 27;
+					}
+				if (ego.x > 121)
+					{
+					ego.x = 121;
+					}
+				loop = 3;
+				}
+			else
+				{
+				ego.x = 95;
+				ego.y = 120;
+				loop = 1;
+				}
+			}
+		}
+
+	position.v( ego, ego.x, ego.y);
+	set.loop.v( ego, loop);
+	draw( ego);
+
+	if (castle.interior.loaded)
+		{
+		call( castle.interior);
+		}
+
+	show.pic();
+
+	if (t.with.pig && previous.room == 49)
+		{
+		print( 13);
+		}
+
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	distance( ego, a.grate, work);		[	handle the grate
+	if (work < 30)
+		{
+		print( 4);
+		set( grate.examined);
+		}
+	else
+		{
+		distance( a.keys, ego, work);	[	handle the key ring
+		if (work < 30)
+			{
+			if (keys.taken)
+				{
+				print( 3);
+				}
+			else
+				{
+				print( 11);
+				}
+			}
+		else
+			{
+			print( 1);
+			}
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+distance( ego, a.grate, work);			[	handle the grate
+if (work < 30)
+	{
+	set( have.match);
+	if (!grate.examined)
+		{
+		set( grate.examined);
+		print( 4);
+		}
+	else
+		{
+		start.update( a.grate);
+		end.of.loop( a.grate, grate.open);
+
+		if (!discovered.dungeon)
+			{
+			set( discovered.dungeon);
+			score += 6;
+			}
+		}
+	goto no.input;
+	}
+
+distance( a.keys, ego, work);			[	handle the key ring
+if (work < 30)
+	{
+	set( have.match);
+	if (keys.taken)
+		{
+		print( 3);
+		}
+	else
+		{
+		set( keys.taken);
+		get( i.keys);
+		set.cel( a.keys, keys.gone);
+		force.update( a.keys);
+		print( 2);
+		}
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (object.used == u.keys)
+	{
+	set( have.match);
+	distance( a.ff.door, ego, work);	[	is he by Fflewddur's door?
+
+	if (work < 30)
+		{
+		start.update( a.ff.door);
+		end.of.loop( a.ff.door, ff.door.open);
+		}
+	else
+		{
+		distance( a.keys, ego, work);	[	put the keys back?
+		if (work > 30)
+			{
+			print( 10);			[	"there's no door nearby
+			}
+		else
+			{
+			reset( keys.taken);
+			drop( i.keys);
+			object.used = 0;
+			active.object = 0;
+			set.cel( a.keys, keys.here);
+			force.update( a.keys);
+			print( 12);			[	"You replace the keys on the hook
+			}
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == bottom)			{new.room( 51);}
+if (ff.door.open)					{new.room( 48);}
+if (grate.open)					{new.room( 60);}
+if (hit.special)					{new.room( 49);}
+
+if (castle.interior.loaded)
+	{
+	call( castle.interior);
+	}
+

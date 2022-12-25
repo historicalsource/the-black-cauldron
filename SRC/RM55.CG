@@ -1,0 +1,88 @@
+[logics for room 55 -- back hallway in dungeon basement
+
+%include "rm55.msg"
+%include "gamedefs"
+
+
+%define	eilonwy.room.loaded		lf0
+%define	pig.room.loaded		lf1
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set( t.in.basement);
+	if (e.in.basement)
+		{
+		load.logics( eilonwy.room);
+		set( eilonwy.room.loaded);
+		}
+
+	if (pig.in.basement)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+	if (previous.room == 54)
+		{
+		position( ego, 30, 132);
+		}
+	else
+		{
+		position( ego, 135, 132);
+		}
+
+	draw( ego);
+
+	if (eilonwy.room.loaded)
+		{
+		call( eilonwy.room);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	}
+
+[*****
+:exit
+[*****
+
+if (hit.special)
+	{
+	if (posn( ego, 0, 61, 14, 167))
+		{
+		new.room( 54);
+		}
+	else
+		{
+		new.room( 56);
+		}
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (eilonwy.room.loaded)
+	{
+	call( eilonwy.room);
+	}
+

@@ -1,0 +1,59 @@
+[messages for room 45 -- the Horned King's throne room
+
+
+
+%message	1
+"This is the throne room of the evil Horned King."
+
+%message	2
+"\"Be gone, my henchmen! I have important business with the oracular pig!!\""
+
+%message	3
+"You grab Hen Wen away from Creeper. Run, Taran, run!"
+
+%message	4
+"By allowing Hen Wen and yourself to be captured, the Horned King has won!"
+
+%message	5
+"The henchmen see you! Run, Taran!"
+
+%message	6
+"Everyone is so busy watching Hen Wen's vision, they don't notice you."
+
+%message	7
+"Oh, no!! Hen Wen has told the Horned King about the cauldron."
+
+%message	8
+"Creeper sees you. Run, Taran!"
+
+%message	9
+"The Horned King sees you. Run, Taran!"
+
+%message	10
+"Creeper bows before the Horned King, \"So sorry, Sire, but
+ we cannot find the magic pig!\""
+
+%message	11
+"Don't jump, Taran! The Horned King's henchman would catch you."
+
+%message	12
+"The Horned King's men are celebrating the capture of Hen Wen."
+
+%message	13
+"\"Oh, Sire,\" whines Creeper, \"isn't it about time to try out
+ your new cauldron?\""
+
+%message	14
+"You start to jump, but stop because you hear someone coming."
+
+%message	15
+"The powerful magic of the Horned King prevents you from swinging your sword!"
+
+%message	16
+"Ooomph! The Horned King's magic keeps you away from him."
+
+%message	17
+"The Horned King responds, \"Silence! You must find her.\"" 
+
+%message	18
+"You leap from the balcony!"

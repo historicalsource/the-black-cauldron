@@ -1,0 +1,76 @@
+[logics for room 102 -- init.log for room 0
+
+%include "gamedefs"
+
+
+if (!force.a.test)
+	{
+	reset( debugging);
+	reset( enable.trace);
+	}
+
+if (debugging)
+	{
+	set( enable.trace);
+	}
+
+if (swinging.sword)
+	{
+	current.ego.view = 0;
+	}
+
+animate.obj( ego);
+step.size( ego, ego.step.size);
+step.time( ego, ego.step.time);
+cycle.time( ego, ego.cycle.time);
+get.posn( ego, ego.x, ego.y);
+observe.objs( ego);
+
+
+old.active.object = error;			[	to force update.
+
+reset( doit);
+reset( useit);
+reset( lookit);
+reset( coocoo);
+reset( quicksand);
+reset( gurgi.here);
+reset( have.match);
+reset( ego.arrived);
+reset( phony.water);
+reset( make.hk.come);
+reset( can.lose.pig);
+reset( out.of.memory);
+reset( t.in.basement);
+reset( swinging.sword);
+reset( poisoned.water);
+reset( survivable.fall);
+reset( impotable.water);
+reset( make.creeper.come);
+reset( hench.chasing.ego);
+reset( override.fall.loc);
+reset( make.henchman.come);
+reset( hench.program.control);
+reset( prevent.sword.message);
+
+
+wait.1 = 0;						[	no global timers
+wait.2 = 0;
+timer.1 = 0;
+timer.2 = 0;
+seen.help = 0;
+ego.location = 0;
+hench.stunned = 0;
+seconds.in.room = 0;
+
+
+work = 255;
+:mr.looper						[All that remains of "reset the world"
+reset.v( work);
+work @= 0;
+--work;
+if (work > 199)
+	{
+	goto mr.looper;
+	}
+

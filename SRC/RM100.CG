@@ -1,0 +1,43 @@
+[logics for room 100 -- the death room
+
+%include "rm100.msg"
+%include "gamedefs"
+
+
+[	this is nothing but an init.log, since
+[room 0 is now in charge of death, and will only call this room once, to
+[initialize death, and print the reason for dying.
+
+
+stop.motion( ego);
+if (certain.death != turned.into.frog)
+	{
+	stop.cycling( ego);
+	}
+
+wait.1 = cycles.before.death;
+
+if ((certain.death == food ||			[	THESE GET A PRINT,	
+	certain.death == drink ||
+	certain.death == pig.told.all ||
+	certain.death == gator.ade ||
+	certain.death == too.many.skeletons ||
+	certain.death == ego.thrown.in.pot ||
+	certain.death == turned.into.frog ||
+	certain.death == by.sudden.stop))
+
+[	certain.death == marsh ||		[	THESE TWO DON'T.
+[	certain.death == generic ||
+
+	{
+	print.v( certain.death);
+	}
+
+if ((certain.death == food ||
+	certain.death == gator.ade ||
+	certain.death == by.sudden.stop ||
+	certain.death == drink))
+	{
+	erase( ego);
+	}
+

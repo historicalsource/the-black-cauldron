@@ -1,0 +1,152 @@
+[logics for room 65 -- Gwystyl's cottage exterior
+
+%include	"rm65.msg"
+%include "gamedefs"
+
+
+%define	door.opening.done	lf0
+%define	pig.room.loaded	lf1
+%define	door.closing.done	lf2
+
+%object	a.smoke			medium1	[	define objects
+%object	a.door			large1
+
+
+if (init.log)						[	initialize room
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.view( v.smoke.gwystyl);	    	[	load views of objects
+	load.view( v.door.gwystyl.house);
+	set( phony.water);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);
+		set( pig.room.loaded);
+		}
+
+
+	animate.obj( a.door);			[	animate objects
+	ignore.blocks( a.door);
+	set.view( a.door, v.door.gwystyl.house);
+	position( a.door, 62, 119);
+	work = 2;
+	cycle.time( a.door, work);
+	if (previous.room == 66)
+		{
+		last.cel( a.door, work);
+		set.cel.f( a.door, work);
+		draw( a.door);
+		reverse.loop( a.door, door.closing.done);
+		}
+	else							[previous room was 17
+		{
+		set.cel( a.door, 0);
+		draw( a.door);
+		stop.update( a.door);
+		}
+
+
+	animate.obj( a.smoke);
+	ignore.horizon( a.smoke);
+	set.view( a.smoke, v.smoke.gwystyl);
+	position( a.smoke, 43, 24);
+	work = 2;
+	cycle.time( a.smoke, work);
+	draw( a.smoke);
+
+
+	if (previous.room == 66)
+		{
+		position( ego, 65, 121);		[	position ego
+		}
+	else							[previous room was 17
+		{
+		position( ego, 65, 166);
+		move.obj( ego, 65, 164, 0, done);
+		}
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+
+	if (previous.room != 66)
+		{
+	 	print( 2);
+		}
+
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	set( have.match);
+	if (posn( ego, 63, 120, 75, 125))
+		{
+		print( 5);
+		}
+	else
+		{
+		print( 1);
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (posn( ego, 63, 119, 75, 128))		[	in front of the door
+	{
+	set( have.match);
+	stop.motion( ego);
+	start.update( a.door);
+	end.of.loop( a.door, door.opening.done);
+	print( 3);
+	}
+
+
+[*****
+:use.it							[	pressed "use current obj"
+:no.input
+[*****
+
+if (door.opening.done)
+	{
+	reset( door.opening.done);
+	start.motion( ego);
+	new.room( 66);
+	}
+
+if (door.closing.done)
+	{
+	reset( door.closing.done);
+	stop.update( a.door);
+	print( 4);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == bottom)		{new.room( 17);}

@@ -1,0 +1,174 @@
+[logics for room 48 -- Fflewddur's place
+
+%include "rm48.msg"
+%include "gamedefs"
+
+
+%define	time.before.ff.leaves	25
+
+%define	ff.off.screen			lf0
+%define	ff.at.1				lf2
+%define	free.the.ff			lf3
+%define	sword.swing.delay		lf4
+
+%define	ff.leaves.timer		lv1
+
+%object	a.ff					medium1
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (!ff.free)
+		{
+		load.view( v.ff);
+		load.view( v.ff.hanging);
+
+		animate.obj( a.ff);
+		position( a.ff, 72, 95);
+		set.view( a.ff, v.ff.hanging);
+		stop.motion( a.ff);
+		ignore.objs( a.ff);
+		draw( a.ff);
+		}
+
+	position( ego, 74, 167);
+	draw( ego);
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (ff.free)
+		{
+		print( 1);
+		}
+	else	 						[	Kilroy was here.
+		{
+		print( 2);
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (!ff.free &&
+	posn( ego, 64, 97, 90, 103))
+	{
+	set( have.match);
+	set( free.the.ff);
+	print( 3);
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (ff.free)
+	{
+	goto no.input;
+	}
+
+if (object.used == u.magic.mirror)
+	{
+	set( have.match);
+	print( 7);
+	}
+
+if (object.used == u.magic.sword &&
+	posn( ego, 64, 97, 90, 103))
+	{
+	set( prevent.sword.message);
+	set( sword.swing.delay);
+	goto exit;
+	}
+
+if  (object.used == u.keys &&
+	posn( ego, 64, 97, 90, 103))
+	{
+	set( have.match);
+	set( free.the.ff);
+	print( 9);
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (sword.swing.delay && !swinging.sword)
+	{
+	reset( sword.swing.delay);
+	set( free.the.ff);
+	print( 8);
+	}
+
+if (free.the.ff)
+	{
+	reset( free.the.ff);
+	set( ff.free);
+
+	set.view( a.ff, v.ff);
+	reposition.to( a.ff, 82, 104);
+	stop.cycling( a.ff);
+	force.update( a.ff);
+	score += 9;
+	ff.leaves.timer = time.before.ff.leaves;
+	print( 4);
+	}
+
+--ff.leaves.timer;
+if (ff.leaves.timer == 1)
+	{
+	start.cycling( a.ff);
+	start.motion( a.ff);
+	move.obj( a.ff, 96, 104, 1, ff.at.1);
+	get( i.harp);
+	print( 6);
+	}
+
+if (ff.at.1)
+	{
+	reset( ff.at.1);
+	print( 5);						[	Kilroy again.
+	move.obj( a.ff, 78, 167, 1, ff.off.screen);
+	}
+
+if (ff.off.screen)
+	{
+	reset( ff.off.screen);
+	erase( a.ff);
+	}
+
+if  (ego.x == 119 &&
+	ego.y == 107 &&
+	ego.dir == ego.right &&
+    !seen.naked.women)
+	{
+	set( seen.naked.women);
+	print( 10);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (edge.ego.hit == bottom)			{new.room( 50);}
+

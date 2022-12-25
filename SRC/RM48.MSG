@@ -1,0 +1,45 @@
+[messages for room 48 -- Fflewddur Fflam's cell.
+
+
+
+%message	1
+"This is the cell where you freed Fflewddur Fflam."
+
+%message	2
+"You have found a friendly looking old prisoner!"
+
+%message	3
+"\"My name is Taran, Assistant Pig-Keeper of Caer Dallben,\"
+ you say. \"May I assist you?\" You struggle with his ropes
+ until you undo the knots."
+
+%message	4
+"The prisoner speaks, \"Thank you, kind sir. I'm Fflewddur
+ Fflam, storyteller, minstrel and bard to the greatest kings
+ in all Prydain!\""
+
+%message	5
+"\"Sir,\" FFlewddur says, \"you may choose to remain
+ here, but I intend to make my escape. Farewell,
+ Assistant Pig-Keeper Taran!\""
+
+%message	6
+"\"The Horned King has kept me imprisoned for years
+ in this cell. In return for granting me my freedom, I'd
+ like to present you with this special harp.\""
+
+%message	7
+"Fflewddur sees an artist who stretches the truth
+ about his talents, but does not exaggerate his loyalty
+ to his friends."
+
+%message	8
+"Skillfully you slice through the ropes holding Fflewddur to the wall!"
+
+%message	9
+"One of the keys fits the locks holding Fflewddur's ropes
+ to the wall. He's free!"
+
+%message	10
+"You peek through a crack in the wall, and see someone playing
+ \"King's Quest III\" on the next disk. This puzzles you immensely!"

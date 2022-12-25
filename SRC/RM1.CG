@@ -1,0 +1,214 @@
+[logics for room 1 -- Skull mountain
+
+%include "rm1.msg"
+%include "gamedefs"
+
+
+%define	stunned.time			33
+
+
+%define	white.water			lf1
+%define	warned.ego			lf2
+%define	gwyth.room.loaded		lf3
+%define	pig.room.loaded		lf4
+%define	swim.logics.loaded		lf5
+
+
+%define	stunned.timer			lv3
+
+
+%object	a.rapids				medium2
+
+
+if (init.log)
+	{
+	load.view( v.rapids.room1);
+	load.sound( s.rapids);
+
+	if (ego.on.log)
+		{
+		load.view( v.ego.logged);
+		}
+	else
+		{
+		load.view( v.ego.stunned);
+		load.view( v.ego.drowning);
+		load.logics( swim.logics);	[	room 101
+		set( swim.logics.loaded);
+		set( poisoned.water);
+		}
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+	set.horizon( 88);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	animate.obj( a.rapids);
+	set.view( a.rapids, v.rapids.room1);
+	position( a.rapids, 21, 148);
+	set.priority( a.rapids, 4);
+	set( s.waterfall.done);
+
+	if (ego.on.log)
+		{
+		position( ego, 17, 103);
+		set.view( ego, v.ego.logged);
+		ignore.objs( ego);
+		move.obj( ego, 21, 167, 0, white.water);
+		}
+	else
+		{ 
+		if ((previous.room == 20 || previous.room == 21))
+			{
+			position( ego, 76, 91);
+			}
+		}
+
+	draw( a.rapids);
+
+	draw( ego);
+	if (swim.logics.loaded)
+		{
+		call( swim.logics);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	if (posn( ego, left.edge, top.edge, 79, 167))
+		{
+		print( 1);
+		}
+	else
+		{
+		print( 3);
+		}
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+[*****
+:do.it
+[*****
+ 
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+
+[*****
+:no.input
+[*****
+
+if (!warned.ego && posn( ego, 31, 99, 61, 167))		[	near the cliff
+	{
+	set( warned.ego);
+	print( 2);
+	}
+
+if (!stunned.timer &&
+	posn( ego, 67, 107, 80, 113))		[	hit the lowhanging limb
+	{
+	reset( s.waterfall.done);
+	set.view( ego, v.ego.stunned);
+	stop.motion( ego);
+	force.update( ego);
+	set( keep.cycling);
+	stunned.timer = stunned.time;
+	print( 4);
+	}
+
+--stunned.timer;
+if (stunned.timer == 1)
+	{
+	reset( keep.cycling);
+	set.view( ego, v.ego);
+	start.motion( ego);
+	x = 0;
+	if ((ego.dir == ego.up || 
+		ego.dir == ego.up.right ||
+		ego.dir == ego.up.left))
+		{
+		y = -7;
+		reposition( ego, x, y);
+		}
+	else
+		{
+		y = 7;
+		reposition( ego, x, y);
+	    	}
+	set( s.waterfall.done);
+	}
+
+if (s.waterfall.done && !gwyth.here)
+	{
+	sound( s.rapids, s.waterfall.done);
+	}
+
+
+if ((posn( ego, 0,  95, 46, 117) ||
+	posn( ego, 0, 118, 51, 143) ||
+	posn( ego, 0, 144, 65, 167)))
+	{
+	set( near.water);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (swim.logics.loaded)
+	{
+	call( swim.logics);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (white.water && posn( ego, 0, 167, 159, 167))	{new.room( 6);}
+if (edge.ego.hit == top)						{new.room( 21);}
+if (edge.ego.hit == right)					{new.room( 2);}
+if (edge.ego.hit == bottom)					{new.room( 6);}
+

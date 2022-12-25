@@ -1,0 +1,25 @@
+[room24 messages
+
+
+
+%message	1
+"You bask in the beauty of the falling water, and
+ enjoy its refreshing scent and soothing sound."
+
+%message	2
+"You enter the cave. It's pitch black in here!"
+
+%message	3
+"\"BMMPXF!!\""
+
+%message	4
+"You say the word exactly as Gwystyl taught you.
+ The rock beside the waterfall sinks into the stream,
+ revealing a hidden cave."
+
+%message	5
+"The rock returns to its normal appearance."
+
+%message	6
+"Oooooh, you're falling!!"
+

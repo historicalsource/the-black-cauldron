@@ -1,0 +1,100 @@
+[logics for room 10 - bad woods
+
+%include "rm10.msg"
+%include "gamedefs"
+
+
+%define	pig.room.loaded	lf0
+%define	gwyth.room.loaded	lf1
+
+
+if (init.log)
+	{
+
+	set.horizon( 64);
+	observe.blocks( ego);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);	[room 116
+		set( pig.room.loaded);
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);	[room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	if (previous.room == 5)
+		{
+		position( ego, 87, 65);
+		}
+	else
+		{
+		if (previous.room == 11)
+			{
+			position( ego, 149, 162);
+			}
+		}
+
+	draw( ego);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if (lookit)
+	{
+	if (posn( ego, 0, 0, 159, 85))
+		{
+		print( 1);
+		}
+	else
+		{
+		print( 2);
+		}
+	}
+
+ 
+if (!doit && !useit)		{goto no.input;}
+if (useit)				{goto use.it;}
+
+
+[*****
+:do.it
+:use.it
+:no.input
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (edge.ego.hit == top)			{new.room( 5);}
+if (edge.ego.hit == bottom)		{new.room( 15);}
+if (edge.ego.hit == right)		{new.room( 11);}

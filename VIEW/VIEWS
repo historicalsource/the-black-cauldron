@@ -1,0 +1,230 @@
+[
+[	views
+[
+[			VIEW DEFINITIONS (AT LEAST UNTIL HEITMAN FINISHES!)
+[
+[	January 15, 1987
+[
+[Normal, moving objects have 4 views, in this sequence:  ##r ##l ##f ##b
+[		Less important objects may only have 2 views:  ##r ##l
+[						One loop views are named:  ##v
+[	 Special, non-moving views may have up to 4 loops:  ##a ##b ##c ##d
+[
+[	To have a left loop mirror the right, type "mirror" or (~).
+[	To share a loop, type "share" or (=).
+[
+[	To skip a background color other than black (0), insert "skip ##"
+[at end of loopnames.
+[
+[	Cells with black blobs in their upper left corners need a vertical band
+[of skip color added along their right edge.  (Also known as "The Bug.")
+
+
+
+
+view   0: 0r ~ 0f 0b
+view   1: 1r ~ 1f 1b
+view   2: 2v
+view   3: 3v
+view   4: 4v
+view   5: 5r ~ 5f 5b
+view   6: 6v
+view   7: 7v
+view   8: 8v
+view   9: 9v
+view  10: 10r 10l
+view  11: 11r ~ 11f 11b
+view  12: 0b
+view  13: 13v
+view  14: 14r ~ 14f 14b
+view  15: 15v
+view  16: 16v skip 3
+view  17: 17v
+view  18: 18v
+view  19: 19v
+view  20: 20v skip 1
+view  21: 50r
+view  22: 22r ~
+view  23: 23v
+view  25: 25r ~ 25v =
+view  26: 26v
+view  28: 28v
+view  29: 29r 29l
+view  30: 30r ~ 30f 30b skip 3
+view  31: 31v skip 3
+view  32: 32v skip 5
+view  33: 33v skip 3
+view  34: 34v ~
+view  35: 45b
+view  36: 36v skip 3
+view  37: 37v ~ skip 1
+view  38: 38v
+view  39: 39v
+view  40: 40r ~ 40f 40b
+view  41: 41v
+view  42: 42r 42l skip 3
+view  43: 43v
+view  44: 44v
+view  45: 45r ~ 45f 45b
+view  46: 46v
+view  47: 47v
+view  49: 49v
+view  50: 50r ~
+view  51: 51r ~
+view  52: 52v
+view  53: 53v skip 14
+view  54: 54v
+view  55: 55v skip 3
+view  56: 56r ~
+view  57: 57v skip 14
+view  58: 58v ~
+view  59: 59v
+view  60: 60v
+view  61: 61r ~
+view  62: 62r ~
+view  63: 63v
+view  64: 64v
+view  65: 65v skip 3
+view  67: 67v
+view  68: 68v
+view  69: 69v
+view  70: 70r ~ 70f 70b
+view  71: 71v skip 3
+view  72: 70b
+view  73: 73v
+view  75: 75r ~ 75f ~
+view  76: 76v
+view  77: 75b
+view  78: 78v
+view  79: 79v
+view  80: 80v
+view  81: 81v
+view  82: 82v skip 3
+view  83: 83v skip 3
+view  84: 84v
+view  85: 85v skip 3
+view  86: 86v skip 3
+view  87: 87v skip 3
+view  88: 88v skip 3
+view  89: 89v
+view  90: 90v
+view  91: 91r ~
+view  92: 92r ~ 92f 92b
+view  93: 93r ~
+view  94: 94r ~
+view  95: 95v skip 3
+view  96: 96r ~
+view  97: 97r ~
+view  98: 98v
+view 100: 100v
+view 101: 101v
+view 102: 102v skip 14
+view 103: 103v skip 3
+view 104: 104v
+view 105: 105v
+view 106: 106r ~
+view 107: 107v skip 3
+view 108: 108v skip 3
+view 109: 109v skip 3
+view 110: 110v
+view 111: 111v
+view 112: 112v
+view 113: 113v
+view 114: 114v
+view 115: 115v
+view 116: 116v
+view 117: 117v
+view 118: 118v
+view 119: 119v
+view 120: 120v
+view 121: 121v
+view 122: 122v
+view 124: 124v
+view 125: 125r ~ 125f 125b skip 3
+view 126: 126v
+view 127: 127a 127b 127c skip 3
+view 128: 128v
+view 129: 129v
+view 130: 130v
+view 132: 132v
+view 133: 133v
+view 134: 134v
+view 135: 135v
+view 136: 136v
+view 137: 137v skip 3
+view 138: 138v skip 3
+view 139: 139v
+view 140: 140v
+view 141: 141v
+view 142: 142v
+view 143: 143v
+view 144: 144v
+view 145: 145v
+view 146: 146v
+view 147: 147v
+view 148: 148v skip 3
+view 149: 149v
+view 150: 150v skip 14
+"This roomy knapsack can hold a surprising amount."
+view 151: 151v skip 14
+"Hen Wen just loves dried corn like this."
+view 152: 152v skip 14
+"This pot of gruel makes a tasty dish -- if you're a pig."
+view 153: 153v skip 14
+"This food wallet must be magic, since it never seems to run out of food."
+view 154: 154v skip 14
+"You have some bread, baked at Caer Dallben."
+view 155: 155v skip 14
+"This is your trusty water bag."
+view 156: 155v skip 14
+"The water is inside your water bag."
+view 157: 157v skip 14
+"Dallben Delicious apples are your favorite -- crisp and tasty."
+view 158: 158v skip 14
+"These cookies look delicious!"
+view 159: 159v skip 14
+"This coil of rope is about 75 feet long."
+view 160: 160v skip 14
+"The dagger is quite sharp; its blade glistens in the light."
+view 161: 161v skip 14
+"Jewels glisten in the handle of your sword; you can feel the magic in your
+ hand."
+view 162: 162v skip 14
+"Fflewddur Fflam's harp can make beautiful music, in the hands of an artist."
+view 163: 163v skip 14
+"This lute makes soft, beautiful sounds when you strum its strings."
+view 164: 164v skip 14
+"The bag contains a marvelous powder that King Eiddileg said would make you
+ fly."
+view 165: 165v skip 14
+"These are the keys to the Horned King's dungeon."
+view 166: 166v skip 14
+"This tin cup is scratched and bent from many years in the dungeon."
+view 167: 167v skip 14
+"Gwystyl gave you this magic word, but couldn't tell you where to use it."
+view 168: 168v skip 14
+"This mirror shows a person's inner self, instead of his looks."
+view 169: 169v skip 14
+"You have a magic Book of Knowledge; now you know almost everything, but you
+ miss your friend, Gurgi."
+view 170: 170v skip 14
+"This Pot Of Gold has made you the wealthiest man in Prydain; but you miss
+ your friend, Gurgi."
+view 171: 171v skip 14
+"This Hero Shield has made you the greatest warrior in all Prydain; but, you
+ always wonder if you could have done more."
+view 172: 172v skip 14
+"This Suit of Armor has made you invincible in battle; but, could you have
+ accomplished more without it?"
+view 173: 173v skip 14
+"You have over half of the loaf of bread left."
+view 174: 174v skip 14
+"You have a little bread left."
+view 175: 175v
+view 176: 176v
+view 177: 69v
+view 178: 178v
+view 179: 179r ~ 179v =
+view 180: 180r ~
+view 181: 181v
+view 182: 182v skip 3

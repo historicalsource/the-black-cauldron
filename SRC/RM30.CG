@@ -1,0 +1,274 @@
+[logics for room 30 -- mesa west
+
+%include  "rm30.msg"
+%include "gamedefs"
+
+
+%define	horizon			51
+%define	time.before.death	20
+%define	fall.distance		50
+
+
+%define	hit.bottom		lf0
+%define	ego.priority		lv1
+%define	fell.to.left		lf3
+%define	fell.to.right		lf4
+%define	next.room			lv5
+
+
+if (init.log)
+	{
+	wait.1 = 0;
+
+
+	room.bottom = screen.bottom;
+	load.view( v.ego.falling);
+	load.view( v.ego.drowning);
+	load.sound( s.ego.falling);
+
+	set.priority( ego, 14);
+	set.view( ego, v.ego);			[	jicof
+	reset( ego.falling);
+	reset( ego.is.falling);
+	reset( keep.cycling);
+
+	if (previous.room == 34)
+		{
+		position( ego, 143, 55);
+		}
+	else
+		{
+		if (previous.room == 29)
+			{
+			position( ego, 117, 166);
+			}
+		else	 [room 32]
+			{
+			position( ego, 144, 59);
+			}
+		}
+
+	set.horizon( horizon);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	draw( ego);
+	start.motion( ego);
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (ego.falling)	
+	{
+	goto no.input;
+	}
+
+if (lookit)	
+	{
+	print( 1);
+	set( have.match);
+	}
+
+if (!doit && !useit)
+	{
+	goto no.input;
+	}
+
+if (useit)
+	{
+	goto use.it;
+	}
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+goto no.input;
+
+[*****
+:use.it							[	pressed "use current obj"
+[*****
+
+[*****
+:no.input
+[*****
+
+get.posn( ego, x, y);					[	find what priority he's on
+if (y > 132)
+	{
+	ego.priority = 14;
+	}
+else
+	{
+	if (y > 118)
+		{
+		ego.priority = 13;
+		}
+	else
+		{
+		if (y > 94)
+			{
+			ego.priority = 12;
+			}
+		else
+			{
+			if (y > 70)
+				{
+				ego.priority = 11;
+				}
+			else
+				{
+				if (y > 57)
+					{
+					ego.priority = 10;
+					}
+				else
+					{
+					ego.priority = 9;
+					}
+				}
+			}
+		}
+	}
+
+if (hit.special && !ego.is.falling)	[	He crashed somewhere!
+	{
+	if ((posn( ego, 86, 59, 92, 71) ||		[	left side of road, tilting right	
+			posn( ego, 20, 96, 33, 130) ||
+				posn( ego, 93, 132, 113, 167)))
+		{
+		--ego.priority;
+		set( fell.to.left);
+    		}
+	else							[	left side of road, tilting left
+		{
+		if ((posn( ego, 134, 53, 135, 57) ||
+				posn( ego, 121, 94, 133, 95) ||
+					posn( ego, 86, 70, 93, 81) ||
+						posn( ego, 124, 83, 129, 94)))
+			{
+			set( fell.to.left);
+			}
+		else						[	right side of road, tilting left
+			{
+			if ((posn( ego, 122, 120, 143, 139) ||
+					posn( ego, 128, 72, 143, 93)))
+				{
+				set( fell.to.right);
+				--ego.priority;
+				}
+			else					[	right side of road, tilting right
+				{
+				if ((posn( ego, 101, 65, 105, 70) ||
+						posn( ego, 35, 109, 48, 118) ||
+							posn( ego, 134, 94, 143, 107)))
+					{
+					set( fell.to.right);
+					}
+				else
+					{
+					if ((ego.dir == ego.up ||
+							ego.dir == ego.up.right ||
+								ego.dir == ego.up.left))
+						{
+						--ego.priority;
+						}
+					}
+				}
+			}
+		}
+
+	if (fell.to.left)
+		{
+		if (x > 10)
+			{
+			delta.x = -8;
+			}
+		else
+			{
+			delta.x = 0;
+			}
+		delta.y = 0;
+		reposition( ego, delta.x, delta.y);
+		}
+
+	if (fell.to.right)
+		{
+		if (x < 136)				[	158 -13 -8
+			{
+			delta.x = 8;
+			}
+		else
+			{
+			delta.x = 0;
+			}
+		delta.y = 0;
+		reposition( ego, delta.x, delta.y);
+		}
+
+	set.priority.f( ego, ego.priority);
+	get.posn( ego, x, y);
+	y += fall.distance;
+	if (y > room.bottom)
+		{
+		y = room.bottom;
+		}
+	step = 4;
+	move.obj.f( ego, x, y, step, hit.bottom);
+	set( ego.falling);
+	set( ego.is.falling);
+	set.view( ego, v.ego.falling);
+	ignore.blocks( ego);
+	sound( s.ego.falling, done);
+	}
+
+if (hit.bottom)
+	{
+	if (debugging)
+		{
+		current.room = 29;
+	 	reset( ego.falling);
+		reset( ego.is.falling);
+		reset( keep.cycling);
+		set.view( ego, v.ego);
+		work = 1;
+		step.size( ego, work);
+		new.room( 30);
+		}
+	else
+		{
+		erase( ego);
+		certain.death = 1;
+		}
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (next.room)
+	{
+	new.room.f( next.room);
+	}
+
+if (edge.ego.hit == bottom)		{new.room( 29);}
+if (edge.ego.hit == top)
+	{
+	if (!first.catwalk.cross)
+		{
+		score += 5;
+		set( first.catwalk.cross);
+		}
+	next.room = 34;
+	}
+
+if ((edge.ego.hit == right || posn( ego, 146, 52, 159, 63)))
+	{
+	new.room( 32);
+	}

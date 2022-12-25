@@ -1,0 +1,11 @@
+[messages for room 63 -- witches' house pot room
+
+
+
+%message	1
+"You are inside an unusual house in Morva Marsh. This
+ room is filled with pots, kettles, and cauldrons of all sizes."
+
+%message	2
+"None of these cauldrons is the Black Cauldron you seek."
+

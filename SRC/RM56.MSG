@@ -1,0 +1,34 @@
+[messages for room 56 -- bottom of the trash chute
+
+
+
+%message	1
+"You are below the Horned King's dungeon. There is a hole in
+ the ceiling that you can't reach."
+
+%message	2
+"The young girl speaks, \"Hello! You must be a prince or a
+ great warrior. I'm Princess Eilonwy, and this is my magic bauble.\""
+
+%message	3
+"\"I'm Taran, Assistant Pig-Keeper of Caer Dallben,\" you
+ respond."
+
+%message 	4
+"\"That's too bad. I was hoping for a great hero to get me
+ out of this dismal place. Oh, well.\""
+
+%message	5
+"\"Where are we, anyway?  The last I remember, I was in the
+ wine cellar upstairs.\""
+
+%message	6
+"\"Why, we're far below the castle now. Even the dungeon is
+ up from here.\""
+
+%message	7
+"\"This is my oracular pig, Hen Wen. I must get her to safety
+ with the Fair Folk,\" you say."
+
+%message	8
+"There's a beautiful young girl here."

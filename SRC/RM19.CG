@@ -1,0 +1,141 @@
+[logics for room 19 
+
+%include "rm19.msg"
+%include "gamedefs"
+
+
+%define	gurgiland.loaded	lf0
+%define	pig.room.loaded	lf1
+%define	gwyth.room.loaded	lf2
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	set.horizon( 50);
+
+[		if (force.a.test && debugging)
+[			{
+[			load.logics( gurgiland);		[	room 104
+[			set( gurgiland.loaded);
+[			}
+
+ 	if ((pig.in.castle || pig.safe))
+		{
+		random( 0, 255, work);
+		if (work < chance.gurgi.shows)
+			{
+			load.logics( gurgiland);	[	room 104
+			set( gurgiland.loaded);
+			}
+		}
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[	room 116
+		set( pig.room.loaded);
+		set( can.lose.pig);
+
+		random( 0, 255, work);
+ 		if (work < gwyth.showing)
+			{
+			load.logics( gwyth.room);	[	room 114
+			set( gwyth.room.loaded);
+			}
+		}
+
+
+	if (previous.room == 14 && posn( ego, 119, 0, 159, 53))
+		{
+		position( ego, 110, 51);
+		}
+
+	if (previous.room == 24)
+		{
+		get.posn( ego, x, y);
+		if (x > 94)
+			{
+			position( ego, 84, 163);
+			}
+		}
+
+	draw( ego);
+
+	if (gurgiland.loaded)
+		{
+		call( gurgiland);
+		position( a.gurgi, 50, 50);
+		}
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	if (gwyth.room.loaded)
+		{
+		call( gwyth.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (!gurgi.here)
+		{
+		print( 1);
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+
+
+[*****
+:no.input
+[*****
+
+
+[*****
+:exit
+[*****
+
+if (gwyth.room.loaded)
+	{
+	call( gwyth.room);
+	}
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (gurgiland.loaded)
+	{
+	call( gurgiland);
+	}
+
+if (edge.ego.hit == top)			{new.room( 14);}
+if (edge.ego.hit == bottom)		{new.room( 24);}
+if (edge.ego.hit == left)		{new.room( 18);}

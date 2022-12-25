@@ -1,0 +1,46 @@
+[
+[	object.txt
+[
+[				OBJECT TABLES FOR BLACK CAULDRON
+[
+[	January 24, 1987
+[
+
+
+
+[************* ANIMATED OBJECTS
+[.numani	# of animated objects
+
+.numani	16
+
+
+
+[************* INVENTORY OBJECTS
+[.obj	object#, "Status screen name", room # at beginning of game
+.obj		 0, "nothing",			0
+.obj		 1, "Knapsack", 		61
+.obj		 2, "Corn", 			9
+.obj		 3, "Gruel", 			61
+.obj		 4, "Food Wallet", 		14
+.obj		 5, "Bread", 			61
+.obj		 6, "Water Flask", 		61
+.obj		 7, "Water", 			0
+.obj		 8, "Apple", 			61
+.obj		 9, "Cookies", 		66
+.obj		10, "Rope", 			61
+.obj		11, "Dagger", 			11
+.obj		12, "Magic Sword", 		53
+.obj		13, "Harp", 			48
+.obj		14, "Lute", 			2
+.obj		15, "Flying Dust", 		62
+.obj		16, "Keys", 			50
+.obj		17, "Tin Cup", 		52
+.obj		18, "Magic Word", 		66
+.obj		19, "Magic Mirror", 	62
+.obj		20, "Book of Knowledge", 12
+.obj		21, "Pot of Gold", 		12
+.obj		22, "Hero Shield", 		12
+.obj		23, "Suit of Armor", 	12
+.obj		24, "Bread", 			0
+.obj		25, "Bread", 			0
+

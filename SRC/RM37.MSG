@@ -1,0 +1,23 @@
+[messages for room 37 -- the ledge
+
+
+
+%message	1
+"You are on the parapet of the Horned King's castle.
+ It extends out over the castle moat."
+
+%message	2
+"You fling Hen Wen over the parapet wall!"
+
+%message	3
+"She's safe at last from the Horned King's evil forces."
+
+%message	4
+"Hen Wen runs away to safety."
+
+%message	5
+"You jump from the high parapet."
+
+%message	6
+"You are beside the moat outside the Horned King's castle.
+ There is a parapet above you that extends out over the moat."

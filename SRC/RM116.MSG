@@ -1,0 +1,10 @@
+[messages for room 116 - oink oink says
+
+
+%message	1
+"Hen Wen does not like the water and is afraid to follow
+ you. You should lead her around or she will be lost."
+
+%message	2
+"You left poor Hen Wen behind. She will surely be captured
+ by the Horned King's evil gwythaints."

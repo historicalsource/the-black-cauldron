@@ -1,0 +1,158 @@
+[logics for room 114 - the gwyth room
+
+%include "rm114.msg"
+%include "gamedefs"
+
+
+[	For any sound loops to co-exist, the main room should
+[ do something like:
+[	 	if (gwyth.here) 	{set( s.done);}
+[		else	{if 	(s.done)		{reset( s.done);
+[						 	sound( s.sound, s.done);}}
+
+
+%define	gwyth.wait.time.min		77
+%define	gwyth.wait.time.max		166
+%define	gwyth.catch.distance	10	[	if < this, g has caught pig
+%define	max.distance.t.from.pig	20	[	if < this, ego & pig get caught
+
+%define	gwyth.at.pig			df15
+%define	gwyth.off.screen		df16
+%define	gotcha				df17
+%define	gwyth.has.ego			df18
+%define	s.gwyth.done			df19
+							
+%define	gwyth.wait.time		dv13
+%define	old.distance			dv14
+							
+%object	a.gwyth				giant1
+
+
+if (init.log)
+	{
+	load.view( v.gwythaint);
+	load.view( v.g.and.t.and.pig);
+	load.view( v.g.and.pig);
+
+	load.sound( s.gwythaint);
+
+	animate.obj( a.gwyth);
+	set.view( a.gwyth, v.gwythaint);
+	work = 2;
+	step.size( a.gwyth, work);
+	cycle.time( a.gwyth, work);
+	set.priority( a.gwyth, 15);
+	ignore.objs( a.gwyth);
+	ignore.horizon( a.gwyth);
+
+	reset( gwyth.here);		
+	random( gwyth.wait.time.min, gwyth.wait.time.max, gwyth.wait.time);
+	
+	return();
+	}
+
+
+
+if (t.with.pig)
+	{
+	--gwyth.wait.time;
+	}
+if (!gwyth.here &&
+	gwyth.wait.time == 1)
+	{
+	if (current.room < 11)			[	arbitrarily about half the rooms
+		{
+		position( a.gwyth, 0, 40);
+		set.loop( a.gwyth, 0);		[	right facing gwyth
+		}
+	else
+		{
+		position( a.gwyth, 125, 40);
+		set.loop( a.gwyth, 1);		[	left facing gwyth
+		}
+
+	draw( a.gwyth);
+	print( 1);
+	set( gwyth.here);
+	set( s.gwyth.done);
+	}
+
+
+if (gwyth.here && !gotcha)
+	{
+	distance( a.gwyth, a.pig, work);
+	
+	if (work < gwyth.catch.distance)
+		{
+		set( gwyth.at.pig);
+		}
+	else
+		{
+		if (work > old.distance)
+			{
+			get.posn( a.pig, x, y);
+			step = 2;
+			move.obj.f( a.gwyth, x, y, step, gwyth.at.pig);
+			}
+		}
+	old.distance = work;
+	}
+
+
+if (!gotcha &&
+	gwyth.at.pig)
+	{
+	reset( gwyth.at.pig);
+	set( gotcha);
+	reset( t.with.pig);
+	set( pig.in.castle);
+
+	distance( ego, a.pig, work);
+	erase( a.pig);
+
+	if (work < max.distance.t.from.pig && 
+		drown.swim != drowning)
+		{
+		set( gwyth.has.ego);
+		erase( ego);
+		set.view( a.gwyth, v.g.and.t.and.pig);
+		work = 2;
+		cycle.time( a.gwyth, work);
+		move.obj( a.gwyth, 125, 50, 0, gwyth.off.screen);	[	like rm70
+		print( 2);
+		}
+	else
+		{
+		set.view( a.gwyth, v.g.and.pig);
+		move.obj( a.gwyth, 5, 50, 0, gwyth.off.screen);
+		print( 3);
+		}
+	}
+
+
+if (gwyth.off.screen)
+	{
+	reset( gwyth.off.screen);
+	if (gwyth.has.ego)
+		{
+		new.room( 70);
+		}
+	else
+		{
+		reset( gwyth.here);		
+		erase( a.gwyth);
+		print( 4);
+		}
+	}
+
+
+if (gwyth.here && s.gwyth.done)
+	{
+	sound( s.gwythaint, s.gwyth.done);
+	}
+
+
+[*****
+:exit
+[*****
+

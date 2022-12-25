@@ -1,0 +1,62 @@
+[messages for room 60 -- the secret chamber
+
+
+
+%message	1
+"This is the Horned King's secret chamber, where the
+ skeletons of hundreds of fallen soldiers lie waiting to
+ become his army of the Cauldron-Born!"
+
+%message	2
+"Hurry, Taran! There's no time to waste."
+
+%message	3
+"You hold the mirror directly in front of the Horned King's
+ eyes. He sees not his face, but his true, inner self.
+ The vision of his evilness is so overpowering that he runs to
+ the evil cauldron and leaps inside."
+
+%message	4
+"You bravely leap into the evil vessel! The Black Cauldron
+ explodes, sending smoke and flames high into the air."
+
+%message	5
+"Your friend, Gurgi, has sacrificed his life for you.
+ Tears come to your eyes as you remember your friend."
+
+%message	6
+"The castle walls tremble and shake. Stones fall, and
+ pillars collapse around you."
+
+%message	7
+"Suddenly, Gurgi appears behind you. \"Taran, stop!!\" exclaims
+ Gurgi. \"Don't jump in awful cauldron. Great Master has many
+ friends. Gurgi has no friends. Gurgi will give his life for
+ his friend, Taran.\""
+
+%message	8
+"\"Horned King! Look here,\" you shout!"
+
+%message	9
+"The powerful magic in this room has rendered your sword
+ useless."
+
+%message	10
+"Oh, no! The Horned King is lowering a skeleton into the
+ Black Cauldron!!"
+
+%message	11
+"A skeleton rises from the pile of bones, and begins to
+ march away!"
+
+%message	12
+"Another skeleton has risen from the pile of bones."
+
+%message	13
+"The cauldron begins to tremble violently, and emits a
+ frightful roar, shaking the castle to its very foundations!
+ The Horned King is destroyed!!"
+
+%message	14
+"Before you can stop him, Gurgi runs past you, and leaps
+ into the seething cauldron!!"

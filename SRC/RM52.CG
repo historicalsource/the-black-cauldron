@@ -1,0 +1,560 @@
+[logics for room 52 -- taran's cell
+
+%include "rm52.msg"
+%include "gamedefs"
+
+
+%define	eilonwy.here.time			250	[how long Eilonwy waits for you
+%define	bauble.alone.time			77
+%define	time.before.eilonwy.comes	99
+%define	length.of.rattle.sound		22
+%define	eilonwy.response.delay 		27
+%define	a.little.more.hole.time		99
+%define	bauble.step.size			2
+
+
+%define	badguy.on.screen			lf0
+%define	ego.on.screen				lf1
+%define	badguy.off.screen			lf2
+%define	door.closed				lf3
+%define	hole.open					lf4
+%define	eilonwy.here				lf5
+%define	bauble.appears				lf6
+%define	eilonwy.at.top				lf7
+%define	bauble.wandering			lf8
+%define	bauble.returned			lf9
+%define	bauble.in.the.hole			lf10
+%define	eilonwy.at.bottom			lf11
+%define	hole.closed				lf12
+%define	warned.about.hole			lf13
+%define	let.ego.out				lf14
+%define	bauble.clear.of.hole		lf15
+%define	ego.goes.down.eilonwys.hole	lf16
+%define	noticed.stone				lf17
+%define	t.had.something			lf18
+
+
+%define	dialog.timer				lv0
+%define	a.little.more.hole.timer		lv1
+%define	eilonwy.coming.timer		lv2
+%define	bauble.alone.timer			lv3
+%define	rattle.timer				lv4
+%define	eilonwy.here.timer			lv5
+%define	dialog.count				lv6
+
+
+%object	a.tincup			tiny1
+%object	a.eilonwy			small1
+%object	a.bauble			small2
+%object	a.hole			small3
+%object	a.badguy			medium2
+%object	a.door			large1
+
+
+if (init.log)
+	{
+	reset( ego.already.caught);
+	reset( keep.cycling);
+	eilonwy.coming.timer = 0;
+	reset( coocoo);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.view( v.door.room52);
+	load.view( v.hole.room52);
+	load.view( v.ego);
+
+	if ((has( i.tin.cup) || !tincup.taken))
+		{
+		load.sound( s.rattle);
+		}
+
+	if (!tincup.taken)
+		{
+		load.view( v.tin.cup);
+		}
+
+	if (!know.eilonwy)
+		{
+		load.view( v.eilonwy);
+		load.view( v.bauble);
+		}
+
+
+	animate.obj( a.hole);			[	There's always a hole around.
+	ignore.objs( a.hole);
+	set.view( a.hole, v.hole.room52);
+	set.cel( a.hole, 0);
+	position( a.hole, 74, 135);
+	set.priority( a.hole, 4);
+	work = 3;
+	cycle.time( a.hole, work);
+	draw( a.hole);
+	stop.update( a.hole);
+
+	animate.obj( a.door);			[	Always do the door.
+	set.priority( a.door, 4);
+	ignore.blocks( a.door);
+	ignore.objs( a.door);
+	set.view( a.door, v.door.room52);
+	position( a.door, 40, 117);
+	if (!badguy)
+		{
+		set.cel( a.door, 0);		[	close the door
+		}
+	else
+		{
+		last.cel( a.door, work);
+		set.cel.f( a.door, work);
+		}
+	work = 2;
+	cycle.time( a.door, work);
+	draw( a.door);
+	stop.update( a.door);
+
+
+	if (badguy)					[	if there's a badguy, cast him
+		{
+		animate.obj( a.badguy);
+		set.priority( a.badguy, 10);
+		position( a.badguy, 5, 110);
+		ignore.blocks( a.badguy);
+		ignore.objs( a.badguy);
+		if (badguy == f.creeper)
+			{
+			load.view( v.creeper);
+			set.view( a.badguy, v.creeper);
+			}
+		else
+			{
+			load.view( v.hench);
+			set.view( a.badguy, v.hench);
+			}
+		draw( a.badguy);
+		move.obj( a.badguy, 65, 110, 0, badguy.on.screen);
+		}
+
+
+	if (!know.eilonwy)				[	Is the bitch here this time?
+		{
+		animate.obj( a.eilonwy);		[	If so, do her...
+		set.view( a.eilonwy, v.eilonwy);
+		ignore.objs( a.eilonwy);
+		position( a.eilonwy, 80, 160);
+
+		animate.obj( a.bauble);		[		and her baubles.
+		set.view( a.bauble, v.bauble);
+		work = bauble.step.size;
+		step.size( a.bauble, work);
+		cycle.time( a.bauble, work);
+		ignore.objs( a.bauble);
+		set.priority( a.bauble, 14);
+		position( a.bauble, 80, 135);
+		}
+
+	if (!tincup.taken)				[	And, in the role of the cup, ...
+		{
+		animate.obj( a.tincup);
+		set.priority( a.tincup, 11);
+		ignore.blocks( a.tincup);
+		position( a.tincup, 122, 107);
+		set.view( a.tincup, v.tin.cup);
+		draw( a.tincup);
+		}
+
+	set.view( ego, v.ego);
+	if (!badguy)					[	Fix up ego,
+		{
+		position( ego, 50, 110);		[	Walked in on his own.
+		}
+	else
+		{
+		ignore.blocks( ego);		[	"Work makes Free"
+		position( ego, 20, 110);
+		set.priority( ego, 10);
+		move.obj( ego, 80, 110, 0, ego.on.screen);
+		}
+	ignore.objs( ego);
+	draw( ego);
+
+	show.pic();
+
+	if (!badguy)					[	he must have the keys
+		{
+		print( 16);
+		}
+	else
+		{
+		badguy = 0;
+		object.used = 0;			[	Can't use what ain't got.
+		active.object = 0;
+		print( 2);				[	"You are taken to a cell
+
+		work = 43;				[	The entry hall room #.
+		object = SIZE_OF_INVENTORY;	[	Hide everything he has,
+		:mr.looper	  			[		in the entry hall closet.
+		get.room.f( object, room);
+		if (room == INVENTORY)
+			{
+			put.v( object, work);
+			set( stuff.in.closet);
+			set( t.had.something)
+			}
+		--object;
+		if (object == u.tin.cup)	[	let him keep it!
+			{
+			--object;
+			}
+		if (object == u.magic.word)[	let him keep it!
+			{
+			--object;
+			}
+		if (object)
+			{
+			goto mr.looper;
+			}
+		}
+
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (!tincup.taken &&
+		posn( ego, 108, 106, 137, 137))
+		{
+		print( 29);
+		}
+	else
+		{
+		if (know.eilonwy && !eilonwy.here)
+			{
+			print( 30);
+			set( noticed.stone);
+			}
+		else
+			{
+			print( 1);
+			}
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (dialog.count == 1 && eilonwy.here)
+	{
+	print( 23);
+	dialog.timer = eilonwy.response.delay;
+	set( have.match);
+	++dialog.count;
+	goto no.input;
+	}
+
+if (dialog.count == 3 && eilonwy.here)
+	{
+	print( 25);
+	dialog.timer = eilonwy.response.delay;
+	set( have.match);
+	++dialog.count;
+	goto no.input;
+	}
+
+if (posn( ego, 75, 112, 92, 132))		[	standing on the hole
+	{
+	if ((know.eilonwy ||			[	To know her is to know her hole!
+		noticed.stone))			[	We know her if we noticed stone!
+		{						
+		set( have.match);
+		start.update( a.hole);
+		end.of.loop( a.hole, hole.open);
+		}
+	goto no.input;
+	}
+
+if (!tincup.taken &&
+	posn( ego, 108, 106, 137, 137))
+	{
+	set( have.match);
+	set( tincup.taken);
+	print( 5);
+	erase( a.tincup);
+	get( i.tin.cup);
+	if (stuff.in.closet)		[*** if we stole his stuff, select the cup
+		{
+		active.object = u.tin.cup;
+		object.used = u.tin.cup;
+		}
+	goto no.input;
+	}
+
+distance( ego, a.door, work);
+if (work < 20 && door.closed)
+	{
+	set( have.match);
+	print( 8);
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if (object.used == u.magic.sword)
+	{
+	print( 7);
+	set( have.match);
+	}
+
+if (object.used == u.keys)
+	{		[	If he still has the keys, we know he came in voluntarily.
+	distance( ego, a.door, work);
+	if (work < 20)
+		{
+		set( have.match);
+		print( 15);
+		start.update( a.door);
+		end.of.loop( a.door, let.ego.out);
+		}
+	}
+
+if (object.used == u.tin.cup)
+	{
+	set( have.match);
+	distance( ego, a.door, work);
+	if (work > 20)
+		{
+		print( 28);
+		}
+	else
+		{
+		rattle.timer = length.of.rattle.sound;
+		set( coocoo);
+		eilonwy.coming.timer = time.before.eilonwy.comes;
+		if (!discovered.dungeon)
+			{
+			set( discovered.dungeon);
+			score += 6;
+			print( 10);
+			}
+		else
+			{
+			if (know.eilonwy)
+				{
+				print( 18);
+				}
+			}
+		}
+	}
+
+
+[*****
+:no.input
+[*****
+
+if (t.had.something && ego.x > 50)
+	{
+	reset( t.had.something);
+	print( 9);					[	"they took your stash!
+	}
+
+if (ego.on.screen)
+	{
+	reset( ego.on.screen);
+	release.priority( ego);
+	observe.blocks( ego);
+	}
+
+if (badguy.on.screen)
+	{
+	reset( badguy.on.screen);
+	print( 17);
+	move.obj( a.badguy, 20, 110, 0, badguy.off.screen);
+	}
+
+if (badguy.off.screen)
+	{
+	reset( badguy.off.screen);
+	erase( a.badguy);
+	start.update( a.door);
+	reverse.loop( a.door, door.closed);
+	}
+
+if (door.closed)
+	{
+	stop.update( a.door);
+	reset( door.closed);
+	}
+
+--eilonwy.coming.timer;
+if (!posn( ego, 71, 116, 88, 133))		[	standing on the hole
+	{
+	if (!know.eilonwy && eilonwy.coming.timer == 1)
+		{
+		start.update( a.hole);
+		end.of.loop( a.hole, bauble.appears);
+		}
+	}
+else
+	{
+	if (hole.open)
+		{
+		set( ego.goes.down.eilonwys.hole);
+		}
+	else
+		{
+		if (eilonwy.coming.timer == 1)[	if we're waiting on eilonwy
+			{
+			++eilonwy.coming.timer;	[	She won't come, if you're
+			if (!warned.about.hole)	[		standing on her hole!
+				{
+				set( warned.about.hole);
+				print( 14);		[	"Get off my hole, you asshole."
+				}
+			}
+		else
+			{
+			if (eilonwy.here)
+				{
+				print( 12);
+				new.room( 59);
+				}
+			}
+		}
+	}
+
+if (bauble.appears)
+	{
+	reset( bauble.appears);
+	set( hole.open);
+	set( e.in.basement);
+ 	draw( a.bauble);
+	move.obj( a.bauble, 98, 108, bauble.step.size, bauble.clear.of.hole);
+	}
+
+if (bauble.clear.of.hole)
+	{
+	reset( bauble.clear.of.hole);
+	work = bauble.step.size;
+	step.size( a.bauble, work);
+ 	wander( a.bauble);
+	set( bauble.wandering);
+	stop.update( a.hole);
+	bauble.alone.timer = bauble.alone.time;	[	wait before Eilonwy comes
+	print( 21);
+	}
+
+--bauble.alone.timer;
+if (bauble.alone.timer == 1)
+	{
+	set( eilonwy.here);
+	set( know.eilonwy);
+	move.obj( a.eilonwy, 80, 150, 0, eilonwy.at.top);
+	set.priority( a.eilonwy, 4);
+	set.loop( a.eilonwy, 3);
+	draw( a.eilonwy);
+	print( 22);
+	eilonwy.here.timer = eilonwy.here.time;
+	dialog.count = 1;
+	}
+
+
+
+[	Eilonwy needs a few secs to respond, and she only responds on even 
+[	settings of the dialog flag.
+
+--dialog.timer;
+if (dialog.timer == 1 && eilonwy.here)
+	{
+	if (dialog.count == 2)
+		{
+		print( 24);
+		}
+	if (dialog.count == 4)
+		{
+		print( 26);
+		}
+	++dialog.count;
+	}
+
+--eilonwy.here.timer;
+if (eilonwy.here.timer == 1)
+	{
+	move.obj( a.eilonwy, 80, 165, 0, eilonwy.at.bottom);	[close the hole
+	move.obj(  a.bauble, 81, 120, bauble.step.size, bauble.in.the.hole);
+	}
+
+if (bauble.in.the.hole)
+	{
+	reset( bauble.in.the.hole);
+	erase( a.bauble);
+	}
+
+if (eilonwy.at.bottom)		    	
+	{
+	reset( eilonwy.at.bottom);
+	a.little.more.hole.timer = a.little.more.hole.time;
+	}
+
+--a.little.more.hole.timer;			[	 The 'noids wanted more time to 
+if (a.little.more.hole.timer == 1)		[	 	get in Eilonwy's hole.
+	{
+	start.update( a.hole);
+	reverse.loop( a.hole, hole.closed);
+	erase( a.eilonwy);
+	erase( a.bauble);
+	}
+
+if (hole.closed)
+	{
+	reset( hole.closed);
+	reset( hole.open);
+	stop.update( a.hole);
+	reset( eilonwy.here);
+	}
+
+if (bauble.wandering)
+	{
+	distance( a.bauble, a.eilonwy, work);
+	if (work > 30)
+		{
+		get.posn( a.eilonwy, x, y);
+		step = 1;
+		move.obj.f( a.bauble, x, y, step, bauble.returned);
+		reset( bauble.wandering);
+		}
+	}
+
+if (bauble.returned)
+	{
+	reset( bauble.returned);
+	set( bauble.wandering);
+	wander( a.bauble);
+	}
+
+--rattle.timer;
+if (rattle.timer && coocoo)
+	{
+	reset( coocoo);
+	sound( s.rattle, coocoo);
+	}
+
+
+[*****
+:exit
+[*****
+
+if (let.ego.out)					{new.room( 51);}
+if (ego.goes.down.eilonwys.hole)		{new.room( 59);}

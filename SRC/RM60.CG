@@ -1,0 +1,576 @@
+[logics for room 60 -- Skeleton City:  the Horn-eye King's secret chamber
+
+%include "rm60.msg"
+%include "gamedefs"
+
+
+
+[	NOTE:  pot.in.castle is the salient flag; if it's set, then "this.is.it!"
+[Strap on, kids, it's SHOW TIME!
+
+
+
+%define	skeleton.message.time	22
+%define	walls.shake.time		7
+%define	max.number.of.skeletons	4
+
+
+%define	ego.on.beam			lf0
+%define	ego.fall.done			lf1
+%define	ego.jumping.off.end		lf2
+%define	hk.tossed.in.skeleton	lf3
+%define	s.pot.explosion.done	lf4
+%define	skeleton.on.screen		lf5
+%define	skeleton.off.screen		lf6
+%define	tossed.in.the.skeleton	lf7
+%define	hk.chasing.ego			lf8
+%define	hk.caught.ego			lf9
+%define	ego.inside.pot			lf10
+%define	gurgi.ready.to.jump		lf11
+%define	gurgi.inside.pot		lf12
+%define	ego.in.air			lf13
+%define	hk.at.skeletons		lf14
+%define	hk.at.pot.with.skeleton	lf15
+%define	game.is.over			lf16
+%define	s.pot.bubbling.done		lf17
+%define	start.pot.boiling		lf18
+%define	ego.jumped.off			lf19
+%define	hk.grabbing.done		lf20
+%define	hk.dragged.ego.to.pot	lf21
+%define	at.pot				lf22
+%define	gurgi.at.top.of.leap	lf23
+
+
+%define	skeleton.message.timer	lv0
+%define	body.count			lv1
+%define	loop.timer			lv2
+
+
+%object	a.torch			small2
+%object	a.hk				medium1
+[%object	a.gurgi			medium2	[	defined in gamedefs
+%object	a.skeleton		medium6
+%object	a.bc				medium7
+
+
+
+if (init.log)
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	if (previous.room == 50)
+		{
+		set( ego.on.beam);
+		load.view( v.ego.jumping.off);
+		load.sound( s.ego.falling);
+		}
+
+	load.view( v.torch);
+	if (!pot.in.castle)
+		{
+		animate.obj( a.torch);
+		set.view( a.torch, v.torch);
+		position( a.torch, 86, 67);
+		draw( a.torch);
+		}
+	else
+		{
+		add.to.picture( v.torch, 0, 0, 86, 67, 4, 4);
+		discard.view( v.torch);
+
+		set( out.of.memory);
+
+		load.view( v.hk);
+		load.view( v.hk.grabbing);
+		load.view( v.hk.carrying.skeleton);
+		load.view( v.hk.dropping.skeleton.into.pot);
+		load.view( v.cauldron.born);
+
+		load.view( v.bc);
+		load.view( v.bc.drooling);
+		load.view( v.bc.exploding);
+		
+		load.sound( s.pot.exploding);
+		load.sound( s.pot.bubbling);
+		load.sound( m.hk);
+
+		if (friend.for.life)
+			{
+			load.view( v.gurgi);
+			load.view( v.gurgi.falling);
+
+			animate.obj( a.gurgi);
+			ignore.objs( a.gurgi);
+			ignore.blocks( a.gurgi);
+			set.view( a.gurgi, v.gurgi);
+			position( a.gurgi, 7, 64);
+			set.priority( a.gurgi, 14);
+			work = 2;
+			step.size( a.gurgi, work);
+			}
+
+		animate.obj( a.hk);
+		ignore.objs( a.hk);
+		ignore.blocks( a.hk);
+		set.view( a.hk, v.hk);
+		position( a.hk, 65, 127);
+		work = 2;
+		cycle.time( a.hk, work);
+		step.size( a.hk, work);
+		draw( a.hk);
+		move.obj( a.hk, 135, 140, 2, hk.at.skeletons);
+
+		animate.obj( a.bc);
+		set.view( a.bc, v.bc);
+		position( a.bc, 77, 127);
+		draw( a.bc);
+
+		animate.obj( a.skeleton);					
+		ignore.blocks( a.skeleton);					
+		set.view( a.skeleton, v.cauldron.born);			
+		}
+
+
+	if (ego.on.beam)
+		{
+		set.priority( ego, 14);
+		position( ego, 20, 64);
+		ignore.objs( ego);
+		}
+	else
+		{
+		position( ego, 14, 140);
+		}
+
+	draw( ego);
+
+	show.pic();
+
+	if (pot.in.castle)
+		{
+		sound( m.hk, done);
+		}
+
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	if (pot.in.castle && !game.is.over)
+		{
+		print( 2);				[	"Move your arse, Taran!
+		}
+	else
+		{
+		print( 1);				[	"This is the place
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it
+[*****
+
+if (!game.is.over &&				[	do.it = walk off the beam, 
+	posn( ego, 39, 57, 66, 71)) 		[	if he's at the end of the beam.
+	{
+	set( ego.jumped.off);
+	set( hit.special);
+	set( have.match);
+	}
+
+goto no.input;
+
+
+[*****
+:use.it
+[*****
+
+if  (object.used == u.magic.sword && 
+	pot.in.castle)
+	{
+	print( 9);					[	"sword broken in here!
+	set( have.match);
+	}
+
+if  (object.used == u.magic.mirror &&	[	Showing the mirror to the HK 
+	pot.in.castle && 				[	while on the floor (only).
+    !ego.on.beam &&
+    !game.is.over)
+	{
+	set( have.match);
+	set( game.is.over);
+	reset( hk.chasing.ego);
+	start.update( a.hk);
+	normal.motion( a.hk);
+	set.loop( a.hk, facing.left);
+	force.update( a.hk);
+	print.at( 8, 1, 2, 37);			[	"Take a look at this, big boy!
+	print.at( 3, 1, 2, 37);						
+	score += 25;
+	stop.motion( ego);
+	ignore.obj( a.hk);
+	ignore.block( a.hk);
+	set.priority( a.hk, 15);
+	move.obj( a.hk, 82, 129, 2, start.pot.boiling);
+	}
+
+
+[*****
+:no.input
+[*****
+
+[	Handle falling and jumping off the beam, the entrance of the Gurgi, 
+[and his kamikaze ending in a blaze of gory.
+
+if  (hit.special &&
+    !ignore.special &&				[	special is only on beam
+	ego.on.beam)
+	{
+	if (posn( ego, 0, 53, 15, 74))	[	at left edge of beam
+		{
+		new.room( 50);
+		}
+	else
+		{
+		if  (pot.in.castle &&
+		    (posn( ego, 50, 50, 68, 74) ||	[	business end of beam
+			ego.jumped.off))
+			{
+			set( ego.jumping.off.end);
+			}
+		}
+
+	set( ignore.special);
+	if (!ego.jumping.off.end)		[	set by a "do.it" above
+		{
+		ignore.blocks( ego);		[	This klutz fell off the beam.
+		set.view( ego, v.ego.jumping.off);
+		sound( s.ego.falling, done);
+		if (ego.y < 59)
+			{
+			set.priority( ego, 13);
+			}
+		y = 135;
+		set( ego.in.air);
+		step = 3;
+		move.obj.f( ego, ego.x, y, step, ego.fall.done);
+		}
+	else
+		{
+		set( game.is.over);
+		if (friend.for.life)
+			{
+			reset( keep.cycling);
+			stop.motion( ego);
+			draw( a.gurgi);
+			move.obj( a.gurgi, 60, 60, 2, gurgi.ready.to.jump);
+			print.at( 7, 13, 2, 37);	[	"Heeeeeerrrrrrre's Gurgi!!
+			get.priority( ego, priority);
+			if (ego.y < 60)
+				{
+				set.priority( a.gurgi, 15);
+				}
+			else
+				{
+				set.priority( ego, 15);
+				}
+			}
+		else
+			{
+			reset( ego.jumped.off);
+			ignore.blocks( ego);
+			set.view( ego, v.ego.jumping.off);
+			work = 2;
+			step.size( ego, work);
+			program.control();
+			set.loop( ego, facing.right);
+			sound( s.ego.falling, done);
+			ignore.objs( ego);
+			set.priority( ego, 10);
+			move.obj( ego, 82, 126, 2, ego.inside.pot);
+			print.at( 4, 13, 2, 37);	 [	"You leap into the pot
+			}
+		}
+	}
+
+if (ego.fall.done)
+	{
+	reset( ego.fall.done);
+	reset( ignore.special);
+	observe.blocks( ego);
+	observe.objs( ego);
+	set.view( ego, v.ego);
+	work = 1;
+	step.size( ego, work);
+	start.motion( ego);
+	release.priority( ego);
+	reset( ego.on.beam);
+	reset( ego.in.air);
+	observe.objs( a.hk);
+	}
+
+
+
+[	Init.logs moved hk until hk.at.skeletons.  Make him bring it to the
+[pot, and toss it into the cauldron.  Then the cauldron explodes
+[and skeletons start coming to life.  If he allows the body count to
+[go from 4 down to 0, the game's over.
+
+if (hk.at.skeletons)
+	{
+	reset( hk.at.skeletons);
+	set.view( a.hk, v.hk.carrying.skeleton);
+	move.obj( a.hk, 65, 126, 2, hk.at.pot.with.skeleton);
+	}
+
+if (hk.at.pot.with.skeleton)
+	{
+	set( at.pot);
+	reset( hk.at.pot.with.skeleton);
+	set.view( a.hk, v.hk.dropping.skeleton.into.pot);
+	set.cel( a.hk, 0);
+	force.update( a.hk);
+	work = 4;
+	cycle.time( a.hk, work);
+	end.of.loop( a.hk, hk.tossed.in.skeleton);
+	observe.blocks( a.hk);
+		[  msg,row,col,width
+	print.at( 10, 1, 2, 37);			[	"hk lowers the first skeleton
+	}
+
+if (hk.tossed.in.skeleton)
+	{
+	reset( hk.tossed.in.skeleton);
+	reset( at.pot);
+	set( tossed.in.the.skeleton);
+	skeleton.message.timer = skeleton.message.time;	
+	body.count = max.number.of.skeletons;
+
+	work = 2;
+	cycle.time( a.hk, work);
+	set.view( a.hk, v.hk);
+	stop.update( a.hk);
+	force.update( a.hk);
+
+	set.view( a.bc, v.bc.drooling);
+	set( s.pot.bubbling.done);
+	}
+
+
+--skeleton.message.timer;
+if (skeleton.message.timer == 1)
+	{
+	print.at( 11, 1, 2, 37);			[	"A skeleton rises
+	}
+
+if (body.count && !skeleton.on.screen)
+	{
+	set( skeleton.on.screen);
+	position( a.skeleton, 135, 140);
+	draw( a.skeleton);
+	move.obj( a.skeleton, 10, 140, 1, skeleton.off.screen);
+	}
+
+if (skeleton.off.screen)
+	{
+	reset( skeleton.off.screen);
+	reset( skeleton.on.screen);
+	erase( a.skeleton);
+	--body.count;
+	if (body.count > 2)
+		{
+		print.at( 12, 1, 2, 37);		[	"Another skeleton rises
+		}
+	if (!body.count)
+		{
+		if (!game.is.over)
+			{
+			set( game.is.over);
+			certain.death = too.many.skeletons;
+			}
+		}
+	}
+
+
+
+[	If ego's on the floor and it's show time, make HK run after him.  If HK
+[catches him, he carries ego to the pot, and plays Dunkin Donuts with him.
+
+if  (!ego.on.beam && 				[	pretty damn particular!
+	!ego.in.air &&
+	!at.pot &&
+	!hk.chasing.ego && 
+	!game.is.over)
+	{
+	set( hk.chasing.ego);
+	if (pot.in.castle)
+		{
+		start.update( a.hk);
+		reset( start.pot.boiling);
+		reset( hk.at.pot.with.skeleton);
+		normal.motion( a.hk);
+		start.cycling( a.hk);
+		follow.ego( a.hk, 8, hk.caught.ego);
+		set.view( a.hk, v.hk);
+		}
+	}
+
+if  (hk.caught.ego &&
+	hk.chasing.ego &&
+    !game.is.over)
+	{
+	reset( hk.caught.ego);
+	reset( hk.chasing.ego);
+	set( game.is.over);
+	stop.motion( ego);
+	program.control( );
+
+	erase( a.skeleton);
+
+	stop.motion( a.hk);
+	ignore.objs( a.hk);
+	set.priority( a.hk, 15);
+	set.view( a.hk, v.hk.grabbing);
+	set.cel( a.hk, 0);
+	x = ego.x;
+	y = ego.y;
+	x += 2;
+	--y;
+	reposition.to.v( a.hk, x, y);
+	cycle.time( a.hk, three);
+	start.cycling( a.hk);
+	end.of.loop( a.hk, hk.grabbing.done);
+	loop.timer = 10;				[	ego isn't shown in first 3 cels
+	}							[	and 3 X 3 + 1 = 10.
+
+--loop.timer;
+if (loop.timer == 1)
+	{
+	erase( ego);					[	now HK.view includes ego
+	}
+
+if (hk.grabbing.done)
+	{
+	reset( hk.grabbing.done);
+	ignore.objs( a.hk);
+	ignore.blocks( a.hk);
+	move.obj( a.hk, 76, 129, 1, hk.dragged.ego.to.pot);
+	}
+
+if (hk.dragged.ego.to.pot)
+	{
+	reset( hk.dragged.ego.to.pot);
+	set.view( a.hk, v.hk);
+	set.loop( a.hk, facing.right);
+	certain.death = ego.thrown.in.pot;
+	}
+
+if (ego.inside.pot)
+	{
+	reset( ego.inside.pot);
+	set( start.pot.boiling);
+	erase( ego);
+	score += 25;
+	certain.winner = ego.jumped.into.the.pot;
+	}
+
+
+
+[	Gurgie made his entrance at screen.left, and has run to the business
+[end of the beam.  Make him jump in.  Handle game.over by death from gurgis.
+
+if (gurgi.ready.to.jump)
+	{
+	reset( gurgi.ready.to.jump);
+	body.count = 0;
+	set.view( a.gurgi, v.gurgi.falling);
+	step.size( a.gurgi, three);
+	move.obj( a.gurgi, 70, 55, 3, gurgi.at.top.of.leap);
+	print.at( 14, 16, 2, 37);		[	"Gurgi runs by, and jumps in pot
+	}
+
+if (gurgi.at.top.of.leap)
+	{
+	reset( gurgi.at.top.of.leap);
+	set.priority( a.gurgi, 10);
+	move.obj( a.gurgi, 82, 126, 3, gurgi.inside.pot);
+	}		[  msg,row,col,width
+
+if (gurgi.inside.pot)
+	{
+	reset( gurgi.inside.pot);
+	set( gurgi.dead);
+	set( start.pot.boiling);
+	erase( a.gurgi);
+	print.at( 5, 16, 2, 37);
+	score += 20;
+	}
+
+
+
+[	Ego showed HK the mirror and it scared him shitless.  Even jumping
+[into a Mark Crowe graphic would be better than life like this!
+[This code handles all jumpers, and all pot boilers.
+
+if (start.pot.boiling)
+	{
+	reset( start.pot.boiling);
+	set.view( a.bc, v.bc.exploding);
+	reset( s.pot.bubbling.done);
+	sound( s.pot.exploding, s.pot.explosion.done);
+
+	start.update( a.hk);
+ 	erase( a.hk);
+
+	if (skeleton.on.screen)
+		{
+		reset( skeleton.on.screen);
+		erase( a.skeleton);
+		body.count = 0;
+		}
+
+	shake.screen( 2);
+	print.at( 13, 1, 2, 37);
+	shake.screen( walls.shake.time);
+	print.at( 6, 1, 2, 37);			[   "An' da walls come-a tumblin' down
+	shake.screen( walls.shake.time);
+
+	if (!left.castle.with.sword &&
+		has( i.magic.sword))
+		{
+		set( left.castle.with.sword);
+		score += 13;
+		}
+
+	if (!certain.winner)
+		{
+		new.room( 32);
+		}
+	}
+
+if (s.pot.bubbling.done)
+	{
+	sound( s.pot.bubbling, s.pot.bubbling.done);
+	}
+
+if (s.pot.explosion.done)
+	{
+	sound( s.pot.exploding, s.pot.explosion.done);
+	}
+	
+
+[*****
+:exit
+[*****
+
+if (posn( ego, 0, 131, 4, 153))		{new.room( 59);}
+

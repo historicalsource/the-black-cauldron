@@ -1,0 +1,25 @@
+[messages for room 112 -- the henchman
+
+
+
+%message	1
+"By allowing the pig and yourself to be captured, the Horned
+ King has won!"
+
+%message  2
+"By failing to react quickly enough, you've allowed the
+ henchman to capture the Magic Sword."
+
+%message	3
+"The henchman stares blankly into the mirror, too stupid
+ to see anything in it."
+
+%message	4
+"Creeper is too busy and ignores the mirror."
+
+%message	5
+"The Horned King is so busy chasing you that he doesn't notice his
+ reflection in the mirror."
+
+%message	6
+"The henchman can't see you and leaves."

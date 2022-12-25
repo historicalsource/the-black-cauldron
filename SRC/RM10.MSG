@@ -1,0 +1,9 @@
+[messages for room 10 
+
+
+%message	1
+"To the north you see the treacherous Eagle Mountains. You
+ worry about the evil Horned King who lives there."
+
+%message	2
+"Even the trees snarl and cast evil shadows at you."

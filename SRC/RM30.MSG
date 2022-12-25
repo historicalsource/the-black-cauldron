@@ -1,0 +1,15 @@
+[messages for room 30 -- mesa west
+
+
+
+%message	1
+"This narrow roadway leads to the Horned King's castle.
+ Beware! This is a dangerous path to travel."
+
+%message	2
+"The force of the exploding cauldron throws you out of the
+ Horned King's secret chamber and into the moat. You
+ grab a piece of floating wood and hang on for dear life!"
+
+%message	3
+"Hold on tight, Taran!"

@@ -1,0 +1,32 @@
+[messages for room 67 -- banner page/title screen
+
+
+%message	1	 "(C) 1987 by The Walt Disney Company"
+%message	2	  "Adventure Game Development System"
+%message	3	"(C) 1986, 1987 by Sierra On-Line, Inc."
+%message	4
+"(C) 1987 by The Walt Disney Company\n\n
+  Adventure Game Development System\n
+   (C) 1987 by Sierra On-Line, Inc."
+
+
+[--------------------------------------------------------------------------]
+
+
+%message	5	"Game design by:"
+%message	6		"Al Lowe"
+%message	7		"Roberta Williams"
+%message	8		"Elaine Boulay"
+%message	9		"Nancy Casolaro"
+%message	10		"Melissa Haldeman"
+
+%message	11	"Programming by:"
+%message	12		"Al Lowe"
+%message	13		"Scott Murphy"
+%message	14		"Sol Ackerman"
+%message	15		"Ken Williams"
+%message	16		"Jeff Stephenson"
+%message	17		"Chris Iden"
+
+%message	18	"Computer graphics by:"
+%message	19		"Mark Crowe"

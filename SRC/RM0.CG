@@ -1,0 +1,1075 @@
+[logics for room 0 -- executed before room logics
+
+%include "rm0.msg"
+%include "gamedefs"
+
+
+
+if (error.number)
+	{
+	call( lgc.error);
+	}
+
+if (restore.in.progress)
+	{
+	set( enable.menu);
+	disable.item( c.dummy);
+	old.active.object = error;		[	to force update.
+	}
+
+if (!current.room)
+	{
+	if (!restart.in.progress)
+		{
+		script.size( 127);
+
+		set.menu( 	61);						[	"Sierra
+		set.menu.item( 62, c.about)				[	"About BC
+		set.menu.item( 63, c.help)				[	"Help
+
+		set.menu( 	64);						[	"File
+		set.menu.item( 65, c.save)				[	"Save"
+		set.menu.item( 66, c.restore)				[	"Restore"
+		set.menu.item( 67, c.dummy);				[	"--------
+		set.menu.item( 68, c.restart)				[	"Restart"
+		set.menu.item( 67, c.dummy);				[	"--------
+		set.menu.item( 69, c.quit)				[	"Quit"
+										
+		set.menu( 	70);						[	"Action
+		set.menu.item( 71, c.status);				[	"Inventory"
+		set.menu.item( 72, c.show.obj)			[	"See object
+		set.menu.item( 73, c.dummy);				[	"--------
+		set.menu.item( 74, c.new.obj); 			[	"New Object"
+		set.menu.item( 75, c.useit)				[	"Use"
+		set.menu.item( 76, c.doit)				[	"Do"
+		set.menu.item( 77, c.lookit)				[	"Look"
+										
+		set.menu( 	78);						[	"Special
+		set.menu.item( 79, c.sound.toggle);		[	"Sound On/Off
+		if  (machine.type == PC &&
+			monitor.type != mono &&
+			monitor.type != ega)
+			{
+			set.menu.item( 80, c.toggle.monitor);	[	"Color/BW
+			}
+		set.menu.item( 81, c.init.joy); 			[	"Joystick"
+[			set.menu.item( 82, c.clock)				[	"Clock
+		set.menu.item( 83, c.pause)				[	"Pause"
+	
+		if (machine.type != AMIGA)
+			{
+			set.menu(      84);					[	"Speed
+			set.menu.item( 85, c.speed.normal);	[	"Normal
+			set.menu.item( 86, c.speed.slow);		[	"Slow
+			set.menu.item( 87, c.speed.fast);		[	"Fast
+			set.menu.item( 88, c.speed.fastest);	[	"Fastest
+			set.menu.item( 89, c.dummy);			[	"--------
+			set.menu.item( 90, c.speed);			[	"change
+			}
+
+[			if (debugging)
+[				{
+[				set.menu( 	91);					[	"Debug
+[				set.menu.item( 92, c.show.ego); 		[	"Ego Information
+[				set.menu.item( 93, c.show.priority);	[	"Priority Screen
+[				set.menu.item( 94, c.show.mem);		[	"Memory Usage
+[				set.menu.item( 95, c.obj.info);		[	"Obj info
+[				set.menu.item( 96, c.xy); 			[	"X/Y Display
+[				set.menu.item( 97, c.inv.numbers);		[	"inventory Numbers
+[				set.menu.item( 98, c.gimme);			[	"Get All Objs.
+[				}
+
+		submit.menu( );
+		}
+
+	call( lgc.startup);
+
+	if (test.room)
+		{
+		new.room.v( test.room);
+		}
+
+	if (restart.in.progress)
+		{
+		new.room( rm.restart);
+		}
+
+	new.room( rm.titles);
+	}
+
+
+
+[	if  (clock.on &&
+[	    (update.clock || init.log))
+[		{
+[		reset( update.clock);
+[		set.text.attribute( 0, 15);
+[		display( 0, 19, 54);
+[		set.text.attribute( text.color, bg.color);
+[		}
+
+
+if (init.log)
+	{
+	call( lgc.rm0.init.log);
+
+	load.view( v.ego);
+	load.view.v( current.ego.view);
+	set.view.v( ego, current.ego.view);
+
+	if (has( i.magic.sword) && current.room != 71)
+		{
+		load.sound( s.sword);
+		load.view( v.ego.swinging.sword);
+		if (current.room == 60 && pot.in.castle)
+			{
+			discard.view( v.ego.swinging.sword);
+			}
+		}
+
+	if (debugging)
+		{
+		load.logics( lgc.debug);
+		load.logics( lgc.trace);
+		set( enable.trace);
+		}
+
+	call.v( current.room);
+	}							[	end init.logs
+
+
+
+[*****
+[	FIRST, A LITTLE HOUSEKEEPING
+[*****
+
+get.posn( ego, ego.x, ego.y);
+current.view( ego, current.ego.view);
+
+reset( doit);
+reset( useit);
+reset( lookit);
+reset( have.match);
+reset( near.water);
+
+if (on.water)
+	{
+	set( near.water);
+	}
+
+if (ignore.special)
+	{
+	reset( hit.special);
+	}
+
+if (ignore.water)
+	{
+	reset( on.water);
+	}
+
+
+[*****
+[	CONTROLLER STUFF
+[*****
+
+if (controller( c.menu))				{menu.input( );}
+if (controller( c.doit))				{set( doit);}
+if (controller( c.test))				{set( doit);}
+if (controller( c.useit))			{set( useit);}
+if (controller( c.pause))			{pause( );}
+if (controller( c.lookit))			{set( lookit);}
+if (controller( c.restart))			{restart.game( );}
+if (controller( c.init.joy))			{init.joy( );}
+if (controller( c.echo.line))			{echo.line( );}
+if (controller( c.cancel.line))		{cancel.line( );}
+if (controller( c.toggle.monitor))		{toggle.monitor( );}
+
+if (machine.type == TANDY)
+	{
+	if (attenuation < 15 &&
+	    controller( c.decrescendo))		{++attenuation;}
+	if (controller( c.crescendo))			{--attenuation;}
+	}
+
+[	if (controller( c.clock))
+[		{
+[		toggle( clock.on);
+[		if (clock.on)
+[			{
+[			set( update.clock);
+[			}
+[		else
+[			{
+[			status.line.off( );
+[			status.line.on( );
+[			}
+[		}
+
+if (controller( c.restore))
+	{
+	restore.game( );
+	}
+
+if (controller( c.quit))
+	{
+	stop.sound();
+	if (debugging)
+		{
+		quit( 1);
+		}
+	else
+		{
+		quit( 0);
+		}
+	}
+
+
+if (controller( c.about))			[	also give length of game play.
+	{
+	if (gameDays)
+		{
+		print( 57);
+		}
+	else
+		{
+		if (gameHours)
+			{
+			print( 58);
+			}
+		else
+			{
+			print( 59);
+			}
+		}
+	}
+
+if (controller( c.save) &&
+	current.status != dead)
+	{
+	save.game( );
+	}
+
+
+if (controller( c.new.obj))
+	{
+	set( enable.obj.select);
+	status( );
+	if (selected.object != error)
+		{
+		active.object = selected.object;
+		}
+	reset( enable.obj.select);
+	old.active.object = error;		[	to force update.
+	}
+
+
+if (controller( c.show.obj))
+	{
+	set( enable.obj.select);
+	status( );
+	if  (selected.object &&
+		selected.object != error)
+		{
+		work = selected.object;
+		work += 149;
+		show.obj.v( work);
+		}
+	reset( enable.obj.select);
+	old.active.object = error;		[	to force update.
+	}
+
+
+if (controller( c.sound.toggle))
+	{
+	toggle( sound.on);
+[		set( update.clock);
+	}
+
+
+if (controller( c.status))
+	{
+	status( );
+	old.active.object = error;		[	to force update.
+	}
+
+if (controller( c.debug))
+	{
+	toggle( debugging);
+	if (!debugging)
+		{
+		reset( enable.trace);
+		prevent.input( );
+		}
+	else
+		{
+		load.logics( lgc.debug);
+		load.logics( lgc.trace);
+		set( enable.trace);
+		set( xy.on);
+		print( 56);
+		version( );
+		accept.input( );
+		player.control();
+		}
+	}
+
+
+if (controller( c.version))
+	{
+	print( 56);
+	version( );
+	}
+
+
+if (controller( c.help))
+	{
+	if (out.of.memory)
+		{
+		print( 46);
+		}
+	else
+		{
+ 		call( help.room);
+		old.active.object = error;	[	to force update.
+		}
+	}
+
+
+reset( my.have.match);				[	speed stuff
+if (controller( c.speed))
+	{
+	set( my.have.match);
+	++animation.interval;
+	if (animation.interval > speed.slow)
+		{
+		animation.interval = speed.fastest;
+		}
+	}
+	
+if (controller( c.speed.slow))
+	{
+	set( my.have.match);
+	animation.interval = speed.slow;
+	}
+
+if (controller( c.speed.normal))
+	{
+	set( my.have.match);
+	animation.interval = speed.normal;
+	}
+
+if (controller( c.speed.fast))
+	{
+	set( my.have.match);
+	animation.interval = speed.fast;
+	}
+
+if (controller( c.speed.fastest))
+	{
+	set( my.have.match);
+	animation.interval = speed.fastest;
+	}
+
+if (my.have.match)
+	{
+	reset( my.have.match);
+	message = 34;
+	message += animation.interval;
+	clear.status.seconds = 6;
+	if (monitor.type != mono)
+		{
+		clear.text.rect( 24, 0, 24, 15, bg.color);
+		y = 24;
+		x = 0;
+		display.v( y, x, message);
+		}
+	}
+
+
+
+[*****
+[	GAME OVER (dead or alive)
+[*****
+
+if (certain.death)
+	{
+	load.sound( m.whoops);
+	call( lgc.death);
+	certain.death = 0;
+	current.status = dead;
+	disable.item( c.save);
+	}
+
+if (current.status == dead)
+	{
+	--wait.1;
+	if (wait.1 == 1)
+		{
+		stop.sound( );
+		sound( m.whoops, done);
+		print( 51);
+		}
+
+	if (have.input && !have.match)
+		{
+		print( 50);
+		}
+
+	if (debugging)
+		{
+		call( lgc.debug);
+		}
+	return( );
+ 	}
+
+
+if (certain.winner)
+	{
+	if (certain.winner > 12)
+		{
+		new.room( into.the.sunset);	[	cho-time, cho-time!
+		}
+	else
+		{
+		set( init.log);
+		load.logics( lgc.winner);
+		call( lgc.winner);			[	Gurgi or ego is dead; no showbiz
+		reset( init.log);
+
+		load.sound( m.dallben);
+		certain.winner = 0;
+		current.status = won.game;
+		}
+	}
+
+if (current.status == won.game)
+	{
+	call( lgc.winner);				[	Gurgi or ego is dead; no showbiz
+	if (have.input && !have.match)
+		{
+		print( 50);
+		}
+
+	if (debugging)
+		{
+		call( lgc.debug);
+		}
+
+	return( );
+ 	}
+
+
+[*****
+[	EGO CYCLING
+[*****
+
+if ((t.is.fairy || t.jumping))
+	{
+	set( no.cycling);
+	}
+else
+	{
+	reset( no.cycling);
+	}
+
+
+if  (ego.dir == old.ego.dir &&
+	ego.x == old.ego.x &&
+	ego.y == old.ego.y)
+	{
+	stop.cycling( ego);
+	}
+else	
+	{
+	start.cycling( ego);
+	}
+
+if ((!ego.dir || no.cycling))
+	{
+	stop.cycling( ego);
+	}
+
+if (keep.cycling)
+	{
+	start.cycling( ego);
+	}
+
+
+[*****
+[	TIMERS
+[*****
+
+if (elapsed.seconds != old.seconds)
+	{
+	old.seconds = elapsed.seconds;
+	set( aSecondPassed);			[inform other logics a second has passed.
+	}
+
+
+if  (game.over &&
+    (doit || useit || lookit || have.match))
+	{
+	reset( doit);
+	reset( useit);
+	reset( lookit);
+	reset( have.match);
+	print( 50);
+	}
+
+if (useit)
+	{
+	get.room.v( active.object, work);
+	if (work != INVENTORY)
+		{
+		active.object = 0;
+		}
+
+	if (active.object == u.nothing)
+		{
+		print( 12);
+		reset( useit);
+		}
+
+	object.used = active.object;
+	}
+
+
+[****************************************************************************]
+[********************	PREPARE TO CALL LOCAL ROOMS	**********************]
+[****************************************************************************]
+
+if (!init.log)
+	{
+	call.v( current.room);
+	}
+
+if (debugging)
+	{
+	call( lgc.debug);
+	}
+
+if (game.over)
+	{
+	goto exit;
+	}
+
+[****************************************************************************]
+[********************	AFTER CALLING LOCAL ROOMS	**********************]
+[****************************************************************************]
+
+
+
+if (aSecondPassed)
+	{
+[		set( update.clock);
+
+	++seconds.in.room;
+	++gameSeconds;
+	--clear.status.seconds;
+
+	if (gameSeconds == 60)
+		{
+		gameSeconds = 0;
+		++gameMinutes;
+		if (gameMinutes == 60)
+			{
+			gameMinutes = 0;
+			++gameHours;
+			if (gameHours == 25)
+				{
+				gameHours = 0;
+				++gameDays;
+				}
+			}
+		}
+
+
+	if (clear.status.seconds == 1)
+		{
+		if (monitor.type != mono)
+			{
+			clear.text.rect( 24, 0, 24, 15, bg.color);
+			}
+		}
+
+
+	}							[	END CLOCK STUFF.
+
+
+if (next.frame)
+	{
+	observe.objs( ego);
+	}
+
+
+[	timer.1.init = 150;
+[Timers are tenths of seconds, and fourths of minutes. Therefore, 
+[food.init = 240 (which is 60*4), etc.  Warnings are keyed off quarter-minutes.
+
+if (current.room != 62)
+	 {
+	 --food.timer.1;
+	 }
+
+if (food.timer.2 && !food.timer.1)
+	{
+	--food.timer.2;
+	food.timer.1 = 60;
+	if (food.timer.2 == food.warning.1)
+		{
+		print( 41);
+		}
+
+	if (food.timer.2 == food.warning.2)
+		{
+		print( 42);
+		}
+	}
+
+if (food.timer.1 == 1 && !food.timer.2)
+	{
+	certain.death = food;
+	}
+
+
+if (!on.water && current.room != 62)
+	{
+	--water.timer.1;
+	}
+
+if (water.timer.2 && !water.timer.1)
+	{
+	--water.timer.2;
+	water.timer.1 = 60;
+	if (water.timer.2 == water.warning.1)
+		{
+		print( 43);
+		}
+	if (water.timer.2 == water.warning.2)
+		{
+		print( 44);
+		}
+	}
+
+if (water.timer.1 == 1 && !water.timer.2)
+	{
+	certain.death = drink;
+	}
+
+
+if (current.room != 45)
+	{
+	--pig.timer.1;
+	}
+
+if (pig.timer.2 && !pig.timer.1)
+	{
+	--pig.timer.2;
+	pig.timer.1 = 60;
+	if (pig.timer.2 == pig.warning.1)
+		{
+		print( 45);
+		}
+	if (pig.timer.2 == pig.warning.2)
+		{
+		print( 45);
+		}
+	}
+
+if (pig.timer.1 == 1 && !pig.timer.2)
+	{
+	certain.death = pig.told.all;
+	}
+
+
+if ((have.match	|| 
+	ego.on.log	|| 
+	ego.falling	||
+	ego.is.falling	||
+	ego.climbing == stunned))
+     {
+     goto exit;
+     }
+
+
+
+[*****
+:use.it
+[*****
+
+if (useit)
+	{
+	if (object.used == u.nothing)
+		{
+		set( have.match);
+		print( 12);
+		}
+
+	if  (object.used == u.magic.sword &&
+	     swinging.sword)
+		{
+		print( 39);
+		set( have.match);
+		}
+
+	if  (object.used == u.magic.sword &&
+	    (!on.water || phony.water) && 
+		(ego.climbing == walking || !ego.climbing) &&
+	     !swinging.sword &&
+		!swing.override &&
+		!handsOff &&
+		!ego.is.falling &&
+		!ego.is.climbing &&
+		!ego.falling)				[   Pretty damn particular, aren't we?
+	     {
+		set( have.match);
+
+		if (ego.already.caught)
+     	     {
+          	print( 5);
+	          }
+     	else
+     	     {
+	         	if (hench.stunned)
+          	    	{
+              		print( 7);
+	              	}
+			else
+				{
+				set( swinging.sword);
+				if (hench.in.room)
+					{
+					reset( within.striking.distance);
+					distance( ego, a.hench, work);
+					if (work < striking.distance)
+						{
+						set( within.striking.distance);
+						if (!make.hk.come && !make.creeper.come)
+							{
+							wander( a.hench);
+							}
+						}
+					}
+
+				load.sound( s.sword);[	defensive code
+				load.view( v.ego.swinging.sword);
+
+	          	set.view( ego, v.ego.swinging.sword);
+				set.cel( ego, 0);
+		          end.of.loop( ego, ego.swung.sword);
+     		     set( keep.cycling);
+				sound( s.sword, done);
+	               }
+			}
+	     }
+
+
+	if (object.used == u.knapsack)
+		{
+		set( have.match);
+		print( 13);
+		}
+
+	if (object.used == u.corn)
+		{
+		set( have.match);
+		print( 14);
+		}
+
+	if (object.used == u.gruel)
+		{
+		set( have.match);
+		print( 15);
+		}
+
+	if (object.used == u.food.wallet)
+		{
+		set( have.match);
+		print( 16);
+		food.timer.2 = food.init;
+		}
+
+	if (object.used == u.bread)
+		{
+		set( have.match);
+		print( 17);
+		get( i.bread.two.thirds);
+		drop( i.bread);
+		object.used = 0;
+		active.object = u.bread.two.thirds;
+		food.timer.2 = food.init;
+		}
+
+	if (!have.match && object.used == u.bread.two.thirds)
+		{
+		set( have.match);
+		print( 31);
+		get( i.bread.one.third);
+		drop( i.bread.two.thirds);
+		object.used = 0;
+		active.object = u.bread.one.third;
+		food.timer.2 = food.init;
+		}
+
+	if (!have.match && object.used == u.bread.one.third)
+		{
+		set( have.match);
+		print( 32);
+		drop( i.bread.one.third);
+		object.used = 0;
+		active.object = 0;
+		food.timer.2 = food.init;
+		}
+
+	if (object.used == u.water.flask)
+		{
+		set( have.match);
+		if (water.count == one.bag.full)
+			{
+			print( 33);
+			}
+		else
+			{
+			if (phony.water)
+				{
+				print( 28);			[	"no water within reach
+				}
+			else
+				{
+				if (!near.water)
+					{
+					print( 28);		[	"no water within reach
+					}
+				else
+					{
+					if (poisoned.water &&	[	poisoned as in "lose bag"
+						current.room != 24)	[	except near waterfall
+						{
+						print( 29);	[	"rapids pull the bag from you
+						drop( i.water.flask);
+						drop( i.water);
+						object.used = 0;
+						active.object = 0;
+						set( water.flask.in.room13);
+						}
+					else
+						{
+						if (impotable.water)
+							{
+							set( moat.water);
+							}
+						water.count = one.bag.full;
+						if (!has( i.water))
+							{
+							get( i.water);
+							}
+						print( 18);	[	"you fill the bag with water
+						}
+					}
+				}
+			}
+		}
+
+	if (object.used == u.water)
+		{
+		set( have.match);
+		object.used = 0;
+		active.object = 0;
+
+		if (moat.water)
+			{
+			certain.death = gator.ade;[	"This tastes like 'gator piss!"
+			}
+		else
+			{
+			--water.count;
+			print( 19);			[	"you are refreshed
+			water.timer.2 = water.init;
+			if (!water.count)
+				{
+				drop( i.water);	[	"your bag is empty
+				print( 30);
+				}
+			}
+		}
+
+	if (object.used == u.apple)
+		{
+		set( have.match);
+		print( 20);
+		drop( i.apple);
+		object.used = 0;
+		active.object = 0;
+		food.timer.2 = food.init;
+		}
+
+	if (object.used == u.cookies)
+		{
+		set( have.match);
+		print( 21);
+		drop( i.cookies);
+		object.used = 0;
+		active.object = 0;
+		food.timer.2 = food.init;
+		}
+
+	if (object.used == u.harp)
+		{
+		set( have.match);
+		if (!out.of.memory && !pigvision.in.progress)
+			{
+			load.sound( s.harp.twang);
+			sound( s.harp.twang, done);
+			}
+		print( 22);
+		}
+
+	if (object.used == u.lute)
+		{
+		set( have.match);
+		if (!out.of.memory && !pigvision.in.progress)
+			{
+			load.sound( m.lute.song);
+			sound( m.lute.song, done);
+			}
+		print( 23);
+		}
+
+	if (object.used == u.fairy.dust)
+		{
+		set( have.match);
+		print( 24);
+		}
+
+	if (object.used == u.magic.word)
+		{
+		set( have.match);
+		print( 25);
+		print( 26);
+		}
+
+	if (object.used == u.magic.mirror)
+		{
+		set( have.match);
+		print( 27);
+		if (!seen.self)
+			{
+			set( seen.self);
+			}
+		}
+
+
+	if (!have.match)				[	Doesn't anybody have a MATCH???
+		{
+		toggle( useit.tgl);
+		if (useit.tgl)
+			{
+			print( 1);
+			}
+		else
+			{
+			print( 2);
+			}
+		goto exit;
+		}
+	}
+
+
+
+[*****
+:do.it
+[*****
+
+if (doit)
+	{
+	toggle( doit.tgl);
+     if (doit.tgl)
+		{
+		print( 3);
+		}
+	else
+		{
+		print( 4);
+		}
+	goto exit;
+     }
+
+
+
+[*****
+:no.input
+[*****
+
+if (ego.swung.sword)
+     {
+     reset( ego.swung.sword);
+     reset( keep.cycling);
+	reset( swinging.sword);
+	if (hench.chasing.ego)
+		{
+		if (!within.striking.distance)
+         		{
+	         	print( 6);
+     	    	}
+	    	else
+         		{
+			if (make.creeper.come)
+				{
+				print( 10);
+				}
+			else
+				{
+				if (make.hk.come)
+					{
+					print( 11);
+					}
+				else
+					{
+		     	    	print( 8);
+					hench.stunned = hench.stunned.time;
+			         	set.view( a.hench, v.hench.stunned);
+					stop.motion( a.hench);
+					work = 3;
+					cycle.time( a.hench, work);
+					stop.sound( );
+					sound( s.coocoo, coocoo);
+		   		 	reset( hench.chasing.ego);
+					}
+				}
+         		}
+		}
+	else
+		{
+		if (!prevent.sword.message)
+			{
+			print( 9);
+			}
+		}
+     set.view( ego, v.ego);
+     }
+
+if (hench.stunned > 40 && coocoo)
+	{
+	sound( s.coocoo, coocoo);
+	}
+
+--hench.stunned;
+if (hench.stunned == 1)
+	{
+	hench.stunned = 0;
+	set.view( a.hench, v.hench);
+	start.motion( a.hench);
+     set( hench.chasing.ego);
+     follow.ego( a.hench, hench.catch.distance, hench.caught.ego);
+	}
+
+
+
+[*****
+:exit
+[*****
+
+get.posn( ego, old.ego.x, old.ego.y);	[	Clean up, fix up for next pass.
+old.ego.dir = ego.dir;
+reset( aSecondPassed);
+object.used = 0;

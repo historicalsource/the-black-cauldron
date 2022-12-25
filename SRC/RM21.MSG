@@ -1,0 +1,11 @@
+[room21 messages
+
+
+
+%message	1
+"The swamp to the west is impenetrable. The land is unstable and soggy."
+
+%message	2
+"There is no need for you to fly away in that direction."
+
+

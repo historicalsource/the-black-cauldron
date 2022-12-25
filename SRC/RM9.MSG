@@ -1,0 +1,66 @@
+[messages for room 9 - back of Dallben's house
+
+
+
+%message	1
+"You enjoy tending the animals of Caer Dallben, but in your
+ dreams you long to be more than just an Assistant Pig-Keeper.
+ You know you would be a Great Hero, if only given the chance."
+
+%message	2
+"You open the door of the shed and discover some
+ dried corn."
+
+%message	3
+"You reach into the shed and pick up the corn."
+
+%message	4
+"You feed the gruel to your hungry pig, Hen Wen."
+
+%message	5
+"You feed the corn to your hungry pig, Hen Wen."
+
+%message	6
+"\"Hi, Hen Wen,\" you say. \"You are my favorite pig.\""
+
+%message	7
+"Honk.\n\n
+Honk! Honk!!"
+
+%message	8
+"Hen Wen certainly enjoys eating."
+
+%message	9
+"Oh! Hen Wen is trotting away."
+
+%message	10
+"Ooooow! The goat thinks you want to play tag."
+
+%message	11
+"You open the door to Dallben's shed."
+
+%message	12
+"You seem to have run into a fence you can't go through,
+ over or under. Your way to the east is blocked."
+
+%message	13
+"You open the gate and notice it has
+ fallen off its hinges. You'll have to fix it someday when you have time."
+
+%message	14
+"\"Hello, Hen Wen,\" you say, \"how's my favorite pig?\""
+
+%message	15
+"This is Hen Wen's house. She looks hungry."
+
+%message	16
+"This shed is attached to Dallben's cottage."
+
+%message	17
+"You don't have time to fix the broken gate right now."
+
+%message	18
+"You're beside Hen Wen's house, but she is not home."
+
+%message	19
+"(Perhaps she's going to Dallben's cottage.)"

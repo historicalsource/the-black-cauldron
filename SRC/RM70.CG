@@ -1,0 +1,68 @@
+[logics for room 70 -- fly united
+
+%include	"rm70.msg"
+%include "gamedefs"
+
+
+%define	gwyth.off.screen		lf0
+%define	s.gwyth.done			lf1
+
+%object	a.gwyth				giant1
+
+
+[
+[ Dimensions of the various gwyth views:
+[
+[		v.gwythaint		view.50	33x	37y
+[		v.g.and.pig		view.51	33x	42y
+[		v.g.and.t.and.pig	view.22	33x	45y
+
+
+if (init.log)
+	{
+	load.view( v.g.and.t.and.pig);
+	load.sound( s.gwythaint);
+	
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	animate.obj( a.gwyth);
+	set.view( a.gwyth, v.g.and.t.and.pig);
+	work = 2;
+	step.size( a.gwyth, work);
+	cycle.time( a.gwyth, work);
+	position( a.gwyth, 0, 160);
+	draw( a.gwyth);
+	move.obj( a.gwyth, 125, 45, 0, gwyth.off.screen);
+
+	set( s.gwyth.done);
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (lookit)
+	{
+	print( 1);
+	set( have.match);
+	}
+
+if (s.gwyth.done)
+	{
+	reset( s.gwyth.done);
+	sound( s.gwythaint, s.gwyth.done);
+	}
+
+[*****
+:exit
+[*****
+
+if (gwyth.off.screen)
+	{
+	new.room( 18);
+	}
+

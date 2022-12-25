@@ -1,0 +1,7 @@
+[messages for room 55 - back of basement
+
+
+%message	1
+"You are roaming around in hidden passageways beneath the
+ Horned King's dungeon."
+

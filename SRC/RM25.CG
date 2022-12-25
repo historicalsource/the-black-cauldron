@@ -1,0 +1,404 @@
+[logics for room 25 -- the rope climb
+
+%include  "rm25.msg"
+%include "gamedefs"
+
+
+%define	slop.factor			2	[	ok to move +2 or -2, but no more!
+
+
+%define	pig.room.loaded		lf0
+
+
+%define	throw				lv0	[	define local variables
+%define	nose.count			lv1
+%define	xy.slop.min			lv2
+%define	xy.slop.max			lv3
+%define	current.diff			lv4
+%define	current.sum			lv5
+%define	next.room				lv6
+
+
+[
+[		NOTES:
+[
+[	Rope safety is computed like this:
+[
+[	If on rope.west, compare the difference of ego.y - ego.x with the
+[ original, starting difference (+- a slop factor).  If within range, ok;
+[ else make ego fall.
+[
+[	Rope.east compares the sum of ego.x + ego.y with the original sum.
+[
+
+
+
+if (init.log)						[	initialize room
+	{
+	reset( hit.special);
+	room.bottom = screen.bottom;
+
+	observe.blocks( ego);
+	set( phony.water);
+
+	if (t.with.pig)
+		{
+		load.logics( pig.room);		[just to make sure he didn't leave her
+		set( pig.room.loaded);
+		}
+
+	load.logics( climbing.room);
+	load.view( v.ego.climbing.rope.west);
+	load.view( v.ego.climbing.rope.east);	
+	load.view( v.ego.falling);
+	load.view( v.ego.stunned);
+
+	load.sound( s.ego.falling);
+	load.sound( s.coocoo);
+
+	load.view( v.rope.west);
+	load.view( v.rope.east);
+
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+
+	if (rope.west)					[	draw rope
+		{		[view, loop, cel,  x,   y, obj priority, box priority
+		add.to.picture( v.rope.west, 0, 0, 57, 110, 4, 4);
+		add.to.picture( v.rope.west, 0, 0, 38, 91, 4, 4);
+		add.to.picture( v.rope.west, 0, 0, 19, 72, 4, 4);
+		add.to.picture( v.rope.west, 0, 0, 0, 53, 4, 4);
+		}
+
+	if (rope.east)
+		{
+		add.to.picture( v.rope.east, 0, 0, 86, 109, 4, 4);
+		add.to.picture( v.rope.east, 0, 0, 101, 94, 4, 4);
+		add.to.picture( v.rope.east, 0, 0, 120, 75, 4, 4);
+		add.to.picture( v.rope.east, 0, 0, 139, 56, 4, 4);
+		}
+
+	if (previous.room == 26)			[	position ego
+		{
+		start.climbing = on.rope.west;
+		set.priority( ego, 15);
+		x = 1;
+		y = 67;
+		position.f( ego, x, y);
+		xy.slop.min = y;
+		xy.slop.min -= x;			[	This = diff between x & y.
+		xy.slop.max = xy.slop.min;	[	So does this.
+		xy.slop.max += slop.factor;	[	Diff + 2.
+		xy.slop.min -= slop.factor;	[	Diff - 2.
+		}
+	else
+		{
+		if (previous.room == 28)
+			{
+			start.climbing = on.rope.east;
+			set.priority( ego, 15);
+			x = 140;
+			y = 73;
+			position.f( ego, x, y);
+			xy.slop.min = y;
+			xy.slop.min += x;			[	This = sum of x & y.
+			xy.slop.max = xy.slop.min;	[	So does this.
+			xy.slop.max += slop.factor;	[	Diff + 2.
+			xy.slop.min -= slop.factor;	[	Diff - 2.
+			}
+		else
+			{
+			start.climbing = walking;
+			position( ego, 80, 166);
+			}
+	     }
+
+	if (!first.time.rm5.to.rm25)
+		{
+		set( first.time.rm5.to.rm25);
+		score += 5;
+		}
+
+	call( climbing.room);
+
+	if (pig.room.loaded)
+		{
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+if ((ego.x < 48 || ego.x > 105))
+	{
+	reset( survivable.fall);
+	}
+else
+	{
+	set( survivable.fall);
+	}
+
+if (lookit)
+	{
+	print( 1);
+	set( have.match);
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+set( have.match);
+if (rope.west)						[	handle jump onto rope
+	{
+	get.posn( ego, x, y);
+	if (ego.climbing == walking && 
+			posn( ego, 65, 130, 75, 150))	[	west edge of ledge
+		{
+		print( 9);
+		start.climbing = on.rope.west;
+		erase( ego);				[	erased so climbing room can draw
+		set.priority( ego, 15);
+		x = 65;
+		y = 131;
+
+		position.f( ego, x, y);
+		xy.slop.min = y;
+		xy.slop.min -= x;			[	This = diff between x & y.
+		xy.slop.max = xy.slop.min;	[	So does this.
+		xy.slop.max += slop.factor;	[	Diff + 2.
+		xy.slop.min -= slop.factor;	[	Diff - 2.
+
+		goto exit;
+		}
+	else
+		{
+		if (ego.climbing == on.rope.west)
+			{
+			print( 11);
+			start.climbing = jumping;
+			erase( ego);
+			goto exit;
+			}
+		else						 [	can't reach rope west
+			{
+			print( 8);
+			}
+		}
+	}
+else
+	{
+	if (rope.east)
+		{
+		if (ego.climbing == walking && 
+				posn( ego, 80, 130, 97, 150))	[	east end of ledge
+			{
+			print( 9);
+			start.climbing = on.rope.east;
+			erase( ego);
+			set.priority( ego, 15);
+			x = 82;
+			y = 131;
+
+			position.f( ego, x, y);
+			xy.slop.min = y;
+			xy.slop.min += x;			[	This = sum of x & y.
+			xy.slop.max = xy.slop.min;	[	So does this.
+			xy.slop.max += slop.factor;	[	Diff + 2.
+			xy.slop.min -= slop.factor;	[	Diff - 2.
+			}
+		else
+			{
+			if (ego.climbing == on.rope.east)
+				{
+				print( 11);
+				start.climbing = jumping;
+				erase( ego);
+				goto exit;
+				}
+			else					[	can't reach rope east
+				{
+				print( 8);
+				}
+			}
+		}
+	else							[	no rope on cliff
+		{
+		print( 7);
+		}
+	}							[	end DO.IT
+
+goto no.input;
+
+
+[*****
+:use.it							[	pressed "use current obj"
+[*****
+
+if ((ego.climbing == on.rope.west || 
+		ego.climbing == on.rope.east))	[	no objects while climbing
+	{
+	set( have.match);
+	print( 12);
+	start.climbing = falling;
+	erase( ego);
+	goto exit;
+	}
+
+if (object.used == u.rope)
+	{
+	set( have.match);				  
+	random( 0, 255, throw);
+	if (throw < 64)				[	1 in 4, rope goes west
+		{
+		set( rope.west);
+		drop( i.rope);
+		object.used = 0;
+		active.object = 0;
+		add.to.picture( v.rope.west, 0, 0, 57, 110, 4, 4);
+		add.to.picture( v.rope.west, 0, 0, 38, 91, 4, 4);
+		add.to.picture( v.rope.west, 0, 0, 19, 72, 4, 4);
+		add.to.picture( v.rope.west, 0, 0, 0, 53, 4, 4);
+		print( 4);
+		}
+	else
+		{
+		if (throw > 192)			[	1 in 4, rope goes east
+			{
+			set( rope.east);
+			drop( i.rope);
+			object.used = 0;
+			active.object = 0;
+			add.to.picture( v.rope.east, 0, 0, 86, 109, 4, 4);
+			add.to.picture( v.rope.east, 0, 0, 101, 94, 4, 4);
+			add.to.picture( v.rope.east, 0, 0, 120, 75, 4, 4);
+			add.to.picture( v.rope.east, 0, 0, 139, 56, 4, 4);
+			print( 4);
+			}					
+		else						[	else, rope falls short
+			{
+			print( 3);
+			}
+		}
+	}
+
+	
+[*****
+:no.input
+[*****
+
+if (on.water && ego.dir == ego.up)		[	ego walks into the cliff
+	{
+	--nose.count;
+	if (!nose.count)
+		{
+		nose.count = 70;
+		print( 5);
+		delta.x = 0;
+		delta.y = 4;
+		reposition( ego, delta.x, delta.y);
+		}
+	}
+
+
+if (ego.climbing == on.rope.west)	 	[	look for non-existant special
+	{
+	get.posn( ego, x, y);
+	if (x > 68)
+		{
+		start.climbing = walking;
+		erase( ego);
+		x = -4;
+		y = 2;
+		reposition( ego, x, y);
+		goto exit;
+		}
+	current.diff = y;
+	current.diff -= x;
+	if ((current.diff < xy.slop.min || 
+			current.diff > xy.slop.max))
+		{
+		set( hit.special);			[	start falling, sucker.
+		}
+	}
+
+
+if (ego.climbing == on.rope.east)		[	look for non-existant special
+	{
+	get.posn( ego, x, y);
+	if (x < 80)
+		{
+		start.climbing = walking;
+		erase( ego);
+		x = -2;
+		y = 2;
+		reposition( ego, x, y);
+		goto exit;
+		}
+	current.sum = y;
+	current.sum += x;
+[	current.sum = x;
+[	current.sum += y;
+	if ((current.sum < xy.slop.min || 
+			current.sum > xy.slop.max))
+		{
+		set( hit.special);			[	start falling, sucker.
+		}
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+call( climbing.room);
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if (next.room)
+	{
+	new.room.f( next.room);
+	}
+
+if (edge.ego.hit == bottom)
+	{
+	ego.climbing = 0;
+	new.room( 5);
+	}
+
+if (edge.ego.hit == left)
+	{
+	ego.climbing = 0;
+	print( 2);
+	if (!rope.thrown.and.climbed)
+		{
+		score += 5;
+		set( rope.thrown.and.climbed);
+		}
+	next.room = 26;
+	}
+
+if (edge.ego.hit == right)
+	{
+	ego.climbing = 0;
+	print( 2);
+	if (!rope.thrown.and.climbed)
+		{
+		score += 5;
+		set( rope.thrown.and.climbed);
+		}
+	next.room = 28;
+	}
+

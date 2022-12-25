@@ -1,0 +1,525 @@
+[logics for room 61 -- Dallben's house interior
+
+%include	"rm61.msg"
+%include "gamedefs"
+
+
+%define	seconds.till.showtime	6	[	define local constants
+%define	num.of.objs.in.cupboard	5
+%define	d.talk.time			20
+%define	sword.swing.time		18
+
+
+%define	cupboard.opening.done	lf0	[	define local variables
+%define	cupboard.closing.done	lf1
+%define	cupboard.open			lf2
+%define	pig.room.loaded		lf3
+%define	pig.at.bowl			lf5
+%define	pig.at.ego			lf7
+%define	d.in.chair			lf9
+%define	pigvision.music.done	lf11
+
+
+%define	show.timer				lv3
+%define	d.talk.timer			lv6 
+%define	sword.swing.timer		lv12
+
+
+%object	a.stuff			tiny1
+%object	a.fire			small1
+%object	a.gruel			small2
+%object	a.dallben			medium1
+%object	a.cupboard		medium2
+%object	a.vision			large1
+
+
+if (init.log)						[	initialize room
+	{
+	load.pic( current.room);
+	draw.pic( current.room);
+	discard.pic( current.room);
+
+	load.view( v.fire);				[	load views of objects
+	load.view( v.cupboard.dallben);
+	load.view( v.cupboard.stuff);
+		[define	c.knapsack	5	Now these 5 views are 5 cels	]
+		[define	c.apple		4	in v.stuff, above			]   	
+		[define	c.bread		3							]
+		[define	c.water.flask	2	(Real defines in gamedefs.)	]
+[NOTNOMORE:[define	c.rope		1							]
+		[define	c.nothing		0							]
+
+
+	if (!been.in.cupboard)			[else, don't mess with it.  It's set.
+		{
+		d.cupboard.inventory = num.of.objs.in.cupboard;
+		}
+
+	animate.obj( a.dallben);
+	if (pig.in.d.house && !t.heard.dallben)
+		{
+		set( out.of.memory);
+
+		load.view( v.pig.bowl);
+		load.view( v.pig.pigvision);
+		load.view( v.dallben.standing);
+		load.view( v.pig);
+
+		load.sound( m.pigvision);
+
+		add.to.picture( v.pig.bowl, 0, 0, 89, 123, 11, 0);
+
+		animate.obj( a.vision);
+		set.view( a.vision, v.pig.pigvision);
+		work = 3;
+		cycle.time( a.vision, work);
+		position( a.vision, 89, 117);
+		set.loop( a.vision, vision.room61);
+		set.cel( a.vision, 0);
+
+		set.view( a.dallben, v.dallben.standing);
+		position( a.dallben, 76, 120);
+
+		set( pig.room.loaded);
+		set( pig.program.control);
+
+		animate.obj( a.pig);
+		set.view( a.pig, v.pig);
+		position( a.pig, 29, 132);
+		set.loop( a.pig, facing.right);
+		set.cel( a.pig, 1);
+		show.timer = seconds.till.showtime;
+		draw( a.pig);
+		stop.cycling( a.pig);
+		}
+	else
+		{
+		set( d.in.chair);
+		load.view( v.dallben.talking);
+		set.view( a.dallben, v.dallben.talking);
+		position( a.dallben, 40, 148);
+		set.priority( a.dallben, 13);
+
+		if (t.with.pig)
+			{
+			set( pig.room.loaded);
+			}
+		}
+
+	set.cel( a.dallben, 0);			[	shut your mouth, Dallben
+	ignore.blocks( a.dallben);
+	draw( a.dallben);
+	stop.update( a.dallben);
+
+	if (!gruel.taken)
+		{
+		load.view( v.gruel);
+		animate.obj( a.gruel);
+		set.view( a.gruel, v.gruel);
+		position( a.gruel, 57, 94);
+		set.priority( a.gruel, 4);
+		draw( a.gruel);
+		}
+
+	animate.obj( a.fire);
+	set.view( a.fire, v.fire);
+	position( a.fire, 60, 103);	 	[	position each object
+	set.priority( a.fire, 4);		[	set priority of objects
+	draw( a.fire);					[	draw the objects
+
+	animate.obj( a.cupboard);
+	set.view( a.cupboard, v.cupboard.dallben);
+	position( a.cupboard, 82, 81);
+	set.cel( a.cupboard, 0);			[	shut your cupboard, Dallben
+	set.priority( a.cupboard, 4);
+	draw( a.cupboard);
+	stop.update( a.cupboard);
+
+	animate.obj( a.stuff);
+	set.view( a.stuff, v.cupboard.stuff);
+	position( a.stuff, 84, 75);
+	set.priority( a.stuff, 5);
+
+	position( ego, 139, 130);		[	position ego just inside door
+	set.loop( ego, facing.left);
+	draw( ego);
+	move.obj( ego, 136, 130, 0, done);
+
+	if (pig.room.loaded)
+		{
+		load.logics( pig.room);
+		call( pig.room);
+		}
+
+	show.pic();
+	return();
+
+	}
+
+
+
+if (pigvision.in.progress)
+	{
+	goto no.input;
+	}
+
+
+if (lookit)
+	{
+	set( have.match);
+	if (posn( ego, 81, 106, 97, 111))	[	near cupboard
+		{
+		if (!cupboard.open)
+			{
+			print( 3);			[	"This is your cupboard
+			}
+		else
+			{
+			if (d.cupboard.inventory == c.nothing)
+				{
+				print( 20);		[	"The cupboard is bare!
+				}
+			if (d.cupboard.inventory == c.water.flask)
+				{
+				print( 22);		[	"You see an empty water flask
+				}
+			if (d.cupboard.inventory == c.bread)
+				{
+				print( 23);		[	"You see some bread
+				}
+			if (d.cupboard.inventory == c.apple)
+				{
+				print( 24);		[	"You see an apple
+				}
+			if (d.cupboard.inventory == c.knapsack)
+				{
+				print( 25);		[	"You see a knapsack
+				}
+			}
+		}
+	else
+		{
+		if (d.in.chair &&
+			posn( ego, 23, 129, 78, 167))[	near table
+			{	
+			if (pig.safe)
+				{
+				print( 11);		[	"D says, thanks for saving pig
+				}
+			else
+				{
+				if (pig.in.d.house)
+					{
+					print( 17);	[	"D is a wise old man
+					}
+				else
+					{
+					print( 18);	[	"D's reading the Book of Three
+					}
+				}
+			}
+		else
+			{
+			if (posn( ego, 46, 116, 70, 122))	[	near fireplace
+				{
+				if (gruel.taken)
+					{
+					print( 7);	[	"Nice fire, Taran
+					}
+				else
+					{
+					print( 8);	[	"There's a pot of gruel here
+					}
+				}
+			else
+				{
+				if (!d.in.chair && 
+			    		posn( ego, 74, 113, 105, 123))[near standing D
+					{
+					print( 16);	["You've never seen D scared b4
+					}
+				else	 			[	if ANYWHERE else
+					{
+					print( 1);	[	"nice place, eh
+					}
+				}
+			}
+		}
+	}
+
+
+if (!doit && !useit)			{goto no.input;}
+if (useit)					{goto use.it;}
+
+[*****
+:do.it							[	pressed "do something"
+[*****
+
+if (posn( ego, 74, 107, 98, 116))		[	near cupboard
+	{
+	set( have.match);
+	if (!cupboard.open)
+		{
+		set( cupboard.open);
+		print( 9);				[	"The cupboard is closed
+		start.update( a.cupboard);
+	 	end.of.loop( a.cupboard, cupboard.opening.done);
+		}
+	else
+		{
+		if (d.cupboard.inventory == c.nothing)
+			{
+			reset( cupboard.open);
+			print( 10);			[	"The cupboard is bare!
+			erase( a.stuff);
+			start.update( a.cupboard);
+			reverse.loop( a.cupboard, cupboard.closing.done);
+			goto no.input;
+			}
+
+		if (d.cupboard.inventory == c.water.flask)
+			{
+			--d.cupboard.inventory;	[	this replaces missing rope
+			--d.cupboard.inventory;
+			get( i.water.flask);
+			set.cel( a.stuff, c.nothing);
+			print( 12);			[	"You take an empty water flask
+			goto no.input;
+			}
+
+		if (d.cupboard.inventory == c.bread)
+			{
+			--d.cupboard.inventory;
+			get( i.bread);
+			bread.count = 3;
+			set.cel( a.stuff, c.water.flask);
+			print( 13);			[	"You take the bread
+			goto no.input;
+			}
+
+		if (d.cupboard.inventory == c.apple)
+			{
+			--d.cupboard.inventory;
+			get( i.apple);
+			set.cel( a.stuff, c.bread);
+			print( 14);			[	"You take the apple
+			goto no.input;
+			}
+
+		if (d.cupboard.inventory == c.knapsack)
+			{
+			set( been.in.cupboard);	[now cupboard.counter won't be changed
+			--d.cupboard.inventory;
+			get( i.knapsack);
+			set.cel( a.stuff, c.apple);
+			print( 15);			[	"You take the knapsack
+			goto no.input;
+			}
+		}
+	}
+else
+	{
+	if (d.in.chair &&
+		posn( ego, 23, 129, 78, 167))	[	near Dallben
+		{
+		set( have.match);
+		d.talk.timer = d.talk.time;
+		start.update( a.dallben);
+		if (pig.safe)
+			{
+			print( 5);			[	"D says, thanks for saving pig
+			}
+		else
+			{
+			if (!pig.fed)
+				{
+				print( 6);		[	"go feed that pig
+				}
+			else
+				{
+				print( 26);
+				}
+			}
+		}
+	else
+		{
+		if (posn( ego, 46, 116, 73, 128)) [	near fireplace
+			{
+			set( have.match);
+			if (gruel.taken)
+				{
+				print( 28);		[	"you stick your hand in the fire
+				}
+			else
+				{
+				set( gruel.taken);
+				print( 29);		[	"There's a pot of gruel here
+				get( i.gruel);
+				start.update( a.gruel);
+				erase( a.gruel);
+				}
+			}
+		else
+			{
+			if (posn( ego, 88, 141, 143, screen.bottom))	[	near the bed
+				{
+				set( have.match);
+				d.talk.timer = d.talk.time;
+				start.update( a.dallben);
+				print( 36);
+				}
+			else
+				{
+				if (!d.in.chair && 	[near D standing
+					posn( ego, 74, 113, 105, 123))
+					{
+					if (t.heard.dallben)
+						{
+						set( have.match);
+						d.talk.timer = d.talk.time;
+						start.update( a.dallben);
+						print( 26);[	"Goodbye to you Taran
+						}
+					}
+				}
+			}
+		}
+	}
+
+goto no.input;
+
+[*****
+:use.it							[	pressed "use current obj"
+[*****
+
+if (object.used == u.magic.mirror)
+	{
+	set( have.match);
+	print( 30);
+	}
+
+if (object.used == u.magic.sword)
+	{
+	sword.swing.timer = sword.swing.time;
+	}
+
+
+[*****
+:no.input
+[*****
+
+--sword.swing.timer;
+if (sword.swing.timer == 1)
+	{
+	print( 38);
+	}
+
+if (!d.in.chair &&
+	posn( ego, 30, 140, 45, 150))
+	{
+	ignore.blocks( ego);
+	}
+else
+	{
+	observe.blocks( ego);
+	}
+
+if (aSecondPassed)
+	{
+	--show.timer;
+	if (show.timer == 1)
+		{
+		print( 19);					[	"What is Hen Wen doing?
+		start.cycling( a.pig);
+		move.obj( a.pig, 80, 124, 1, pig.at.bowl);[	move pig to bowl
+		}
+	}
+
+if (pig.at.bowl)
+	{
+	reset( pig.at.bowl);
+	program.control( );
+	stop.update( ego);
+	stop.cycling( a.pig);
+	print( 37);
+	draw( a.vision);		   		[	draw new, without erasing old pig
+	stop.sound( );
+	sound( m.pigvision, pigvision.music.done);
+	set( pigvision.in.progress);
+	}
+
+if (pigvision.music.done)
+	{
+	reset( pigvision.music.done);
+	reset( pigvision.in.progress);
+	erase( a.vision);
+
+	stop.sound( );
+	print( 31);		 			[	"OK, here's the whole scam!"
+	print( 32);
+	print( 33);
+	print( 34);
+	print( 35);
+
+	set( t.heard.dallben);
+	set( t.with.pig);
+	get( i.rope);
+	start.cycling( a.pig);
+	follow.ego( a.pig, 5, pig.caught.ego);
+	start.update( ego);
+	player.control( );
+	}
+
+if (pig.caught.ego)
+	{
+	reset( pig.program.control);
+	}
+
+--d.talk.timer;
+if (d.talk.timer == 2)
+	{
+	set.cel( a.dallben, 0);			[	Why, shut D's mouth!
+	}
+
+if (d.talk.timer == 1)
+	{
+	stop.update( a.dallben);
+	}
+
+
+if (cupboard.closing.done)
+	{
+	reset( cupboard.closing.done);
+	stop.update( a.cupboard);
+	}
+
+
+if (cupboard.opening.done)
+	{
+	reset( cupboard.opening.done);
+	stop.update( a.cupboard);
+
+	set.cel.v( a.stuff, d.cupboard.inventory);
+	draw( a.stuff);
+	stop.cycling( a.stuff);
+	}
+
+
+[*****
+:exit							[	test for leaving the room
+[*****
+
+if (pig.room.loaded)
+	{
+	call( pig.room);
+	}
+
+if ((posn( ego, 134, 110, 159, 121) || 
+	posn( ego, 144, 122, 159, 131)))	[	near the door
+	{
+	if (pig.in.d.house && t.with.pig)
+		{
+		reset( pig.in.d.house);
+		}
+	new.room( 8);
+	}		
